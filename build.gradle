@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.7'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'nu.studer.jooq' version '9.0'
 }
 
 group = 'com'
@@ -34,6 +35,10 @@ dependencies {
 	/* DB */
 	runtimeOnly 'org.postgresql:postgresql'
 
+	/* jooq */
+	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+		jooqGenerator 'org.postgresql:postgresql'
+
 	/* Lombok */
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -48,4 +53,43 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jooq {
+	version = dependencyManagement.importedProperties['jooq.version']
+	edition = nu.studer.gradle.jooq.JooqEdition.OSS
+
+	configurations {
+		main {
+			generateSchemaSourceOnCompilation = false
+
+			generationTool {
+				logging = org.jooq.meta.jaxb.Logging.DEBUG
+				jdbc {
+					driver = 'org.postgresql.Driver'
+					url = 'jdbc:postgresql://db-instance-postgres.cv2280c0874d.ap-northeast-2.rds.amazonaws.com:5432/service'
+					user = 'postgres'
+					password = 'Writely0101%'
+				}
+				generator {
+					name = 'org.jooq.codegen.DefaultGenerator'
+					database {
+						name = 'org.jooq.meta.postgres.PostgresDatabase'
+						inputSchema = 'public'
+					}
+					generate {
+						deprecated = false
+						records = true
+						immutablePojos = true
+						fluentSetters = true
+					}
+					target {
+						packageName = 'writely'
+						directory = 'src/main/generated'
+					}
+					strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+				}
+			}
+		}
+	}
 }

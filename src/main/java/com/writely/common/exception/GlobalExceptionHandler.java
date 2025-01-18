@@ -1,7 +1,10 @@
 package com.writely.common.exception;
 
+import com.writely.common.enums.code.CodeInfo;
 import com.writely.common.response.BaseResponse;
 import com.writely.common.util.LogUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -12,14 +15,18 @@ import java.io.StringWriter;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler({Exception.class})
-  public BaseResponse<Void> handle(Exception e) {
+  public ResponseEntity<BaseResponse<Void>> handle(Exception e) {
     if(!(e instanceof BaseException) || ((BaseException)e).getCodeInfo() == null) {
       String message = getStackTrace(e);
       LogUtil.error(message);
-      return BaseResponse.failure(message);
+
+      BaseResponse<Void> response = BaseResponse.failure(message);
+      return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    return BaseResponse.failure(((BaseException) e).getCodeInfo());
+    CodeInfo codeInfo = ((BaseException) e).getCodeInfo();
+    BaseResponse<Void> response = BaseResponse.failure(codeInfo);
+    return new ResponseEntity<>(response, codeInfo.getStatus());
   }
 
   private String getStackTrace(Throwable throwable) {
