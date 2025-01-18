@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @MappedSuperclass
@@ -17,11 +18,11 @@ public class BaseAuditTimeEntity implements Serializable {
 
   @CreatedBy
   @Column(name = "created_by", updatable = false, nullable = false)
-  protected Long createdBy;
+  protected UUID createdBy;
 
   @LastModifiedBy
   @Column(name = "updated_by", nullable = false)
-  protected Long updatedBy;
+  protected UUID updatedBy;
 
   @Column(name = "created_at", updatable = false, nullable = false)
   protected LocalDateTime createdAt;

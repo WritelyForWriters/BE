@@ -5,7 +5,7 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/writely?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:postgresql://localhost:5432/service?useUnicode=true&characterEncoding=UTF-8
     username: postgres
     password: 1234
 

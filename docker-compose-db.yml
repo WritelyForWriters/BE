@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: writely
+      POSTGRES_DB: service
     ports:
       - "5432:5432"
     volumes:
