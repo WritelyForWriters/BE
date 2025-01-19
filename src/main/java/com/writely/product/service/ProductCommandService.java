@@ -1,7 +1,9 @@
 package com.writely.product.service;
 
+import com.writely.common.exception.BaseException;
 import com.writely.product.domain.Product;
 import com.writely.product.domain.ProductMemo;
+import com.writely.product.domain.enums.ProductException;
 import com.writely.product.repository.ProductMemoRepository;
 import com.writely.product.repository.ProductRepository;
 import com.writely.product.request.ProductCreateRequest;
@@ -29,10 +31,14 @@ public class ProductCommandService {
 
     @Transactional
     public void createMemo(UUID productId, ProductMemoCreateRequest request) {
-        Product product = productQueryService.getById(productId);
+        verifyExistProduct(productId);
 
-        ProductMemo memo = new ProductMemo(request.getName(), product);
+        productMemoRepository.save(new ProductMemo(productId, request.getName()));
+    }
 
-        productMemoRepository.save(memo);
+    private void verifyExistProduct(UUID productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new BaseException(ProductException.NOT_EXIST);
+        }
     }
 }

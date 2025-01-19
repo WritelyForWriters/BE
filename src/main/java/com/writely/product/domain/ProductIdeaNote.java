@@ -1,10 +1,7 @@
 package com.writely.product.domain;
 
 import com.writely.common.domain.BaseAuditTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,17 +12,22 @@ import java.util.UUID;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "product")
-public class Product extends BaseAuditTimeEntity {
+@Table(name = "product_ideanote")
+public class ProductIdeaNote extends BaseAuditTimeEntity {
 
     @Id
     @Column(updatable = false, nullable = false)
-    private UUID id = UUID.randomUUID();
+    private UUID id;
 
-    @Column(name = "content", nullable = false)
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String content;
 
-    public Product(String content) {
+    public ProductIdeaNote(UUID id, String title, String content) {
+        this.id = id;
+        this.title = title;
         this.content = content;
     }
 }
