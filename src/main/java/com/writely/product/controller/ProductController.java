@@ -25,21 +25,19 @@ public class ProductController {
 
     @Operation(summary = "작품 생성")
     @PostMapping
-    public BaseResponse<Void> create(@RequestBody ProductCreateRequest request) {
+    public void create(@RequestBody ProductCreateRequest request) {
         productCommandService.create(request);
-        return BaseResponse.success();
     }
 
     @Operation(summary = "메모 생성")
     @PostMapping("/{productId}/memos")
-    public BaseResponse<Void> createMemo(@PathVariable UUID productId, @RequestBody ProductMemoCreateRequest request) {
+    public void createMemo(@PathVariable UUID productId, @RequestBody ProductMemoCreateRequest request) {
         productCommandService.createMemo(productId, request);
-        return BaseResponse.success();
     }
 
     @Operation(summary = "작품 목록 조회")
     @GetMapping
-    public BaseResponse<List<ProductResponse>> getProducts() {
-        return BaseResponse.success(productQueryService.getAll());
+    public List<ProductResponse> getProducts() {
+        return productQueryService.getAll();
     }
 }
