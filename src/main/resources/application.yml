@@ -23,3 +23,13 @@ springdoc:
     operations-sorter: alpha
     doc-expansion: none
     default-models-expand-depth: -1
+
+crypto:
+  secret: "writelysecret000" # 128 bits
+  iv: "writelysecret000" # 128 bits
+
+jwt:
+  secret: "writelysecret000writelysecret000" # 256 bits
+  access-token-expiration-period: 3600 # 1시간, 60 * 60
+  refresh-token-expiration-period: 7776000 # 90일, 90 * 24 * 60 * 60
+  join-token-expiration-period: 3600 # 1시간, 60 * 60
