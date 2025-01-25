@@ -76,4 +76,20 @@ public class ProductWorldview extends BaseAuditTimeEntity {
         this.occupation = occupation;
         this.conflict = conflict;
     }
+
+    public void update(String geography, String history, String politics, String society, String religion, String economy, String technology, String lifestyle, String language, String culture, String species, String occupation, String conflict) {
+        this.geography = geography;
+        this.history = history;
+        this.politics = politics;
+        this.society = society;
+        this.religion = religion;
+        this.economy = economy;
+        this.technology = technology;
+        this.lifestyle = lifestyle;
+        this.language = language;
+        this.culture = culture;
+        this.species = species;
+        this.occupation = occupation;
+        this.conflict = conflict;
+    }
 }

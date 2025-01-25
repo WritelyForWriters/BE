@@ -29,4 +29,8 @@ public class ProductMemo extends BaseAuditTimeEntity {
         this.productId = productId;
         this.content = content;
     }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }

@@ -6,8 +6,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductCreateRequest {
+public class ProductModifyRequest {
 
+    @Schema(title = "제목")
+    private String title;
     @Schema(title = "내용")
-    private String name;
+    private String content;
 }

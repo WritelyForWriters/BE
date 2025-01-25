@@ -63,4 +63,16 @@ public class ProductCharacter extends BaseAuditTimeEntity {
         this.characteristic = characteristic;
         this.relationship = relationship;
     }
+
+    public void update(String intro, String name, Short age, String gender, String occupation, String appearance, String personality, String characteristic, String relationship) {
+        this.intro = intro;
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.occupation = occupation;
+        this.appearance = appearance;
+        this.personality = personality;
+        this.characteristic = characteristic;
+        this.relationship = relationship;
+    }
 }
