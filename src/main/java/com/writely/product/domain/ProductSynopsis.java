@@ -44,4 +44,12 @@ public class ProductSynopsis extends BaseAuditTimeEntity {
         this.logline = logline;
         this.example = example;
     }
+
+    public void update(String genre, String length, String purpose, String logline, String example) {
+        this.genre = genre;
+        this.length = length;
+        this.purpose = purpose;
+        this.logline = logline;
+        this.example = example;
+    }
 }

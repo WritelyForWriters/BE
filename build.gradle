@@ -55,6 +55,16 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+def jooqDir = "src/main/generated"
+
+sourceSets {
+	main.java.srcDirs += [ jooqDir ]
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(jooqDir))
+}
+
 jooq {
 	version = dependencyManagement.importedProperties['jooq.version']
 	edition = nu.studer.gradle.jooq.JooqEdition.OSS

@@ -36,4 +36,11 @@ public class ProductPlot extends BaseAuditTimeEntity {
         this.climax = climax;
         this.resolution = resolution;
     }
+
+    public void update(String exposition, String complication, String climax, String resolution) {
+        this.exposition = exposition;
+        this.complication = complication;
+        this.climax = climax;
+        this.resolution = resolution;
+    }
 }
