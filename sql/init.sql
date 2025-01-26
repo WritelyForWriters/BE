@@ -1,5 +1,34 @@
 -- DDL
 
+--- 회원
+create table member
+(
+    id uuid default gen_random_uuid() constraint member_pk primary key,
+    email          varchar(255) constraint email_uk unique not null,
+    realname       varchar(10)                 not null,
+    nickname       varchar(50)                 not null,
+    profile_image  varchar(255),
+    created_at     timestamp with time zone    not null,
+    updated_at     timestamp with time zone    not null
+);
+comment on table member is '회원';
+comment on column member.id is '회원 ID';
+comment on column member.email is '회원 이메일';
+comment on column member.realname is '회원 실명';
+comment on column member.nickname is '회원 닉네임';
+comment on column member.profile_image is '회원 프로필 이미지 경로';
+
+create table member_password
+(
+    member_id uuid constraint member_password_pk primary key,
+    password varchar(128) not null,
+    created_at     timestamp with time zone    not null,
+    updated_at     timestamp with time zone    not null
+);
+comment on table member_password is '회원_비밀번호';
+comment on column member_password.member_id is '회원 ID';
+comment on column member_password.password is '회원 비밀번호';
+
 -- product
 create table product
 (
