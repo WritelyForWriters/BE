@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 public class ProductCommandService {
 
     private final ProductQueryService productQueryService;
-    private final ProductRepository productRepository;
-    private final ProductCharacterRepository productCharacterRepository;
-    private final ProductCustomFieldRepository productCustomFieldRepository;
-    private final ProductIdeaNoteRepository productIdeaNoteRepository;
-    private final ProductMemoRepository productMemoRepository;
-    private final ProductPlotRepository productPlotRepository;
-    private final ProductSynopsisRepository productSynopsisRepository;
-    private final ProductWorldviewRepository productWorldviewRepository;
+    private final ProductJpaRepository productRepository;
+    private final ProductCharacterJpaRepository productCharacterJpaRepository;
+    private final ProductCustomFieldJpaRepository productCustomFieldJpaRepository;
+    private final ProductIdeaNoteJpaRepository productIdeaNoteRepository;
+    private final ProductMemoJpaRepository productMemoRepository;
+    private final ProductPlotJpaRepository productPlotRepository;
+    private final ProductSynopsisJpaRepository productSynopsisRepository;
+    private final ProductWorldviewJpaRepository productWorldviewRepository;
 
     @Transactional
     public UUID create() {
@@ -88,7 +88,7 @@ public class ProductCommandService {
         Map<UUID, ProductCharacter> savedCharacterMap = product.getCharacters().stream()
             .collect(Collectors.toMap(ProductCharacter::getId, Function.identity()));
         if (characters.isEmpty()) {
-            productCharacterRepository.deleteAll(savedCharacterMap.values());
+            productCharacterJpaRepository.deleteAll(savedCharacterMap.values());
             return;
         }
 
@@ -101,7 +101,7 @@ public class ProductCommandService {
             .filter(e -> !modifyIds.contains(e.getId()))
             .toList();
 
-        productCharacterRepository.deleteAll(deleteCharacters);
+        productCharacterJpaRepository.deleteAll(deleteCharacters);
 
         List<ProductCharacter> addCharacters = new ArrayList<>();
         characters.forEach(e -> {
@@ -118,14 +118,14 @@ public class ProductCommandService {
             }
         });
 
-        productCharacterRepository.saveAll(addCharacters);
+        productCharacterJpaRepository.saveAll(addCharacters);
     }
 
     private void modifyCustomFields(Product product, List<ProductTemplateCreateRequest.CustomField> customFields) {
         Map<UUID, ProductCustomField> savedCustomFieldMap = product.getCustomFields().stream()
             .collect(Collectors.toMap(ProductCustomField::getId, Function.identity()));
         if (customFields.isEmpty()) {
-            productCustomFieldRepository.deleteAll(savedCustomFieldMap.values());
+            productCustomFieldJpaRepository.deleteAll(savedCustomFieldMap.values());
             return;
         }
 
@@ -138,7 +138,7 @@ public class ProductCommandService {
             .filter(e -> !modifyIds.contains(e.getId()))
             .toList();
 
-        productCustomFieldRepository.deleteAll(deleteCharacters);
+        productCustomFieldJpaRepository.deleteAll(deleteCharacters);
 
         List<ProductCustomField> addCustomFields = new ArrayList<>();
         customFields.forEach(e -> {
@@ -154,7 +154,7 @@ public class ProductCommandService {
             }
         });
 
-        productCustomFieldRepository.saveAll(addCustomFields);
+        productCustomFieldJpaRepository.saveAll(addCustomFields);
     }
 
     private void modifyIdeaNote(Product product, ProductTemplateCreateRequest.IdeaNote ideaNote) {

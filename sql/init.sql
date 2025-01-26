@@ -4,7 +4,7 @@
 create table member
 (
     id uuid default gen_random_uuid() constraint member_pk primary key,
-    email          varchar(255)                not null,
+    email          varchar(255) constraint email_uk unique not null,
     realname       varchar(10)                 not null,
     nickname       varchar(50)                 not null,
     profile_image  varchar(255),

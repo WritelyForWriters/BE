@@ -3,6 +3,7 @@ package com.writely.auth.controller;
 import com.writely.auth.request.JoinRequest;
 import com.writely.auth.request.JoinTokenRequest;
 import com.writely.auth.request.LoginRequest;
+import com.writely.auth.request.ReissueRequest;
 import com.writely.auth.response.AuthTokenResponse;
 import com.writely.auth.service.AuthCommandService;
 import com.writely.auth.service.AuthQueryService;
@@ -18,6 +19,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthQueryService authQueryService;
     private final AuthCommandService authCommandService;
+
+    @Operation(summary = "토큰 재발급")
+    @PostMapping("/token/reissue")
+    public AuthTokenResponse reissueToken(ReissueRequest request) {
+
+        return authCommandService.reissueToken(request);
+    }
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
