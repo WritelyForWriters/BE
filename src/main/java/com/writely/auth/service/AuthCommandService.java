@@ -36,8 +36,17 @@ public class AuthCommandService {
     private final String salt = "test"; // todo: salt 처리
 
     public AuthTokenResponse login(LoginRequest request) {
+        String passwordHash;
+        try {
+            passwordHash = cryptoUtil.hash(request.getPassword(), this.salt);
+        } catch (Exception ex) {
+            throw new BaseException(ResultCodeInfo.FAILURE);
+        }
 
-        return generateAuthTokens(UUID.randomUUID());
+        MemberPassword memberPassword = memberPasswordRepository.findByPassword(passwordHash)
+                .orElseThrow(() -> new BaseException(AuthException.LOGIN_FAILED));
+
+        return generateAuthTokens(memberPassword.getMemberId());
     }
 
     public void join(JoinRequest request) {

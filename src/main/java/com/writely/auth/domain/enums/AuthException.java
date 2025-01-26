@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum AuthException implements CodeInfo {
 
-    JOIN_TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED, "AUTH-001", "가입 토큰이 유효하지 않습니다.");
+    JOIN_TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED, "AUTH-001", "가입 토큰이 유효하지 않습니다."),
+    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "AUTH-002", "로그인에 실패하였습니다.");
 
     private final HttpStatus status;
     private final String code;
