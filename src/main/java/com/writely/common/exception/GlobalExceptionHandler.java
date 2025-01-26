@@ -24,6 +24,7 @@ public class GlobalExceptionHandler {
       return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    LogUtil.error(getStackTrace(e));
     CodeInfo codeInfo = ((BaseException) e).getCodeInfo();
     BaseResponse<Void> response = BaseResponse.failure(codeInfo);
     return new ResponseEntity<>(response, codeInfo.getStatus());
