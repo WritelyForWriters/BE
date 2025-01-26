@@ -35,15 +35,17 @@ create table product
     id         uuid default gen_random_uuid() not null
         constraint product_pk
             primary key,
+    title      varchar(50),
     content    text,
-    created_at timestamp with time zone       not null,
+    created_at timestamp                      not null,
     created_by uuid                           not null,
-    updated_at timestamp with time zone       not null,
+    updated_at timestamp                      not null,
     updated_by uuid                           not null
 );
 
 comment on table product is '작품';
 comment on column product.id is '작품 ID';
+comment on column product.title is '제목';
 comment on column product.content is '내용';
 comment on column product.created_at is '생성일시';
 comment on column product.created_by is '생성자 ID';
@@ -69,9 +71,9 @@ create table product_character
     personality    text,
     characteristic text,
     relationship   text,
-    created_at     timestamp with time zone       not null,
+    created_at     timestamp                      not null,
     created_by     uuid                           not null,
-    updated_at     timestamp with time zone       not null,
+    updated_at     timestamp                      not null,
     updated_by     uuid                           not null
 );
 
@@ -106,9 +108,9 @@ create table product_custom_field
     name         varchar(30)                    not null,
     content      text                           not null,
     seq          smallint                       not null,
-    created_at   timestamp with time zone       not null,
+    created_at   timestamp                      not null,
     created_by   uuid                           not null,
-    updated_at   timestamp with time zone       not null,
+    updated_at   timestamp                      not null,
     updated_by   uuid                           not null
 );
 
@@ -130,15 +132,15 @@ alter table product_custom_field
 --product_ideanote
 create table product_ideanote
 (
-    id         uuid                     not null
+    id         uuid         not null
         constraint product_ideanote_pk
             primary key,
-    title      varchar(100)             not null,
-    content    text                     not null,
-    created_at timestamp with time zone not null,
-    created_by uuid                     not null,
-    updated_at timestamp with time zone not null,
-    updated_by uuid                     not null
+    title      varchar(100) not null,
+    content    text         not null,
+    created_at timestamp    not null,
+    created_by uuid         not null,
+    updated_at timestamp    not null,
+    updated_by uuid         not null
 );
 
 comment on table product_ideanote is '작품 아이디어 노트';
@@ -161,9 +163,9 @@ create table product_memo
             primary key,
     product_id uuid                           not null,
     content    text                           not null,
-    created_at timestamp with time zone       not null,
+    created_at timestamp                      not null,
     created_by uuid                           not null,
-    updated_at timestamp with time zone       not null,
+    updated_at timestamp                      not null,
     updated_by uuid                           not null
 );
 
@@ -182,17 +184,17 @@ alter table product_memo
 --product_plot
 create table product_plot
 (
-    id           uuid                     not null
+    id           uuid      not null
         constraint product_plot_pk
             primary key,
     exposition   text,
     complication text,
     climax       text,
     resolution   text,
-    created_at   timestamp with time zone not null,
-    created_by   uuid                     not null,
-    updated_at   timestamp with time zone not null,
-    updated_by   uuid                     not null
+    created_at   timestamp not null,
+    created_by   uuid      not null,
+    updated_at   timestamp not null,
+    updated_by   uuid      not null
 );
 
 comment on table product_plot is '작품 줄거리';
@@ -212,18 +214,18 @@ alter table product_plot
 -- product_synopsis
 create table product_synopsis
 (
-    id         uuid                     not null
+    id         uuid        not null
         constraint product_synopsis_pk
             primary key,
-    genre      varchar(30)              not null,
+    genre      varchar(30) not null,
     length     varchar(100),
     purpose    text,
-    logline    text                     not null,
+    logline    text        not null,
     example    text,
-    created_at timestamp with time zone not null,
-    created_by uuid                     not null,
-    updated_at timestamp with time zone not null,
-    updated_by uuid                     not null
+    created_at timestamp   not null,
+    created_by uuid        not null,
+    updated_at timestamp   not null,
+    updated_by uuid        not null
 );
 
 comment on table product_synopsis is '작품 시놉시스';
@@ -244,7 +246,7 @@ alter table product_synopsis
 --product_worldview
 create table product_worldview
 (
-    id         uuid                     not null
+    id         uuid      not null
         constraint product_worldview_pk
             primary key,
     geography  text,
@@ -260,10 +262,10 @@ create table product_worldview
     species    text,
     occupation text,
     conflict   text,
-    created_at timestamp with time zone not null,
-    created_by uuid                     not null,
-    updated_at timestamp with time zone not null,
-    updated_by uuid                     not null
+    created_at timestamp not null,
+    created_by uuid      not null,
+    updated_at timestamp not null,
+    updated_by uuid      not null
 );
 
 comment on table product_worldview is '작품 세계관';

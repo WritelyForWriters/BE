@@ -2,7 +2,6 @@ HELP.md
 .gradle
 build/
 db/
-src/main/generated/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -39,3 +38,6 @@ out/
 .vscode/
 *.log
 *.pid
+
+### secrets ###
+**/src/main/resources/**/application*.yml

@@ -52,8 +52,26 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 }
 
+task copySecret(type: Copy) {
+	copy {
+		from './BE-secret'
+		include "*.yml"
+		into 'src/main/resources'
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def jooqDir = "src/main/generated"
+
+sourceSets {
+	main.java.srcDirs += [ jooqDir ]
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(jooqDir))
 }
 
 jooq {

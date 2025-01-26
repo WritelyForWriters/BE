@@ -43,4 +43,11 @@ public class ProductCustomField extends BaseAuditTimeEntity {
         this.content = content;
         this.seq = seq;
     }
+
+    public void update(String sectionCode, String name, String content, Short seq) {
+        this.sectionCode = sectionCode;
+        this.name = name;
+        this.content = content;
+        this.seq = seq;
+    }
 }

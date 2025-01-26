@@ -9,5 +9,5 @@ import lombok.Setter;
 public class ProductMemoCreateRequest {
 
     @Schema(title = "내용")
-    private String name;
+    private String content;
 }
