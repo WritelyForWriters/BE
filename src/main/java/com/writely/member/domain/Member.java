@@ -3,6 +3,7 @@ package com.writely.member.domain;
 import com.writely.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.UUID;
 

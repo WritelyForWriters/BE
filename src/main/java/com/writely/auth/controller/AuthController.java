@@ -1,6 +1,7 @@
 package com.writely.auth.controller;
 
 import com.writely.auth.request.JoinRequest;
+import com.writely.auth.request.JoinTokenRequest;
 import com.writely.auth.request.LoginRequest;
 import com.writely.auth.response.AuthTokenResponse;
 import com.writely.auth.service.AuthCommandService;
@@ -27,8 +28,15 @@ public class AuthController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/join")
-    public AuthTokenResponse join(@RequestBody JoinRequest request) {
+    public void join(@RequestBody JoinRequest request) {
 
-        return authCommandService.join(request);
+        authCommandService.join(request);
+    }
+
+    @Operation(summary = "회원가입 완료")
+    @PostMapping("/join/complete")
+    public AuthTokenResponse join(@RequestBody JoinTokenRequest request) {
+
+        return authCommandService.completeJoin(request);
     }
 }
