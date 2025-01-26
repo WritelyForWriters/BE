@@ -25,6 +25,7 @@
 		<!-- 로그 설정 정보 불러오기 -->
 		<springProperty scope="local" name="INFO_PATH" source="service.log.info.path" />
 		<springProperty scope="local" name="ERR_PATH" source="service.log.err.path" />
+		<springProperty scope="local" name="DISCORD_WEBHOOK_URL" source="service.log.discord.webhook-url" />
 
 		<!-- [INFO]로그 파일 출력 정의 -->
 		<appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -68,11 +69,17 @@
 			</encoder>
 		</appender>
 
+		<!-- Discord Appender -->
+		<appender name="DISCORD" class="com.writely.common.discord.DiscordLogAppender">
+			<webhookUrl>${DISCORD_WEBHOOK_URL}</webhookUrl>
+		</appender>
+
 		<!-- 콘솔, [INFO]로그 파일, [ERROR]로그 파일 적용 -->
 		<root level="info">
 			<appender-ref ref="CONSOLE" />
 			<appender-ref ref="FILE_INFO" />
 			<appender-ref ref="FILE_ERROR" />
+			<appender-ref ref="DISCORD" />
 		</root>
 	</springProfile>
 </configuration>
