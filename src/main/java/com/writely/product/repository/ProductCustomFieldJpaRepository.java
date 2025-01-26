@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface ProductCustomFieldRepository extends JpaRepository<ProductCustomField, UUID> {
+public interface ProductCustomFieldJpaRepository extends JpaRepository<ProductCustomField, UUID> {
 }

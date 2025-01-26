@@ -4,7 +4,7 @@ import com.writely.common.exception.BaseException;
 import com.writely.product.domain.Product;
 import com.writely.product.domain.enums.ProductException;
 import com.writely.product.repository.ProductDao;
-import com.writely.product.repository.ProductRepository;
+import com.writely.product.repository.ProductJpaRepository;
 import com.writely.product.response.ProductDetailResponse;
 import com.writely.product.response.ProductMemoResponse;
 import com.writely.product.response.ProductResponse;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class ProductQueryService {
 
     private final ProductDao productDao;
-    private final ProductRepository productRepository;
+    private final ProductJpaRepository productRepository;
 
     public ProductDetailResponse getDetail(UUID productId) {
         return new ProductDetailResponse(getById(productId));
