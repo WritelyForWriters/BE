@@ -3,10 +3,12 @@ package com.writely.auth.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.writely.auth.domain.JoinToken;
 import com.writely.auth.domain.JwtPayload;
+import com.writely.auth.domain.RefreshToken;
 import com.writely.auth.domain.enums.AuthException;
 import com.writely.auth.helper.JwtHelper;
 import com.writely.auth.helper.MailHelper;
 import com.writely.auth.repository.JoinTokenRedisRepository;
+import com.writely.auth.repository.RefreshTokenRedisRepository;
 import com.writely.auth.request.JoinRequest;
 import com.writely.auth.request.JoinTokenRequest;
 import com.writely.auth.request.LoginRequest;
@@ -36,11 +38,11 @@ import java.util.UUID;
 public class AuthCommandService {
     private final MemberJpaRepository memberJpaRepository;
     private final MemberPasswordJpaRepository memberPasswordJpaRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final JoinTokenRedisRepository joinTokenRedisRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
     private final CryptoUtil cryptoUtil;
-    private final String salt = "test"; // todo: salt 처리
 
     // 토큰 재발급
     public AuthTokenResponse reissueToken(ReissueRequest request) {
@@ -57,7 +59,7 @@ public class AuthCommandService {
     public AuthTokenResponse login(LoginRequest request) {
         String passwordHash;
         try {
-            passwordHash = cryptoUtil.hash(request.getPassword(), this.salt);
+            passwordHash = cryptoUtil.hash(request.getPassword());
         } catch (Exception ex) {
             throw new BaseException(ResultCodeInfo.FAILURE);
         }
@@ -77,7 +79,7 @@ public class AuthCommandService {
         }
 
         try {
-            String passwordHash = cryptoUtil.hash(request.getPassword(), this.salt);
+            String passwordHash = cryptoUtil.hash(request.getPassword());
             Member member = Member.builder()
                     .email(request.getEmail())
                     .realname(request.getRealname())
@@ -140,6 +142,7 @@ public class AuthCommandService {
                     .build();
             String accessToken = jwtHelper.generateAccessToken(jwtPayload);
             String refreshToken = jwtHelper.generateRefreshToken(jwtPayload);
+            refreshTokenRedisRepository.save(new RefreshToken(refreshToken));
 
             return new AuthTokenResponse(accessToken, refreshToken);
         } catch (JsonProcessingException ex) {

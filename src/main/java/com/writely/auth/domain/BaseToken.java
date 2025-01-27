@@ -13,4 +13,7 @@ public class BaseToken {
     @Id
     protected String tokenString;
 
+    public BaseToken(String tokenString) {
+        this.tokenString = tokenString;
+    }
 }

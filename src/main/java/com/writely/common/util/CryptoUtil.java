@@ -55,8 +55,8 @@ public class CryptoUtil {
     private static final String HASH_ALGO = "SHA-256";
     private static final Integer HASH_ROUND = 3;
 
-    public String hash(String plainText, String salt) throws GeneralSecurityException {
-        return hash(plainText + salt, HASH_ROUND);
+    public String hash(String plainText) throws GeneralSecurityException {
+        return hash(plainText + SECRET, HASH_ROUND);
     }
 
     private String hash(String hashText, Integer rounds) throws GeneralSecurityException {
