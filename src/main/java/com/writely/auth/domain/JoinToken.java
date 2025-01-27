@@ -15,7 +15,7 @@ public class JoinToken extends BaseToken {
     private MemberPassword memberPassword;
 
     public JoinToken(String tokenString, Member member, MemberPassword memberPassword) {
-        this.tokenString = tokenString;
+        super(tokenString);
         this.member = member;
         this.memberPassword = memberPassword;
     }
