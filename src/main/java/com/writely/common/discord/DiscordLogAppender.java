@@ -2,8 +2,6 @@ package com.writely.common.discord;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.writely.common.discord.model.EmbedObject;
 import com.writely.common.enums.exception.InternalServerException;
@@ -15,6 +13,7 @@ import org.springframework.context.annotation.Profile;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Setter
 @Profile("!local")
@@ -32,8 +31,13 @@ public class DiscordLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent
     public void sendErrorLog(ILoggingEvent event) {
         DiscordWebHook discordWebhook = new DiscordWebHook(webhookUrl);
         Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
-        Color messageColor = Color.red;
 
+        String requestUri = mdcPropertyMap.get(MDCUtil.REQUEST_URI_MDC);
+        if (!Pattern.matches("/products/.*|/auth/.*|/health-check/.*", requestUri)) {
+            return;
+        }
+
+        Color messageColor = Color.red;
         String message = event.getMessage();
 
         int newlineIndex = message.indexOf("\n");
@@ -47,7 +51,7 @@ public class DiscordLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent
             .setTitle("[에러 내용]")
             .setColor(messageColor)
             .setDescription(message)
-            .addField(MDCUtil.REQUEST_URI_MDC, mdcPropertyMap.get(MDCUtil.REQUEST_URI_MDC), true)
+            .addField(MDCUtil.REQUEST_URI_MDC, mdcPropertyMap.get(MDCUtil.REQUEST_METHOD_MDC) + " " + mdcPropertyMap.get(MDCUtil.REQUEST_URI_MDC), true)
             .addField("[오류 발생 시간]", LocalDateTime.now().toString(), true)
             .addField(MDCUtil.REQUEST_IP_MDC, mdcPropertyMap.get(MDCUtil.REQUEST_IP_MDC), false)
             .addField(MDCUtil.HEADER_MAP_MDC,
@@ -57,15 +61,11 @@ public class DiscordLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent
                 escapeJsonInternal(mdcPropertyMap.get(MDCUtil.PARAMETER_MAP_MDC)),
                 false));
 
-        IThrowableProxy throwable = event.getThrowableProxy();
-        if (throwable != null) {
-            String exception = ThrowableProxyUtil.asString(throwable).substring(0, 3000);
-            discordWebhook.addEmbed(new EmbedObject()
-                .setTitle("[Exception 상세 내용]")
-                .setColor(messageColor)
-                .setDescription(escapeJsonInternal(exception))
-            );
-        }
+        discordWebhook.addEmbed(new EmbedObject()
+            .setTitle("[Exception 상세 내용]")
+            .setColor(messageColor)
+            .setDescription(escapeJsonInternal(event.getMessage().substring(0, 2000)))
+        );
 
         try {
             discordWebhook.execute();

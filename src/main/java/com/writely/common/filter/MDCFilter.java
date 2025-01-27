@@ -19,8 +19,8 @@ public class MDCFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        MDCUtil.set(MDCUtil.REQUEST_URI_MDC,
-            HttpRequestUtil.getRequestMethod(request) + " " + HttpRequestUtil.getRequestUri(request));
+        MDCUtil.set(MDCUtil.REQUEST_METHOD_MDC, HttpRequestUtil.getRequestMethod(request));
+        MDCUtil.set(MDCUtil.REQUEST_URI_MDC, HttpRequestUtil.getRequestUri(request));
         MDCUtil.set(MDCUtil.REQUEST_IP_MDC, HttpRequestUtil.getUserIP(Objects.requireNonNull(request)));
         MDCUtil.setJsonValue(MDCUtil.HEADER_MAP_MDC, HttpRequestUtil.getHeaderMap(request));
         MDCUtil.setJsonValue(MDCUtil.PARAMETER_MAP_MDC, HttpRequestUtil.getParamMap(request));
