@@ -8,6 +8,7 @@ import org.slf4j.spi.MDCAdapter;
 @UtilityClass
 public class MDCUtil {
 
+    public static final String REQUEST_METHOD_MDC = "[요청 Method]";
     public static final String REQUEST_URI_MDC = "[요청 URI]";
     public static final String REQUEST_IP_MDC = "[요청 IP]";
     public static final String HEADER_MAP_MDC = "[Http Header 정보]";
