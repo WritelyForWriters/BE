@@ -14,6 +14,7 @@ import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
+import writely.tables.AutoModifyMessage;
 import writely.tables.Member;
 import writely.tables.MemberPassword;
 import writely.tables.PgpArmorHeaders;
@@ -40,6 +41,11 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * 자동 수정 메세지
+     */
+    public final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
 
     /**
      * 회원
@@ -146,6 +152,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            AutoModifyMessage.AUTO_MODIFY_MESSAGE,
             Member.MEMBER,
             MemberPassword.MEMBER_PASSWORD,
             PgpArmorHeaders.PGP_ARMOR_HEADERS,

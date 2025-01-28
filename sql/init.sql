@@ -5,8 +5,7 @@ create table member
 (
     id uuid default gen_random_uuid() constraint member_pk primary key,
     email          varchar(255) constraint email_uk unique not null,
-    realname       varchar(10)                 not null,
-    nickname       varchar(50)                 not null,
+    nickname       varchar(10)  constraint nickname_uk unique not null,
     profile_image  varchar(255),
     created_at     timestamp with time zone    not null,
     updated_at     timestamp with time zone    not null
@@ -14,7 +13,6 @@ create table member
 comment on table member is '회원';
 comment on column member.id is '회원 ID';
 comment on column member.email is '회원 이메일';
-comment on column member.realname is '회원 실명';
 comment on column member.nickname is '회원 닉네임';
 comment on column member.profile_image is '회원 프로필 이미지 경로';
 

@@ -52,25 +52,10 @@ public class MemberRecord extends UpdatableRecordImpl<MemberRecord> {
     }
 
     /**
-     * Setter for <code>public.member.realname</code>. 회원 실명
-     */
-    public MemberRecord setRealname(String value) {
-        set(2, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>public.member.realname</code>. 회원 실명
-     */
-    public String getRealname() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>public.member.nickname</code>. 회원 닉네임
      */
     public MemberRecord setNickname(String value) {
-        set(3, value);
+        set(2, value);
         return this;
     }
 
@@ -78,14 +63,14 @@ public class MemberRecord extends UpdatableRecordImpl<MemberRecord> {
      * Getter for <code>public.member.nickname</code>. 회원 닉네임
      */
     public String getNickname() {
-        return (String) get(3);
+        return (String) get(2);
     }
 
     /**
      * Setter for <code>public.member.profile_image</code>. 회원 프로필 이미지 경로
      */
     public MemberRecord setProfileImage(String value) {
-        set(4, value);
+        set(3, value);
         return this;
     }
 
@@ -93,14 +78,14 @@ public class MemberRecord extends UpdatableRecordImpl<MemberRecord> {
      * Getter for <code>public.member.profile_image</code>. 회원 프로필 이미지 경로
      */
     public String getProfileImage() {
-        return (String) get(4);
+        return (String) get(3);
     }
 
     /**
      * Setter for <code>public.member.created_at</code>.
      */
     public MemberRecord setCreatedAt(OffsetDateTime value) {
-        set(5, value);
+        set(4, value);
         return this;
     }
 
@@ -108,14 +93,14 @@ public class MemberRecord extends UpdatableRecordImpl<MemberRecord> {
      * Getter for <code>public.member.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(5);
+        return (OffsetDateTime) get(4);
     }
 
     /**
      * Setter for <code>public.member.updated_at</code>.
      */
     public MemberRecord setUpdatedAt(OffsetDateTime value) {
-        set(6, value);
+        set(5, value);
         return this;
     }
 
@@ -123,7 +108,7 @@ public class MemberRecord extends UpdatableRecordImpl<MemberRecord> {
      * Getter for <code>public.member.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(6);
+        return (OffsetDateTime) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -149,12 +134,11 @@ public class MemberRecord extends UpdatableRecordImpl<MemberRecord> {
     /**
      * Create a detached, initialised MemberRecord
      */
-    public MemberRecord(UUID id, String email, String realname, String nickname, String profileImage, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+    public MemberRecord(UUID id, String email, String nickname, String profileImage, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         super(Member.MEMBER);
 
         setId(id);
         setEmail(email);
-        setRealname(realname);
         setNickname(nickname);
         setProfileImage(profileImage);
         setCreatedAt(createdAt);
@@ -171,7 +155,6 @@ public class MemberRecord extends UpdatableRecordImpl<MemberRecord> {
         if (value != null) {
             setId(value.getId());
             setEmail(value.getEmail());
-            setRealname(value.getRealname());
             setNickname(value.getNickname());
             setProfileImage(value.getProfileImage());
             setCreatedAt(value.getCreatedAt());
