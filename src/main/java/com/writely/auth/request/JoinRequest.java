@@ -1,6 +1,7 @@
 package com.writely.auth.request;
 
 import com.writely.common.validation.IsEmail;
+import com.writely.common.validation.IsPassword;
 import com.writely.member.domain.Member;
 import com.writely.member.domain.MemberPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,7 @@ public class JoinRequest {
 
     @NotBlank
     @Size(min = 8, max = 255)
+    @IsPassword
     @Schema(title = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "Writely4Writers!@")
     private String password;
 

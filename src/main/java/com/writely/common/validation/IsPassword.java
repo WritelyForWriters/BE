@@ -10,9 +10,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = IsEmailValidator.class)
-public @interface IsEmail {
-    String message() default "이메일 형식이어야 합니다.";
+@Constraint(validatedBy = IsPasswordValidator.class)
+public @interface IsPassword {
+    String message() default "최소 8자 이상이며, 대문자, 소문자, 숫자, 특수문자 중 3가지를 포함해야 합니다.";
     Class[] groups() default {};
     Class[] payload() default {};
 }

@@ -23,28 +23,28 @@ public class AuthController {
 
     @Operation(summary = "토큰 재발급")
     @PostMapping("/token/reissue")
-    public AuthTokenResponse reissueToken(@Valid ReissueRequest request) {
+    public AuthTokenResponse reissueToken(@Valid @RequestBody ReissueRequest request) {
 
         return authCommandService.reissueToken(request);
     }
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    public AuthTokenResponse login(@RequestBody LoginRequest request) {
+    public AuthTokenResponse login(@Valid @RequestBody LoginRequest request) {
 
         return authCommandService.login(request);
     }
 
     @Operation(summary = "회원가입")
     @PostMapping("/join")
-    public void join(@RequestBody JoinRequest request) {
+    public void join(@Valid @RequestBody JoinRequest request) {
 
         authCommandService.join(request);
     }
 
     @Operation(summary = "회원가입 완료")
     @PostMapping("/join/complete")
-    public AuthTokenResponse join(@RequestBody JoinTokenRequest request) {
+    public AuthTokenResponse join(@Valid @RequestBody JoinTokenRequest request) {
 
         return authCommandService.completeJoin(request);
     }
