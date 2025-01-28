@@ -5,7 +5,9 @@ package writely.tables;
 
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.jooq.Condition;
@@ -62,14 +64,9 @@ public class Member extends TableImpl<MemberRecord> {
     public final TableField<MemberRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(255).nullable(false), this, "회원 이메일");
 
     /**
-     * The column <code>public.member.realname</code>. 회원 실명
-     */
-    public final TableField<MemberRecord, String> REALNAME = createField(DSL.name("realname"), SQLDataType.VARCHAR(10).nullable(false), this, "회원 실명");
-
-    /**
      * The column <code>public.member.nickname</code>. 회원 닉네임
      */
-    public final TableField<MemberRecord, String> NICKNAME = createField(DSL.name("nickname"), SQLDataType.VARCHAR(50).nullable(false), this, "회원 닉네임");
+    public final TableField<MemberRecord, String> NICKNAME = createField(DSL.name("nickname"), SQLDataType.VARCHAR(10).nullable(false), this, "회원 닉네임");
 
     /**
      * The column <code>public.member.profile_image</code>. 회원 프로필 이미지 경로
@@ -123,6 +120,11 @@ public class Member extends TableImpl<MemberRecord> {
     @Override
     public UniqueKey<MemberRecord> getPrimaryKey() {
         return Keys.MEMBER_PK;
+    }
+
+    @Override
+    public List<UniqueKey<MemberRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.EMAIL_UK, Keys.NICKNAME_UK);
     }
 
     @Override

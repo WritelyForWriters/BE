@@ -19,7 +19,6 @@ public class Member implements Serializable {
 
     private final UUID id;
     private final String email;
-    private final String realname;
     private final String nickname;
     private final String profileImage;
     private final OffsetDateTime createdAt;
@@ -28,7 +27,6 @@ public class Member implements Serializable {
     public Member(Member value) {
         this.id = value.id;
         this.email = value.email;
-        this.realname = value.realname;
         this.nickname = value.nickname;
         this.profileImage = value.profileImage;
         this.createdAt = value.createdAt;
@@ -38,7 +36,6 @@ public class Member implements Serializable {
     public Member(
         UUID id,
         String email,
-        String realname,
         String nickname,
         String profileImage,
         OffsetDateTime createdAt,
@@ -46,7 +43,6 @@ public class Member implements Serializable {
     ) {
         this.id = id;
         this.email = email;
-        this.realname = realname;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.createdAt = createdAt;
@@ -65,13 +61,6 @@ public class Member implements Serializable {
      */
     public String getEmail() {
         return this.email;
-    }
-
-    /**
-     * Getter for <code>public.member.realname</code>. 회원 실명
-     */
-    public String getRealname() {
-        return this.realname;
     }
 
     /**
@@ -123,12 +112,6 @@ public class Member implements Serializable {
         }
         else if (!this.email.equals(other.email))
             return false;
-        if (this.realname == null) {
-            if (other.realname != null)
-                return false;
-        }
-        else if (!this.realname.equals(other.realname))
-            return false;
         if (this.nickname == null) {
             if (other.nickname != null)
                 return false;
@@ -162,7 +145,6 @@ public class Member implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.email == null) ? 0 : this.email.hashCode());
-        result = prime * result + ((this.realname == null) ? 0 : this.realname.hashCode());
         result = prime * result + ((this.nickname == null) ? 0 : this.nickname.hashCode());
         result = prime * result + ((this.profileImage == null) ? 0 : this.profileImage.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
@@ -176,7 +158,6 @@ public class Member implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(email);
-        sb.append(", ").append(realname);
         sb.append(", ").append(nickname);
         sb.append(", ").append(profileImage);
         sb.append(", ").append(createdAt);

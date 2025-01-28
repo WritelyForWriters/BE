@@ -9,6 +9,7 @@ import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
+import writely.tables.AutoModifyMessage;
 import writely.tables.Member;
 import writely.tables.MemberPassword;
 import writely.tables.Product;
@@ -19,6 +20,7 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
+import writely.tables.records.AutoModifyMessageRecord;
 import writely.tables.records.MemberPasswordRecord;
 import writely.tables.records.MemberRecord;
 import writely.tables.records.ProductCharacterRecord;
@@ -42,7 +44,10 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AutoModifyMessageRecord> AUTO_MODIFY_MESSAGE_PK = Internal.createUniqueKey(AutoModifyMessage.AUTO_MODIFY_MESSAGE, DSL.name("auto_modify_message_pk"), new TableField[] { AutoModifyMessage.AUTO_MODIFY_MESSAGE.ID }, true);
+    public static final UniqueKey<MemberRecord> EMAIL_UK = Internal.createUniqueKey(Member.MEMBER, DSL.name("email_uk"), new TableField[] { Member.MEMBER.EMAIL }, true);
     public static final UniqueKey<MemberRecord> MEMBER_PK = Internal.createUniqueKey(Member.MEMBER, DSL.name("member_pk"), new TableField[] { Member.MEMBER.ID }, true);
+    public static final UniqueKey<MemberRecord> NICKNAME_UK = Internal.createUniqueKey(Member.MEMBER, DSL.name("nickname_uk"), new TableField[] { Member.MEMBER.NICKNAME }, true);
     public static final UniqueKey<MemberPasswordRecord> MEMBER_PASSWORD_PK = Internal.createUniqueKey(MemberPassword.MEMBER_PASSWORD, DSL.name("member_password_pk"), new TableField[] { MemberPassword.MEMBER_PASSWORD.MEMBER_ID }, true);
     public static final UniqueKey<ProductRecord> PRODUCT_PK = Internal.createUniqueKey(Product.PRODUCT, DSL.name("product_pk"), new TableField[] { Product.PRODUCT.ID }, true);
     public static final UniqueKey<ProductCharacterRecord> PRODUCT_CHARACTER_PK = Internal.createUniqueKey(ProductCharacter.PRODUCT_CHARACTER, DSL.name("product_character_pk"), new TableField[] { ProductCharacter.PRODUCT_CHARACTER.ID }, true);

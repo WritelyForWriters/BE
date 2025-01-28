@@ -8,6 +8,7 @@ import org.jooq.Configuration;
 import org.jooq.Field;
 import org.jooq.Result;
 
+import writely.tables.AutoModifyMessage;
 import writely.tables.Member;
 import writely.tables.MemberPassword;
 import writely.tables.PgpArmorHeaders;
@@ -27,6 +28,11 @@ import writely.tables.records.PgpArmorHeadersRecord;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
+
+    /**
+     * 자동 수정 메세지
+     */
+    public static final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
 
     /**
      * 회원
