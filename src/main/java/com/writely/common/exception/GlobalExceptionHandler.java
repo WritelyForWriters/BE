@@ -9,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -49,17 +46,8 @@ public class GlobalExceptionHandler {
       response = BaseResponse.failure();
     }
 
-    LogUtil.error(getStackTrace(e));
+    LogUtil.error(e);
     return new ResponseEntity<>(response, status);
   }
 
-  private String getStackTrace(Throwable throwable) {
-    if (throwable == null) {
-      return "No exception provided.";
-    }
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    throwable.printStackTrace(printWriter);
-    return stringWriter.toString();
-  }
 }

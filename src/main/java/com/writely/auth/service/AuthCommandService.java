@@ -17,6 +17,7 @@ import com.writely.auth.response.AuthTokenResponse;
 import com.writely.common.enums.code.ResultCodeInfo;
 import com.writely.common.exception.BaseException;
 import com.writely.common.util.CryptoUtil;
+import com.writely.common.util.LogUtil;
 import com.writely.member.domain.Member;
 import com.writely.member.domain.MemberPassword;
 import com.writely.member.repository.MemberPasswordJpaRepository;
@@ -145,7 +146,7 @@ public class AuthCommandService {
 
             return new AuthTokenResponse(accessToken, refreshToken);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            LogUtil.error(ex);
 
             throw new BaseException(ResultCodeInfo.FAILURE);
         }
