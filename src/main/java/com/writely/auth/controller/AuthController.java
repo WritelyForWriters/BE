@@ -9,6 +9,7 @@ import com.writely.auth.service.AuthCommandService;
 import com.writely.auth.service.AuthQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class AuthController {
 
     @Operation(summary = "토큰 재발급")
     @PostMapping("/token/reissue")
-    public AuthTokenResponse reissueToken(ReissueRequest request) {
+    public AuthTokenResponse reissueToken(@Valid ReissueRequest request) {
 
         return authCommandService.reissueToken(request);
     }

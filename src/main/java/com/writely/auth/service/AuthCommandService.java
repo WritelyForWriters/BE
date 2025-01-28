@@ -82,7 +82,6 @@ public class AuthCommandService {
             String passwordHash = cryptoUtil.hash(request.getPassword());
             Member member = Member.builder()
                     .email(request.getEmail())
-                    .realname(request.getRealname())
                     .nickname(request.getNickname())
                     .build();
             MemberPassword memberPassword = MemberPassword.builder()
