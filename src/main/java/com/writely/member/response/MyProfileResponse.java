@@ -3,13 +3,11 @@ package com.writely.member.response;
 
 import com.writely.member.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class MyProfileResponse {
     @Schema(title = "이메일")
     private final String email;
