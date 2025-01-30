@@ -14,13 +14,11 @@ import lombok.Setter;
 @Setter
 public class JoinRequest {
     @NotBlank
-    @Size(max = 255)
     @IsEmail
     @Schema(title = "이메일", requiredMode = Schema.RequiredMode.REQUIRED, example = "example@domain.com")
     private String email;
 
     @NotBlank
-    @Size(min = 8, max = 255)
     @IsPassword
     @Schema(title = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "Writely4Writers!@")
     private String password;

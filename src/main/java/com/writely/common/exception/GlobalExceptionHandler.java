@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
       status = ResultCodeInfo.FAILURE.getStatus();
     }
     if (response == null) {
-      response = BaseResponse.failure();
+      response = BaseResponse.failure(ResultCodeInfo.FAILURE);
     }
 
     LogUtil.error(e);
