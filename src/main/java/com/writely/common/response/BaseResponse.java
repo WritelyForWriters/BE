@@ -40,12 +40,6 @@ public class BaseResponse<T> {
         return res;
     }
 
-    public static <T> BaseResponse<T> failure() {
-        BaseResponse<T> res = new BaseResponse<>();
-        res.message = ResultCodeInfo.FAILURE.getMessage();
-        return res;
-    }
-
     public static <T> BaseResponse<T> failure(CodeInfo codeInfo) {
         BaseResponse<T> res = new BaseResponse<>();
         res.code = codeInfo.getCode();

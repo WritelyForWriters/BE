@@ -1,10 +1,8 @@
 package com.writely.auth.controller;
 
-import com.writely.auth.request.JoinRequest;
-import com.writely.auth.request.JoinTokenRequest;
-import com.writely.auth.request.LoginRequest;
-import com.writely.auth.request.ReissueRequest;
+import com.writely.auth.request.*;
 import com.writely.auth.response.AuthTokenResponse;
+import com.writely.auth.response.CheckEmailResponse;
 import com.writely.auth.service.AuthCommandService;
 import com.writely.auth.service.AuthQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,8 +42,15 @@ public class AuthController {
 
     @Operation(summary = "회원가입 완료")
     @PostMapping("/join/complete")
-    public AuthTokenResponse join(@Valid @RequestBody JoinTokenRequest request) {
+    public AuthTokenResponse completeJoin(@Valid @RequestBody JoinTokenRequest request) {
 
         return authCommandService.completeJoin(request);
+    }
+
+    @Operation(summary = "이메일 중복 조회")
+    @GetMapping("/check-email")
+    public CheckEmailResponse checkEmail(@Valid CheckEmailRequest request) {
+
+        return authQueryService.checkEmail(request);
     }
 }
