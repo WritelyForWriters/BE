@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.Base64;
 
@@ -24,29 +23,37 @@ public class CryptoUtil {
     @Value("${crypto.iv}")
     private String IV;
 
-    public String encrypt(String plainText) throws GeneralSecurityException {
+    public String encrypt(String plainText) {
         SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET.getBytes(), CRYPT_ALGO);
         IvParameterSpec ivSpec = new IvParameterSpec(IV.getBytes());
 
-        Cipher cipher = Cipher.getInstance(CRYPT_ALGO + "/" + CRYPT_MODE + "/" + CRYPT_PADDING);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivSpec);
+        try {
+            Cipher cipher = Cipher.getInstance(CRYPT_ALGO + "/" + CRYPT_MODE + "/" + CRYPT_PADDING);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivSpec);
 
-        byte[] cipherText = cipher.doFinal(plainText.getBytes());
+            byte[] cipherText = cipher.doFinal(plainText.getBytes());
 
-        return encodeBase64(cipherText);
+            return encodeBase64(cipherText);
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
     }
 
-    public String decrypt(String cipherText) throws GeneralSecurityException {
+    public String decrypt(String cipherText) {
         SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET.getBytes(), CRYPT_ALGO);
         IvParameterSpec ivSpec = new IvParameterSpec(IV.getBytes());
 
-        Cipher cipher = Cipher.getInstance(CRYPT_ALGO + "/" + CRYPT_MODE + "/" + CRYPT_PADDING);
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivSpec);
+        try {
+            Cipher cipher = Cipher.getInstance(CRYPT_ALGO + "/" + CRYPT_MODE + "/" + CRYPT_PADDING);
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivSpec);
 
-        byte[] decoded = decodeBase64(cipherText);
-        byte[] plainText = cipher.doFinal(decoded);
+            byte[] decoded = decodeBase64(cipherText);
+            byte[] plainText = cipher.doFinal(decoded);
 
-        return new String(plainText);
+            return new String(plainText);
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
     }
 
     /**
@@ -55,17 +62,21 @@ public class CryptoUtil {
     private static final String HASH_ALGO = "SHA-256";
     private static final Integer HASH_ROUND = 3;
 
-    public String hash(String plainText) throws GeneralSecurityException {
+    public String hash(String plainText) {
         return hash(plainText + SECRET, HASH_ROUND);
     }
 
-    private String hash(String hashText, Integer rounds) throws GeneralSecurityException {
+    private String hash(String hashText, Integer rounds) {
         if (rounds == 0) return hashText;
 
-        MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
-        md.update((hashText).getBytes());
+        try {
+            MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
+            md.update((hashText).getBytes());
 
-        return hash(bytesToHex(md.digest()), --rounds);
+            return hash(bytesToHex(md.digest()), --rounds);
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
     }
 
     private String bytesToHex(byte[] bytes) {

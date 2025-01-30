@@ -42,9 +42,23 @@ public class AuthController {
 
     @Operation(summary = "회원가입 완료")
     @PostMapping("/join/complete")
-    public AuthTokenResponse completeJoin(@Valid @RequestBody JoinTokenRequest request) {
+    public AuthTokenResponse completeJoin(@Valid @RequestBody JoinCompletionRequest request) {
 
         return authCommandService.completeJoin(request);
+    }
+
+    @Operation(summary = "비밀번호 변경")
+    @PostMapping("/chpw")
+    public void changePassword(@Valid @RequestBody ChpwRequest request) {
+
+        authCommandService.changePassword(request);
+    }
+
+    @Operation(summary = "비밀번호 변경 완료")
+    @PostMapping("/chpw/complete")
+    public void completeChangePassword(@Valid @RequestBody ChpwCompletionRequest request) {
+
+        authCommandService.completeChangePassword(request);
     }
 
     @Operation(summary = "이메일 중복 조회")
