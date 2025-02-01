@@ -6,7 +6,7 @@ import com.writely.product.domain.enums.ProductException;
 import com.writely.product.repository.*;
 import com.writely.product.request.ProductMemoCreateRequest;
 import com.writely.product.request.ProductModifyRequest;
-import com.writely.product.request.ProductTemplateCreateRequest;
+import com.writely.product.request.ProductTemplateSaveRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ public class ProductCommandService {
     }
 
     @Transactional
-    public void saveTemplate(UUID productId, ProductTemplateCreateRequest request) {
+    public void saveTemplate(UUID productId, ProductTemplateSaveRequest request) {
         Product product = productQueryService.getById(productId);
 
         modifyCharacters(product, request.getCharacters());
@@ -84,7 +84,7 @@ public class ProductCommandService {
             .orElseThrow(() -> new BaseException(ProductException.NOT_EXIST_MEMO));
     }
 
-    private void modifyCharacters(Product product, List<ProductTemplateCreateRequest.Character> characters) {
+    private void modifyCharacters(Product product, List<ProductTemplateSaveRequest.Character> characters) {
         Map<UUID, ProductCharacter> savedCharacterMap = product.getCharacters().stream()
             .collect(Collectors.toMap(ProductCharacter::getId, Function.identity()));
         if (characters.isEmpty()) {
@@ -93,7 +93,7 @@ public class ProductCommandService {
         }
 
         Set<UUID> modifyIds = characters.stream()
-            .map(ProductTemplateCreateRequest.Character::getId)
+            .map(ProductTemplateSaveRequest.Character::getId)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
 
@@ -121,7 +121,7 @@ public class ProductCommandService {
         productCharacterJpaRepository.saveAll(addCharacters);
     }
 
-    private void modifyCustomFields(Product product, List<ProductTemplateCreateRequest.CustomField> customFields) {
+    private void modifyCustomFields(Product product, List<ProductTemplateSaveRequest.CustomField> customFields) {
         Map<UUID, ProductCustomField> savedCustomFieldMap = product.getCustomFields().stream()
             .collect(Collectors.toMap(ProductCustomField::getId, Function.identity()));
         if (customFields.isEmpty()) {
@@ -130,7 +130,7 @@ public class ProductCommandService {
         }
 
         Set<UUID> modifyIds = customFields.stream()
-            .map(ProductTemplateCreateRequest.CustomField::getId)
+            .map(ProductTemplateSaveRequest.CustomField::getId)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
 
@@ -150,14 +150,14 @@ public class ProductCommandService {
                     throw new BaseException(ProductException.NOT_EXIST_CUSTOM_FIELD);
                 }
 
-                savedCustomField.update(e.getSectionCode(), e.getName(), e.getContent(), e.getSeq());
+                savedCustomField.update(e.getSectionType(), e.getName(), e.getContent(), e.getSeq());
             }
         });
 
         productCustomFieldJpaRepository.saveAll(addCustomFields);
     }
 
-    private void modifyIdeaNote(Product product, ProductTemplateCreateRequest.IdeaNote ideaNote) {
+    private void modifyIdeaNote(Product product, ProductTemplateSaveRequest.IdeaNote ideaNote) {
         ProductIdeaNote savedIdeaNote = product.getIdeaNote();
 
         if (ideaNote == null && savedIdeaNote != null) {
@@ -175,7 +175,7 @@ public class ProductCommandService {
         }
     }
 
-    private void modifyPlot(Product product, ProductTemplateCreateRequest.Plot plot) {
+    private void modifyPlot(Product product, ProductTemplateSaveRequest.Plot plot) {
         ProductPlot savedPlot = product.getPlot();
 
         if (plot == null && savedPlot != null) {
@@ -192,7 +192,7 @@ public class ProductCommandService {
         }
     }
 
-    private void modifySynopsis(Product product, ProductTemplateCreateRequest.Synopsis synopsis) {
+    private void modifySynopsis(Product product, ProductTemplateSaveRequest.Synopsis synopsis) {
         ProductSynopsis savedSynopsis = product.getSynopsis();
 
         if (synopsis == null && savedSynopsis != null) {
@@ -209,7 +209,7 @@ public class ProductCommandService {
         }
     }
 
-    private void modifyWorldview(Product product, ProductTemplateCreateRequest.Worldview worldview) {
+    private void modifyWorldview(Product product, ProductTemplateSaveRequest.Worldview worldview) {
         ProductWorldview savedWorldview = product.getWorldview();
 
         if (worldview == null && savedWorldview != null) {

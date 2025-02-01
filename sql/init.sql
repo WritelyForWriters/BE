@@ -102,7 +102,7 @@ create table product_custom_field
         constraint product_custom_field_pk
             primary key,
     product_id   uuid                           not null,
-    section_code varchar(20)                    not null,
+    section_type varchar(20)                    not null,
     name         varchar(30)                    not null,
     content      text                           not null,
     seq          smallint                       not null,
@@ -115,7 +115,7 @@ create table product_custom_field
 comment on table product_custom_field is '작품 커스텀 필드';
 comment on column product_custom_field.id is '커스텀 필드 ID';
 comment on column product_custom_field.product_id is '작품 ID';
-comment on column product_custom_field.section_code is '섹션 코드';
+comment on column product_custom_field.section_type is '섹션 타입';
 comment on column product_custom_field.name is '이름';
 comment on column product_custom_field.content is '내용';
 comment on column product_custom_field.seq is '순서';

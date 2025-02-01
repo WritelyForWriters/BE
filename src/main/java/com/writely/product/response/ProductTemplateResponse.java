@@ -1,6 +1,7 @@
 package com.writely.product.response;
 
 import com.writely.product.domain.*;
+import com.writely.product.domain.enums.ProductSectionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -77,7 +78,7 @@ public class ProductTemplateResponse {
 
         private final UUID id;
         @Schema(title = "섹션 코드")
-        private final String sectionCode;
+        private final ProductSectionType sectionType;
         @Schema(title = "필드 이름")
         private final String name;
         @Schema(title = "필드 내용")
@@ -87,7 +88,7 @@ public class ProductTemplateResponse {
 
         public CustomField(ProductCustomField customField) {
             this.id = customField.getId();
-            this.sectionCode = customField.getSectionCode();
+            this.sectionType = customField.getSectionType();
             this.name = customField.getName();
             this.content = customField.getContent();
             this.seq = customField.getSeq();

@@ -19,7 +19,7 @@ public class ProductCustomField implements Serializable {
 
     private final UUID id;
     private final UUID productId;
-    private final String sectionCode;
+    private final String sectionType;
     private final String name;
     private final String content;
     private final Short seq;
@@ -31,7 +31,7 @@ public class ProductCustomField implements Serializable {
     public ProductCustomField(ProductCustomField value) {
         this.id = value.id;
         this.productId = value.productId;
-        this.sectionCode = value.sectionCode;
+        this.sectionType = value.sectionType;
         this.name = value.name;
         this.content = value.content;
         this.seq = value.seq;
@@ -44,7 +44,7 @@ public class ProductCustomField implements Serializable {
     public ProductCustomField(
         UUID id,
         UUID productId,
-        String sectionCode,
+        String sectionType,
         String name,
         String content,
         Short seq,
@@ -55,7 +55,7 @@ public class ProductCustomField implements Serializable {
     ) {
         this.id = id;
         this.productId = productId;
-        this.sectionCode = sectionCode;
+        this.sectionType = sectionType;
         this.name = name;
         this.content = content;
         this.seq = seq;
@@ -80,10 +80,10 @@ public class ProductCustomField implements Serializable {
     }
 
     /**
-     * Getter for <code>public.product_custom_field.section_code</code>. 섹션 코드
+     * Getter for <code>public.product_custom_field.section_type</code>. 섹션 타입
      */
-    public String getSectionCode() {
-        return this.sectionCode;
+    public String getSectionType() {
+        return this.sectionType;
     }
 
     /**
@@ -156,11 +156,11 @@ public class ProductCustomField implements Serializable {
         }
         else if (!this.productId.equals(other.productId))
             return false;
-        if (this.sectionCode == null) {
-            if (other.sectionCode != null)
+        if (this.sectionType == null) {
+            if (other.sectionType != null)
                 return false;
         }
-        else if (!this.sectionCode.equals(other.sectionCode))
+        else if (!this.sectionType.equals(other.sectionType))
             return false;
         if (this.name == null) {
             if (other.name != null)
@@ -213,7 +213,7 @@ public class ProductCustomField implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
-        result = prime * result + ((this.sectionCode == null) ? 0 : this.sectionCode.hashCode());
+        result = prime * result + ((this.sectionType == null) ? 0 : this.sectionType.hashCode());
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
         result = prime * result + ((this.seq == null) ? 0 : this.seq.hashCode());
@@ -230,7 +230,7 @@ public class ProductCustomField implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(productId);
-        sb.append(", ").append(sectionCode);
+        sb.append(", ").append(sectionType);
         sb.append(", ").append(name);
         sb.append(", ").append(content);
         sb.append(", ").append(seq);
