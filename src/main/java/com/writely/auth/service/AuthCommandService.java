@@ -1,11 +1,10 @@
 package com.writely.auth.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.writely.auth.domain.*;
 import com.writely.auth.domain.enums.AuthException;
 import com.writely.auth.helper.JwtHelper;
 import com.writely.auth.helper.MailHelper;
-import com.writely.auth.repository.ChpwTokenRedisRepository;
+import com.writely.auth.repository.ChangePasswordTokenRedisRepository;
 import com.writely.auth.repository.JoinTokenRedisRepository;
 import com.writely.auth.repository.RefreshTokenRedisRepository;
 import com.writely.auth.request.*;
@@ -13,7 +12,6 @@ import com.writely.auth.response.AuthTokenResponse;
 import com.writely.common.enums.code.ResultCodeInfo;
 import com.writely.common.exception.BaseException;
 import com.writely.common.util.CryptoUtil;
-import com.writely.common.util.LogUtil;
 import com.writely.member.domain.Member;
 import com.writely.member.domain.MemberPassword;
 import com.writely.member.repository.MemberPasswordJpaRepository;
@@ -36,7 +34,7 @@ public class AuthCommandService {
     private final MemberPasswordJpaRepository memberPasswordJpaRepository;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final JoinTokenRedisRepository joinTokenRedisRepository;
-    private final ChpwTokenRedisRepository chpwTokenRedisRepository;
+    private final ChangePasswordTokenRedisRepository changePasswordTokenRedisRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
     private final CryptoUtil cryptoUtil;
@@ -136,28 +134,28 @@ public class AuthCommandService {
     /**
      * 비밀번호 변경
      */
-    public void changePassword(ChpwRequest request) {
+    public void changePassword(ChangePasswordRequest request) {
         Member member = memberJpaRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BaseException(AuthException.CHPW_EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(AuthException.CHANGE_PASSWORD_EMAIL_NOT_FOUND));
 
         // 비밀번호 변경 토큰 생성 & 저장
         JwtPayload payload = JwtPayload.builder()
                 .memberId(member.getId())
                 .build();
-        ChpwToken chpwToken = new ChpwToken(jwtHelper.generateChpwToken(payload));
-        chpwTokenRedisRepository.save(chpwToken);
+        ChangePasswordToken changePasswordToken = new ChangePasswordToken(jwtHelper.generateChangePasswordToken(payload));
+        changePasswordTokenRedisRepository.save(changePasswordToken);
 
         // 이메일 전송
         try {
             Context emailCtx = new Context();
-            emailCtx.setVariable("chpwToken", chpwToken.getTokenString());
+            emailCtx.setVariable("changePasswordToken", changePasswordToken.getTokenString());
             mailHelper.send(
-                    MailHelper.MailType.CHPW,
+                    MailHelper.MailType.CHANGE_PASSWORD,
                     member.getEmail(),
                     emailCtx
             );
         } catch (MessagingException e) {
-            throw new BaseException(AuthException.CHPW_EMAIL_NOT_FOUND);
+            throw new BaseException(AuthException.CHANGE_PASSWORD_EMAIL_NOT_FOUND);
         }
 
     }
@@ -165,25 +163,32 @@ public class AuthCommandService {
     /**
      * 비밀번호 변경 완료
      */
-    public void completeChangePassword(ChpwCompletionRequest request) {
+    public void completeChangePassword(ChangePasswordCompletionRequest request) {
         // 토큰이 비유효한 경우
-        if (!jwtHelper.isTokenValid(request.getChpwToken())) {
-            throw new BaseException(AuthException.CHPW_TOKEN_NOT_VALID);
+        if (!jwtHelper.isTokenValid(request.getChangePasswordToken())) {
+            throw new BaseException(AuthException.CHANGE_PASSWORD_TOKEN_NOT_VALID);
         }
 
         // 토큰 레디스 조회
-        ChpwToken chpwToken = chpwTokenRedisRepository.findById(request.getChpwToken())
-                .orElseThrow(() -> new BaseException(AuthException.CHPW_TOKEN_NOT_VALID));
-        JwtPayload payload = jwtHelper.getPayload(chpwToken.getTokenString());
+        ChangePasswordToken changePasswordToken = changePasswordTokenRedisRepository.findById(request.getChangePasswordToken())
+                .orElseThrow(() -> new BaseException(AuthException.CHANGE_PASSWORD_TOKEN_NOT_VALID));
+        JwtPayload payload = jwtHelper.getPayload(changePasswordToken.getTokenString());
 
-        // 비밀번호 변경
+        // 비밀번호 조회
         MemberPassword memberPassword = memberPasswordJpaRepository.findById(payload.getMemberId())
                 .orElseThrow(() -> new BaseException(ResultCodeInfo.FAILURE));
         String passwordHash = cryptoUtil.hash(request.getPassword());
+
+        // 이전 비밀번호와 동일한 경우
+        if (passwordHash.equals(memberPassword.getPassword())) {
+            throw new BaseException(AuthException.CHANGE_PASSWORD_USED_PASSWORD_BEFORE);
+        }
+
+        // 비밀번호 변경
         memberPassword.setPassword(passwordHash);
 
         // 토큰 무효화
-        this.invalidateToken(chpwToken);
+        this.invalidateToken(changePasswordToken);
     }
 
     /**
@@ -210,8 +215,8 @@ public class AuthCommandService {
         else if (token instanceof JoinToken joinToken) {
             joinTokenRedisRepository.delete(joinToken);
         }
-        else if (token instanceof ChpwToken chpwToken) {
-            chpwTokenRedisRepository.delete(chpwToken);
+        else if (token instanceof ChangePasswordToken changePasswordToken) {
+            changePasswordTokenRedisRepository.delete(changePasswordToken);
         }
     }
 }
