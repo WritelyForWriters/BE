@@ -21,7 +21,7 @@ public class JwtHelper {
     private final Long accessTokenExpirationPeriod;
     private final Long refreshTokenExpirationPeriod;
     private final Long joinTokenExpirationPeriod;
-    private final Long chpwTokenExpirationPeriod;
+    private final Long changePasswordTokenExpirationPeriod;
     private final CryptoUtil cryptoUtil;
 
     public JwtHelper (
@@ -29,14 +29,14 @@ public class JwtHelper {
             @Value("${jwt.access-token-expiration-period}") Long accessTokenExpirationPeriod,
             @Value("${jwt.refresh-token-expiration-period}") Long refreshTokenExpirationPeriod,
             @Value("${jwt.join-token-expiration-period}") Long joinTokenExpirationPeriod,
-            @Value("${jwt.chpw-token-expiration-period}") Long chpwTokenExpirationPeriod,
+            @Value("${jwt.change-password-token-expiration-period}") Long changePasswordTokenExpirationPeriod,
             @Autowired CryptoUtil cryptoUtil
     ) {
         this.algorithm = Algorithm.HMAC256(secret);
         this.accessTokenExpirationPeriod = accessTokenExpirationPeriod;
         this.refreshTokenExpirationPeriod = refreshTokenExpirationPeriod;
         this.joinTokenExpirationPeriod = joinTokenExpirationPeriod;
-        this.chpwTokenExpirationPeriod = chpwTokenExpirationPeriod;
+        this.changePasswordTokenExpirationPeriod = changePasswordTokenExpirationPeriod;
         this.cryptoUtil = cryptoUtil;
     }
 
@@ -54,9 +54,9 @@ public class JwtHelper {
         return generateJwt(this.joinTokenExpirationPeriod, payload);
     }
 
-    public String generateChpwToken(JwtPayload payload) {
+    public String generateChangePasswordToken(JwtPayload payload) {
 
-        return generateJwt(this.chpwTokenExpirationPeriod, payload);
+        return generateJwt(this.changePasswordTokenExpirationPeriod, payload);
     }
 
     public JwtPayload getPayload(String token) throws JWTVerificationException {

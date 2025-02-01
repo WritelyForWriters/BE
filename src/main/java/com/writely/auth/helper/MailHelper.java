@@ -32,7 +32,7 @@ public class MailHelper {
     @RequiredArgsConstructor
     public enum MailType {
         JOIN("[WritelyForWriters] 회원가입 안내입니다.", "mail/join"),
-        CHPW("[WritelyForWriters] 비밀번호 변경 안내입니다.", "mail/chpw");
+        CHANGE_PASSWORD("[WritelyForWriters] 비밀번호 변경 안내입니다.", "mail/change-password");
 
         private final String subject;
         private final String templatePath;
