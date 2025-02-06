@@ -22,7 +22,7 @@ public class AutoModifyController {
     private final AutoModifyService autoModifyService;
 
     @Operation(summary = "메세지 저장")
-    @PostMapping("/stream/messages")
+    @PostMapping("/messages")
     public UUID createMessage(@RequestBody AutoModifyRequest request) {
         return autoModifyService.createMessage(request);
     }

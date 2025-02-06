@@ -5,11 +5,11 @@ import com.writely.assistant.domain.automodify.AutoModifyMessageJpaRepository;
 import com.writely.assistant.domain.enums.AssistantException;
 import com.writely.assistant.domain.enums.MessageSenderRole;
 import com.writely.assistant.request.AutoModifyRequest;
-import com.writely.assistant.request.ChatRequest;
 import com.writely.common.exception.BaseException;
 import com.writely.product.domain.enums.ProductException;
 import com.writely.product.repository.ProductJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,6 +21,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AutoModifyService {
+
+    @Value("${service.assistant.url}")
+    private String assistantUrl;
 
     private final long TIMEOUT = 180_000L;
 
@@ -40,10 +43,13 @@ public class AutoModifyService {
         AutoModifyMessage message = getById(messageId);
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
-        ChatRequest chatRequest = new ChatRequest(message.getContent());
-        WebClient.create("http://localhost:8000/chat/stream")
-            .post()
-            .bodyValue(chatRequest)
+        WebClient.create(assistantUrl + "/v1/assistant/feedback/stream")
+            .get()
+            .uri(uriBuilder -> uriBuilder
+                .queryParam("tenant_id", "1")
+                .queryParam("query", message.getContent())
+                .queryParam("user_setting", "")
+                .build())
             .retrieve()
             .bodyToFlux(String.class)
             .subscribe(
