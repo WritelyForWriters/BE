@@ -2,7 +2,7 @@ package com.writely.product.controller;
 
 import com.writely.product.request.ProductMemoCreateRequest;
 import com.writely.product.request.ProductModifyRequest;
-import com.writely.product.request.ProductTemplateCreateRequest;
+import com.writely.product.request.ProductTemplateSaveRequest;
 import com.writely.product.response.ProductDetailResponse;
 import com.writely.product.response.ProductMemoResponse;
 import com.writely.product.response.ProductResponse;
@@ -44,7 +44,7 @@ public class ProductController {
     @PostMapping("/{productId}/templates")
     public void createTemplate(
         @PathVariable UUID productId,
-        @RequestBody ProductTemplateCreateRequest request) {
+        @RequestBody ProductTemplateSaveRequest request) {
         productCommandService.saveTemplate(productId, request);
     }
 

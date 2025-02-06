@@ -1,6 +1,7 @@
 package com.writely.product.domain;
 
 import com.writely.common.domain.BaseAuditTimeEntity;
+import com.writely.product.domain.enums.ProductSectionType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,8 +24,9 @@ public class ProductCustomField extends BaseAuditTimeEntity {
     @Column(name = "product_id", nullable = false)
     private UUID productId;
 
-    @Column(name = "section_code", nullable = false)
-    private String sectionCode;
+    @Convert(converter = ProductSectionType.TypeCodeConverter.class)
+    @Column(name = "section_type", nullable = false)
+    private ProductSectionType sectionType;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -36,16 +38,16 @@ public class ProductCustomField extends BaseAuditTimeEntity {
     private Short seq;
 
     @Builder
-    public ProductCustomField(UUID productId, String sectionCode, String name, String content, Short seq) {
+    public ProductCustomField(UUID productId, ProductSectionType sectionType, String name, String content, Short seq) {
         this.productId = productId;
-        this.sectionCode = sectionCode;
+        this.sectionType = sectionType;
         this.name = name;
         this.content = content;
         this.seq = seq;
     }
 
-    public void update(String sectionCode, String name, String content, Short seq) {
-        this.sectionCode = sectionCode;
+    public void update(ProductSectionType sectionType, String name, String content, Short seq) {
+        this.sectionType = sectionType;
         this.name = name;
         this.content = content;
         this.seq = seq;

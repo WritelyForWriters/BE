@@ -3,21 +3,19 @@ package com.writely.member.response;
 
 import com.writely.member.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class MyProfileResponse {
-    @Schema(title = "이메일")
+    @Schema(title = "이메일", requiredMode = Schema.RequiredMode.REQUIRED)
     private final String email;
 
-    @Schema(title = "닉네임")
+    @Schema(title = "닉네임", requiredMode = Schema.RequiredMode.REQUIRED)
     private final String nickname;
 
-    @Schema(title = "프로필 이미지 경로")
+    @Schema(title = "프로필 이미지 경로", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private final String profileImage;
 
     public MyProfileResponse(Member member) {

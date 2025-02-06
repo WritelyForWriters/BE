@@ -52,17 +52,17 @@ public class ProductCustomFieldRecord extends UpdatableRecordImpl<ProductCustomF
     }
 
     /**
-     * Setter for <code>public.product_custom_field.section_code</code>. 섹션 코드
+     * Setter for <code>public.product_custom_field.section_type</code>. 섹션 타입
      */
-    public ProductCustomFieldRecord setSectionCode(String value) {
+    public ProductCustomFieldRecord setSectionType(String value) {
         set(2, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.section_code</code>. 섹션 코드
+     * Getter for <code>public.product_custom_field.section_type</code>. 섹션 타입
      */
-    public String getSectionCode() {
+    public String getSectionType() {
         return (String) get(2);
     }
 
@@ -194,12 +194,12 @@ public class ProductCustomFieldRecord extends UpdatableRecordImpl<ProductCustomF
     /**
      * Create a detached, initialised ProductCustomFieldRecord
      */
-    public ProductCustomFieldRecord(UUID id, UUID productId, String sectionCode, String name, String content, Short seq, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
+    public ProductCustomFieldRecord(UUID id, UUID productId, String sectionType, String name, String content, Short seq, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
         super(ProductCustomField.PRODUCT_CUSTOM_FIELD);
 
         setId(id);
         setProductId(productId);
-        setSectionCode(sectionCode);
+        setSectionType(sectionType);
         setName(name);
         setContent(content);
         setSeq(seq);
@@ -219,7 +219,7 @@ public class ProductCustomFieldRecord extends UpdatableRecordImpl<ProductCustomF
         if (value != null) {
             setId(value.getId());
             setProductId(value.getProductId());
-            setSectionCode(value.getSectionCode());
+            setSectionType(value.getSectionType());
             setName(value.getName());
             setContent(value.getContent());
             setSeq(value.getSeq());

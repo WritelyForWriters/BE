@@ -1,6 +1,7 @@
 package com.writely.product.request;
 
 import com.writely.product.domain.*;
+import com.writely.product.domain.enums.ProductSectionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ProductTemplateCreateRequest {
+public class ProductTemplateSaveRequest {
 
     private List<Character> characters;
     private List<CustomField> customFields;
@@ -67,7 +68,7 @@ public class ProductTemplateCreateRequest {
         @Schema(nullable = true)
         private UUID id;
         @Schema(title = "섹션 코드")
-        private String sectionCode;
+        private ProductSectionType sectionType;
         @Schema(title = "필드 이름")
         private String name;
         @Schema(title = "필드 내용")
@@ -78,7 +79,7 @@ public class ProductTemplateCreateRequest {
         public ProductCustomField toEntity(UUID productId) {
             return ProductCustomField.builder()
                 .productId(productId)
-                .sectionCode(sectionCode)
+                .sectionType(sectionType)
                 .name(name)
                 .content(content)
                 .seq(seq)

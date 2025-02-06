@@ -5,8 +5,7 @@ create table member
 (
     id uuid default gen_random_uuid() constraint member_pk primary key,
     email          varchar(255) constraint email_uk unique not null,
-    realname       varchar(10)                 not null,
-    nickname       varchar(50)                 not null,
+    nickname       varchar(10)  constraint nickname_uk unique not null,
     profile_image  varchar(255),
     created_at     timestamp with time zone    not null,
     updated_at     timestamp with time zone    not null
@@ -14,7 +13,6 @@ create table member
 comment on table member is '회원';
 comment on column member.id is '회원 ID';
 comment on column member.email is '회원 이메일';
-comment on column member.realname is '회원 실명';
 comment on column member.nickname is '회원 닉네임';
 comment on column member.profile_image is '회원 프로필 이미지 경로';
 
@@ -104,7 +102,7 @@ create table product_custom_field
         constraint product_custom_field_pk
             primary key,
     product_id   uuid                           not null,
-    section_code varchar(20)                    not null,
+    section_type varchar(20)                    not null,
     name         varchar(30)                    not null,
     content      text                           not null,
     seq          smallint                       not null,
@@ -117,7 +115,7 @@ create table product_custom_field
 comment on table product_custom_field is '작품 커스텀 필드';
 comment on column product_custom_field.id is '커스텀 필드 ID';
 comment on column product_custom_field.product_id is '작품 ID';
-comment on column product_custom_field.section_code is '섹션 코드';
+comment on column product_custom_field.section_type is '섹션 타입';
 comment on column product_custom_field.name is '이름';
 comment on column product_custom_field.content is '내용';
 comment on column product_custom_field.seq is '순서';

@@ -10,44 +10,38 @@ import java.util.UUID;
 
 
 /**
- * 작품 커스텀 필드
+ * 자동 수정 메세지
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
-public class ProductCustomField implements Serializable {
+public class AutoModifyMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final UUID id;
     private final UUID productId;
-    private final String sectionType;
-    private final String name;
+    private final String role;
     private final String content;
-    private final Short seq;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
     private final UUID updatedBy;
 
-    public ProductCustomField(ProductCustomField value) {
+    public AutoModifyMessage(AutoModifyMessage value) {
         this.id = value.id;
         this.productId = value.productId;
-        this.sectionType = value.sectionType;
-        this.name = value.name;
+        this.role = value.role;
         this.content = value.content;
-        this.seq = value.seq;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
         this.updatedBy = value.updatedBy;
     }
 
-    public ProductCustomField(
+    public AutoModifyMessage(
         UUID id,
         UUID productId,
-        String sectionType,
-        String name,
+        String role,
         String content,
-        Short seq,
         LocalDateTime createdAt,
         UUID createdBy,
         LocalDateTime updatedAt,
@@ -55,10 +49,8 @@ public class ProductCustomField implements Serializable {
     ) {
         this.id = id;
         this.productId = productId;
-        this.sectionType = sectionType;
-        this.name = name;
+        this.role = role;
         this.content = content;
-        this.seq = seq;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
@@ -66,70 +58,56 @@ public class ProductCustomField implements Serializable {
     }
 
     /**
-     * Getter for <code>public.product_custom_field.id</code>. 커스텀 필드 ID
+     * Getter for <code>public.auto_modify_message.id</code>. 자동 수정 메세지 ID
      */
     public UUID getId() {
         return this.id;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.product_id</code>. 작품 ID
+     * Getter for <code>public.auto_modify_message.product_id</code>. 작품 ID
      */
     public UUID getProductId() {
         return this.productId;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.section_type</code>. 섹션 타입
+     * Getter for <code>public.auto_modify_message.role</code>. 메세지 송신자
      */
-    public String getSectionType() {
-        return this.sectionType;
+    public String getRole() {
+        return this.role;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.name</code>. 이름
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * Getter for <code>public.product_custom_field.content</code>. 내용
+     * Getter for <code>public.auto_modify_message.content</code>. 내용
      */
     public String getContent() {
         return this.content;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.seq</code>. 순서
-     */
-    public Short getSeq() {
-        return this.seq;
-    }
-
-    /**
-     * Getter for <code>public.product_custom_field.created_at</code>. 생성일시
+     * Getter for <code>public.auto_modify_message.created_at</code>. 생성일시
      */
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.created_by</code>. 생성자 ID
+     * Getter for <code>public.auto_modify_message.created_by</code>. 생성자 ID
      */
     public UUID getCreatedBy() {
         return this.createdBy;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.updated_at</code>. 수정일시
+     * Getter for <code>public.auto_modify_message.updated_at</code>. 수정일시
      */
     public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
     /**
-     * Getter for <code>public.product_custom_field.updated_by</code>. 수정자 ID
+     * Getter for <code>public.auto_modify_message.updated_by</code>. 수정자 ID
      */
     public UUID getUpdatedBy() {
         return this.updatedBy;
@@ -143,7 +121,7 @@ public class ProductCustomField implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final ProductCustomField other = (ProductCustomField) obj;
+        final AutoModifyMessage other = (AutoModifyMessage) obj;
         if (this.id == null) {
             if (other.id != null)
                 return false;
@@ -156,29 +134,17 @@ public class ProductCustomField implements Serializable {
         }
         else if (!this.productId.equals(other.productId))
             return false;
-        if (this.sectionType == null) {
-            if (other.sectionType != null)
+        if (this.role == null) {
+            if (other.role != null)
                 return false;
         }
-        else if (!this.sectionType.equals(other.sectionType))
-            return false;
-        if (this.name == null) {
-            if (other.name != null)
-                return false;
-        }
-        else if (!this.name.equals(other.name))
+        else if (!this.role.equals(other.role))
             return false;
         if (this.content == null) {
             if (other.content != null)
                 return false;
         }
         else if (!this.content.equals(other.content))
-            return false;
-        if (this.seq == null) {
-            if (other.seq != null)
-                return false;
-        }
-        else if (!this.seq.equals(other.seq))
             return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
@@ -213,10 +179,8 @@ public class ProductCustomField implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
-        result = prime * result + ((this.sectionType == null) ? 0 : this.sectionType.hashCode());
-        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result + ((this.role == null) ? 0 : this.role.hashCode());
         result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
-        result = prime * result + ((this.seq == null) ? 0 : this.seq.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
@@ -226,14 +190,12 @@ public class ProductCustomField implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ProductCustomField (");
+        StringBuilder sb = new StringBuilder("AutoModifyMessage (");
 
         sb.append(id);
         sb.append(", ").append(productId);
-        sb.append(", ").append(sectionType);
-        sb.append(", ").append(name);
+        sb.append(", ").append(role);
         sb.append(", ").append(content);
-        sb.append(", ").append(seq);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);

@@ -21,6 +21,7 @@ public class JwtHelper {
     private final Long accessTokenExpirationPeriod;
     private final Long refreshTokenExpirationPeriod;
     private final Long joinTokenExpirationPeriod;
+    private final Long changePasswordTokenExpirationPeriod;
     private final CryptoUtil cryptoUtil;
 
     public JwtHelper (
@@ -28,27 +29,34 @@ public class JwtHelper {
             @Value("${jwt.access-token-expiration-period}") Long accessTokenExpirationPeriod,
             @Value("${jwt.refresh-token-expiration-period}") Long refreshTokenExpirationPeriod,
             @Value("${jwt.join-token-expiration-period}") Long joinTokenExpirationPeriod,
+            @Value("${jwt.change-password-token-expiration-period}") Long changePasswordTokenExpirationPeriod,
             @Autowired CryptoUtil cryptoUtil
     ) {
         this.algorithm = Algorithm.HMAC256(secret);
         this.accessTokenExpirationPeriod = accessTokenExpirationPeriod;
         this.refreshTokenExpirationPeriod = refreshTokenExpirationPeriod;
         this.joinTokenExpirationPeriod = joinTokenExpirationPeriod;
+        this.changePasswordTokenExpirationPeriod = changePasswordTokenExpirationPeriod;
         this.cryptoUtil = cryptoUtil;
     }
 
-    public String generateAccessToken(JwtPayload payload) throws JsonProcessingException {
+    public String generateAccessToken(JwtPayload payload) {
         return generateJwt(this.accessTokenExpirationPeriod, payload);
     }
 
-    public String generateRefreshToken(JwtPayload payload) throws JsonProcessingException {
+    public String generateRefreshToken(JwtPayload payload) {
 
         return generateJwt(this.refreshTokenExpirationPeriod, payload);
     }
 
-    public String generateJoinToken(JwtPayload payload) throws JsonProcessingException {
+    public String generateJoinToken(JwtPayload payload) {
 
         return generateJwt(this.joinTokenExpirationPeriod, payload);
+    }
+
+    public String generateChangePasswordToken(JwtPayload payload) {
+
+        return generateJwt(this.changePasswordTokenExpirationPeriod, payload);
     }
 
     public JwtPayload getPayload(String token) throws JWTVerificationException {
@@ -75,7 +83,8 @@ public class JwtHelper {
         }
     }
 
-    private String generateJwt(Long expPeriod, JwtPayload payload) throws JsonProcessingException {
+    private String generateJwt(Long expPeriod, JwtPayload payload) {
+        try {
             String jsonPayload = new ObjectMapper().writeValueAsString(payload);
 
             return JWT.create()
@@ -83,5 +92,8 @@ public class JwtHelper {
                     .withExpiresAt(Instant.ofEpochSecond(Instant.now().getEpochSecond() + expPeriod))
                     .withIssuedAt(Instant.now())
                     .sign(algorithm);
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
     }
 }
