@@ -62,9 +62,9 @@ public class ProductCustomField extends TableImpl<ProductCustomFieldRecord> {
     public final TableField<ProductCustomFieldRecord, UUID> PRODUCT_ID = createField(DSL.name("product_id"), SQLDataType.UUID.nullable(false), this, "작품 ID");
 
     /**
-     * The column <code>public.product_custom_field.section_code</code>. 섹션 코드
+     * The column <code>public.product_custom_field.section_type</code>. 섹션 타입
      */
-    public final TableField<ProductCustomFieldRecord, String> SECTION_CODE = createField(DSL.name("section_code"), SQLDataType.VARCHAR(20).nullable(false), this, "섹션 코드");
+    public final TableField<ProductCustomFieldRecord, String> SECTION_TYPE = createField(DSL.name("section_type"), SQLDataType.VARCHAR(20).nullable(false), this, "섹션 타입");
 
     /**
      * The column <code>public.product_custom_field.name</code>. 이름
