@@ -48,15 +48,15 @@ public class AuthController {
     }
 
     @Operation(summary = "비밀번호 변경")
-    @PostMapping("/chpw")
-    public void changePassword(@Valid @RequestBody ChpwRequest request) {
+    @PostMapping("/change-password")
+    public void changePassword(@Valid @RequestBody ChangePasswordRequest request) {
 
         authCommandService.changePassword(request);
     }
 
     @Operation(summary = "비밀번호 변경 완료")
-    @PostMapping("/chpw/complete")
-    public void completeChangePassword(@Valid @RequestBody ChpwCompletionRequest request) {
+    @PostMapping("/change-password/complete")
+    public void completeChangePassword(@Valid @RequestBody ChangePasswordCompletionRequest request) {
 
         authCommandService.completeChangePassword(request);
     }
