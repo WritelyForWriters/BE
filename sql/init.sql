@@ -27,6 +27,36 @@ comment on table member_password is '회원_비밀번호';
 comment on column member_password.member_id is '회원 ID';
 comment on column member_password.password is '회원 비밀번호';
 
+-- terms
+create table terms
+(
+    id uuid constraint terms_pk primary key,
+    cd varchar(10) not null,
+    version int not null,
+    title varchar(50) not null,
+    content text not null,
+    created_at     timestamp with time zone    not null,
+    updated_at     timestamp with time zone    not null
+);
+comment on table terms is '약관';
+comment on column terms.id is '약관 ID';
+comment on column terms.cd is '약관 코드';
+comment on column terms.version is '약관 버전';
+comment on column terms.title is '약관 제목';
+comment on column terms.content is '약관 내용';
+
+create table terms_agree
+(
+    terms_id     uuid     not null,
+    member_id    uuid     not null,
+    created_at   timestamp with time zone    not null,
+    updated_at   timestamp with time zone    not null,
+    constraint terms_agree_pk primary key (terms_id, member_id)
+);
+comment on table terms_agree is '약관_동의';
+comment on column terms_agree.terms_id is '약관 ID';
+comment on column terms_agree.member_id is '회원 ID';
+
 -- product
 create table product
 (
