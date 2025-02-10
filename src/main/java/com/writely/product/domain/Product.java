@@ -4,14 +4,12 @@ import com.writely.common.domain.BaseAuditTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "product")
@@ -58,54 +56,5 @@ public class Product extends BaseAuditTimeEntity {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public void addCharacters(List<ProductCharacter> addCharacters) {
-        if (addCharacters == null || addCharacters.isEmpty()) {
-            return;
-        }
-        this.characters.addAll(addCharacters);
-    }
-
-    public void addCustomFields(List<ProductCustomField> addCustomFields) {
-        if (addCustomFields == null || addCustomFields.isEmpty()) {
-            return;
-        }
-        this.customFields.addAll(addCustomFields);
-    }
-
-    public void addIdeaNote(ProductIdeaNote addIdeaNote) {
-        if (addIdeaNote == null) {
-            return;
-        }
-        this.ideaNote = addIdeaNote;
-    }
-
-    public void addMemo(ProductMemo addMemo) {
-        if (addMemo == null) {
-            return;
-        }
-        this.memos.add(addMemo);
-    }
-
-    public void addPlot(ProductPlot addPlot) {
-        if (addPlot == null) {
-            return;
-        }
-        this.plot = addPlot;
-    }
-
-    public void addSynopsis(ProductSynopsis addSynopsis) {
-        if (addSynopsis == null) {
-            return;
-        }
-        this.synopsis = addSynopsis;
-    }
-
-    public void addWorldview(ProductWorldview addWorldview) {
-        if (addWorldview == null) {
-            return;
-        }
-        this.worldview = addWorldview;
     }
 }
