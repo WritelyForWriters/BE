@@ -47,11 +47,11 @@ comment on column terms.content is '약관 내용';
 
 create table terms_agree
 (
-    terms_id     uuid     not null,
+    terms_cd     varchar(10)     not null,
     member_id    uuid     not null,
     created_at   timestamp with time zone    not null,
     updated_at   timestamp with time zone    not null,
-    constraint terms_agree_pk primary key (terms_id, member_id)
+    constraint terms_agree_pk primary key (terms_cd, member_id)
 );
 comment on table terms_agree is '약관_동의';
 comment on column terms_agree.terms_id is '약관 ID';

@@ -1,10 +1,8 @@
 package com.writely.terms.domain;
 
-import com.writely.common.domain.BaseAuditTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.writely.common.domain.BaseTimeEntity;
+import com.writely.terms.domain.enums.TermsCode;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,12 +14,13 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Table(name = "terms")
-public class Terms extends BaseAuditTimeEntity {
+public class Terms extends BaseTimeEntity {
 
     @Id
     @Column(updatable = false, nullable = false)
     private UUID id = UUID.randomUUID();
 
+    @Convert(converter = TermsCode.TypeCodeConverter.class)
     @Column(nullable = false)
     private String cd;
 

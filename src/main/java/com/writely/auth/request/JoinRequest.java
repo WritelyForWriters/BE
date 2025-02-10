@@ -2,8 +2,6 @@ package com.writely.auth.request;
 
 import com.writely.common.validation.IsEmail;
 import com.writely.common.validation.IsPassword;
-import com.writely.member.domain.Member;
-import com.writely.member.domain.MemberPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -27,5 +25,6 @@ public class JoinRequest {
     @Size(max = 10)
     @Schema(title = "닉네임", requiredMode = Schema.RequiredMode.REQUIRED, example = "노래하는뱁새")
     private String nickname;
+
 
 }

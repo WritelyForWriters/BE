@@ -1,6 +1,7 @@
 package com.writely.terms.domain;
 
-import com.writely.common.domain.BaseAuditTimeEntity;
+import com.writely.common.domain.BaseTimeEntity;
+import com.writely.terms.domain.enums.TermsCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,11 +17,11 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Table(name = "terms_agree")
-public class TermsAgree extends BaseAuditTimeEntity {
+public class TermsAgree extends BaseTimeEntity {
 
     @Id
     @Column(nullable = false)
-    private UUID termsId;
+    private TermsCode termsCd;
 
     @Id
     @Column(nullable = false)
