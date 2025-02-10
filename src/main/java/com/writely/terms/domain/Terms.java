@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import writely.tables.records.TermsRecord;
 
 import java.util.UUID;
 
@@ -32,5 +33,9 @@ public class Terms extends BaseTimeEntity {
 
     @Column(name = "is_required", nullable = false)
     private Boolean isRequired;
+
+    public Terms(TermsRecord terms) {
+        this.id = terms.getId();
+    }
 
 }

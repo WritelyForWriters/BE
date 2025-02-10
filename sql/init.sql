@@ -35,6 +35,7 @@ create table terms
     version int not null,
     title varchar(50) not null,
     content text not null,
+    is_required  boolean  default false      not null,
     created_at     timestamp with time zone    not null,
     updated_at     timestamp with time zone    not null
 );
@@ -44,6 +45,7 @@ comment on column terms.cd is '약관 코드';
 comment on column terms.version is '약관 버전';
 comment on column terms.title is '약관 제목';
 comment on column terms.content is '약관 내용';
+comment on column terms.is_required is '동의 필수 여부';
 
 create table terms_agree
 (

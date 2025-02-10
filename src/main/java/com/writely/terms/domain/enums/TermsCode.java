@@ -1,5 +1,7 @@
 package com.writely.terms.domain.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.writely.common.converter.AbstractEnumCodeConverter;
 import com.writely.common.enums.Codable;
 import jakarta.persistence.Converter;
@@ -14,11 +16,21 @@ public enum TermsCode implements Codable {
 
     private final String code;
 
+    @JsonCreator
+    public static TermsCode fromCode(final String code) {
+        return Codable.fromCode(TermsCode.class, code);
+    }
+
     @Converter
     public static class TypeCodeConverter extends AbstractEnumCodeConverter<TermsCode> {
         @Override
         public TermsCode convertToEntityAttribute(String dbData) {
             return this.toEntityAttribute(TermsCode.class, dbData);
         }
+    }
+
+    @JsonValue
+    public String getCode() {
+        return code;
     }
 }
