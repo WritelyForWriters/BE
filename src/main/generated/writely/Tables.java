@@ -20,6 +20,8 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
+import writely.tables.Terms;
+import writely.tables.TermsAgree;
 import writely.tables.records.PgpArmorHeadersRecord;
 
 
@@ -122,4 +124,14 @@ public class Tables {
      * 작품 세계관
      */
     public static final ProductWorldview PRODUCT_WORLDVIEW = ProductWorldview.PRODUCT_WORLDVIEW;
+
+    /**
+     * 약관
+     */
+    public static final Terms TERMS = Terms.TERMS;
+
+    /**
+     * 약관_동의
+     */
+    public static final TermsAgree TERMS_AGREE = TermsAgree.TERMS_AGREE;
 }

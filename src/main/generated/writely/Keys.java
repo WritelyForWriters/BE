@@ -20,6 +20,8 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
+import writely.tables.Terms;
+import writely.tables.TermsAgree;
 import writely.tables.records.AutoModifyMessageRecord;
 import writely.tables.records.MemberPasswordRecord;
 import writely.tables.records.MemberRecord;
@@ -31,6 +33,8 @@ import writely.tables.records.ProductPlotRecord;
 import writely.tables.records.ProductRecord;
 import writely.tables.records.ProductSynopsisRecord;
 import writely.tables.records.ProductWorldviewRecord;
+import writely.tables.records.TermsAgreeRecord;
+import writely.tables.records.TermsRecord;
 
 
 /**
@@ -57,4 +61,6 @@ public class Keys {
     public static final UniqueKey<ProductPlotRecord> PRODUCT_PLOT_PK = Internal.createUniqueKey(ProductPlot.PRODUCT_PLOT, DSL.name("product_plot_pk"), new TableField[] { ProductPlot.PRODUCT_PLOT.ID }, true);
     public static final UniqueKey<ProductSynopsisRecord> PRODUCT_SYNOPSIS_PK = Internal.createUniqueKey(ProductSynopsis.PRODUCT_SYNOPSIS, DSL.name("product_synopsis_pk"), new TableField[] { ProductSynopsis.PRODUCT_SYNOPSIS.ID }, true);
     public static final UniqueKey<ProductWorldviewRecord> PRODUCT_WORLDVIEW_PK = Internal.createUniqueKey(ProductWorldview.PRODUCT_WORLDVIEW, DSL.name("product_worldview_pk"), new TableField[] { ProductWorldview.PRODUCT_WORLDVIEW.ID }, true);
+    public static final UniqueKey<TermsRecord> TERMS_PK = Internal.createUniqueKey(Terms.TERMS, DSL.name("terms_pk"), new TableField[] { Terms.TERMS.ID }, true);
+    public static final UniqueKey<TermsAgreeRecord> TERMS_AGREE_PK = Internal.createUniqueKey(TermsAgree.TERMS_AGREE, DSL.name("terms_agree_pk"), new TableField[] { TermsAgree.TERMS_AGREE.TERMS_CD, TermsAgree.TERMS_AGREE.MEMBER_ID }, true);
 }

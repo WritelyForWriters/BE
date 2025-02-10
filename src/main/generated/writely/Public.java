@@ -26,6 +26,8 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
+import writely.tables.Terms;
+import writely.tables.TermsAgree;
 import writely.tables.records.PgpArmorHeadersRecord;
 
 
@@ -137,6 +139,16 @@ public class Public extends SchemaImpl {
     public final ProductWorldview PRODUCT_WORLDVIEW = ProductWorldview.PRODUCT_WORLDVIEW;
 
     /**
+     * 약관
+     */
+    public final Terms TERMS = Terms.TERMS;
+
+    /**
+     * 약관_동의
+     */
+    public final TermsAgree TERMS_AGREE = TermsAgree.TERMS_AGREE;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -163,7 +175,9 @@ public class Public extends SchemaImpl {
             ProductMemo.PRODUCT_MEMO,
             ProductPlot.PRODUCT_PLOT,
             ProductSynopsis.PRODUCT_SYNOPSIS,
-            ProductWorldview.PRODUCT_WORLDVIEW
+            ProductWorldview.PRODUCT_WORLDVIEW,
+            Terms.TERMS,
+            TermsAgree.TERMS_AGREE
         );
     }
 }

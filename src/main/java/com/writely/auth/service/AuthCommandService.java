@@ -68,6 +68,7 @@ public class AuthCommandService {
      * 회원 가입
      */
     public void join(JoinRequest request) {
+
         // 이미 있는 회원인지 검사
         if (memberJpaRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(AuthException.JOIN_ALREADY_EXIST_MEMBER);
