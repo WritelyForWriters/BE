@@ -6,8 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductMemoCreateRequest {
+public class ProductMemoSaveRequest {
 
     @Schema(title = "내용")
     private String content;
+    private String selectedText;
+    private Integer startIndex;
+    private Integer endIndex;
+    private Boolean isCompleted;
 }

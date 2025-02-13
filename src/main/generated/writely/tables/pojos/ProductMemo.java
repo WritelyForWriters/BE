@@ -20,6 +20,10 @@ public class ProductMemo implements Serializable {
     private final UUID id;
     private final UUID productId;
     private final String content;
+    private final String selectedText;
+    private final Integer startIndex;
+    private final Integer endIndex;
+    private final Boolean isCompleted;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
@@ -29,6 +33,10 @@ public class ProductMemo implements Serializable {
         this.id = value.id;
         this.productId = value.productId;
         this.content = value.content;
+        this.selectedText = value.selectedText;
+        this.startIndex = value.startIndex;
+        this.endIndex = value.endIndex;
+        this.isCompleted = value.isCompleted;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
@@ -39,6 +47,10 @@ public class ProductMemo implements Serializable {
         UUID id,
         UUID productId,
         String content,
+        String selectedText,
+        Integer startIndex,
+        Integer endIndex,
+        Boolean isCompleted,
         LocalDateTime createdAt,
         UUID createdBy,
         LocalDateTime updatedAt,
@@ -47,6 +59,10 @@ public class ProductMemo implements Serializable {
         this.id = id;
         this.productId = productId;
         this.content = content;
+        this.selectedText = selectedText;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+        this.isCompleted = isCompleted;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
@@ -72,6 +88,34 @@ public class ProductMemo implements Serializable {
      */
     public String getContent() {
         return this.content;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.selected_text</code>.
+     */
+    public String getSelectedText() {
+        return this.selectedText;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.start_index</code>.
+     */
+    public Integer getStartIndex() {
+        return this.startIndex;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.end_index</code>.
+     */
+    public Integer getEndIndex() {
+        return this.endIndex;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.is_completed</code>. 완료여부
+     */
+    public Boolean getIsCompleted() {
+        return this.isCompleted;
     }
 
     /**
@@ -129,6 +173,30 @@ public class ProductMemo implements Serializable {
         }
         else if (!this.content.equals(other.content))
             return false;
+        if (this.selectedText == null) {
+            if (other.selectedText != null)
+                return false;
+        }
+        else if (!this.selectedText.equals(other.selectedText))
+            return false;
+        if (this.startIndex == null) {
+            if (other.startIndex != null)
+                return false;
+        }
+        else if (!this.startIndex.equals(other.startIndex))
+            return false;
+        if (this.endIndex == null) {
+            if (other.endIndex != null)
+                return false;
+        }
+        else if (!this.endIndex.equals(other.endIndex))
+            return false;
+        if (this.isCompleted == null) {
+            if (other.isCompleted != null)
+                return false;
+        }
+        else if (!this.isCompleted.equals(other.isCompleted))
+            return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
                 return false;
@@ -163,6 +231,10 @@ public class ProductMemo implements Serializable {
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
         result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
+        result = prime * result + ((this.selectedText == null) ? 0 : this.selectedText.hashCode());
+        result = prime * result + ((this.startIndex == null) ? 0 : this.startIndex.hashCode());
+        result = prime * result + ((this.endIndex == null) ? 0 : this.endIndex.hashCode());
+        result = prime * result + ((this.isCompleted == null) ? 0 : this.isCompleted.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
@@ -177,6 +249,10 @@ public class ProductMemo implements Serializable {
         sb.append(id);
         sb.append(", ").append(productId);
         sb.append(", ").append(content);
+        sb.append(", ").append(selectedText);
+        sb.append(", ").append(startIndex);
+        sb.append(", ").append(endIndex);
+        sb.append(", ").append(isCompleted);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);
