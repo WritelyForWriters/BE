@@ -4,7 +4,7 @@ import com.writely.common.exception.BaseException;
 import com.writely.product.domain.*;
 import com.writely.product.domain.enums.ProductException;
 import com.writely.product.repository.*;
-import com.writely.product.request.ProductMemoCreateRequest;
+import com.writely.product.request.ProductMemoSaveRequest;
 import com.writely.product.request.ProductModifyRequest;
 import com.writely.product.request.ProductTemplateSaveRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +35,11 @@ public class ProductCommandService {
     }
 
     @Transactional
-    public void createMemo(UUID productId, ProductMemoCreateRequest request) {
+    public void createMemo(UUID productId, ProductMemoSaveRequest request) {
         verifyExistProduct(productId);
 
-        productMemoRepository.save(new ProductMemo(productId, request.getContent()));
+        productMemoRepository.save(new ProductMemo(productId, request.getContent(),
+            request.getSelectedText(), request.getStartIndex(), request.getEndIndex()));
     }
 
     @Transactional
@@ -62,12 +63,13 @@ public class ProductCommandService {
     }
 
     @Transactional
-    public void modifyMemo(UUID productId, UUID memoId, ProductMemoCreateRequest request) {
+    public void modifyMemo(UUID productId, UUID memoId, ProductMemoSaveRequest request) {
         verifyExistProduct(productId);
 
         ProductMemo memo = getMemoById(memoId);
 
-        memo.update(request.getContent());
+        memo.update(request.getContent(), request.getSelectedText(), request.getStartIndex()
+            , request.getEndIndex(), request.getIsCompleted());
     }
 
     @Transactional

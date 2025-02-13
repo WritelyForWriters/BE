@@ -67,6 +67,26 @@ public class ProductMemo extends TableImpl<ProductMemoRecord> {
     public final TableField<ProductMemoRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "내용");
 
     /**
+     * The column <code>public.product_memo.selected_text</code>.
+     */
+    public final TableField<ProductMemoRecord, String> SELECTED_TEXT = createField(DSL.name("selected_text"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.product_memo.start_index</code>.
+     */
+    public final TableField<ProductMemoRecord, Integer> START_INDEX = createField(DSL.name("start_index"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.product_memo.end_index</code>.
+     */
+    public final TableField<ProductMemoRecord, Integer> END_INDEX = createField(DSL.name("end_index"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.product_memo.is_completed</code>. 완료여부
+     */
+    public final TableField<ProductMemoRecord, Boolean> IS_COMPLETED = createField(DSL.name("is_completed"), SQLDataType.BOOLEAN.nullable(false), this, "완료여부");
+
+    /**
      * The column <code>public.product_memo.created_at</code>. 생성일시
      */
     public final TableField<ProductMemoRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "생성일시");

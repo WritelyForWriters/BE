@@ -25,12 +25,32 @@ public class ProductMemo extends BaseAuditTimeEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    public ProductMemo(UUID productId, String content) {
+    @Column(name = "selected_text", nullable = false)
+    private String selectedText;
+
+    @Column(name = "start_index", nullable = false)
+    private Integer startIndex;
+
+    @Column(name = "endIndex", nullable = false)
+    private Integer endIndex;
+
+    @Column(name = "is_completed", nullable = false)
+    private Boolean isCompleted = Boolean.FALSE;
+
+    public ProductMemo(UUID productId, String content, String selected_text,
+                       Integer startIndex, Integer endIndex) {
         this.productId = productId;
         this.content = content;
+        this.selectedText = selected_text;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
     }
 
-    public void update(String content) {
+    public void update(String content, String selectedText, Integer startIndex, Integer endIndex, Boolean isCompleted) {
         this.content = content;
+        this.selectedText = selectedText;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+        this.isCompleted = isCompleted;
     }
 }
