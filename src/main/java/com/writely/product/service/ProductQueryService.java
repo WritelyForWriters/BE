@@ -2,6 +2,7 @@ package com.writely.product.service;
 
 import com.writely.common.exception.BaseException;
 import com.writely.product.domain.Product;
+import com.writely.product.domain.ProductMemo;
 import com.writely.product.domain.enums.ProductException;
 import com.writely.product.repository.ProductDao;
 import com.writely.product.repository.ProductJpaRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +47,7 @@ public class ProductQueryService {
         Product product = getById(productId);
 
         return product.getMemos().stream()
+            .sorted(Comparator.comparing(ProductMemo::getUpdatedAt).reversed())
             .map(ProductMemoResponse::new)
             .toList();
     }

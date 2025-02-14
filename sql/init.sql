@@ -188,21 +188,26 @@ alter table product_ideanote
 -- product_memo
 create table product_memo
 (
-    id         uuid default gen_random_uuid() not null
+    id            uuid default gen_random_uuid() not null
         constraint product_memo_pk
             primary key,
-    product_id uuid                           not null,
-    content    text                           not null,
-    created_at timestamp                      not null,
-    created_by uuid                           not null,
-    updated_at timestamp                      not null,
-    updated_by uuid                           not null
+    product_id    uuid                           not null,
+    content       text                           not null,
+    selected_text text                           not null,
+    start_index   integer                        not null,
+    end_index     integer                        not null,
+    status        varchar(10)                    not null,
+    created_at    timestamp                      not null,
+    created_by    uuid                           not null,
+    updated_at    timestamp                      not null,
+    updated_by    uuid                           not null
 );
 
 comment on table product_memo is '작품 메모';
 comment on column product_memo.id is '메모 ID';
 comment on column product_memo.product_id is '작품 ID';
 comment on column product_memo.content is '내용';
+comment on column product_memo.status is '상태';
 comment on column product_memo.created_at is '생성일시';
 comment on column product_memo.created_by is '생성자 ID';
 comment on column product_memo.updated_at is '수정일시';

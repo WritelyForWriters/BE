@@ -1,6 +1,6 @@
 package com.writely.product.controller;
 
-import com.writely.product.request.ProductMemoCreateRequest;
+import com.writely.product.request.ProductMemoSaveRequest;
 import com.writely.product.request.ProductModifyRequest;
 import com.writely.product.request.ProductTemplateSaveRequest;
 import com.writely.product.response.ProductDetailResponse;
@@ -52,7 +52,7 @@ public class ProductController {
     @PostMapping("/{productId}/memos")
     public void createMemo(
         @PathVariable UUID productId,
-        @RequestBody ProductMemoCreateRequest request) {
+        @RequestBody ProductMemoSaveRequest request) {
         productCommandService.createMemo(productId, request);
     }
 
@@ -85,7 +85,7 @@ public class ProductController {
     public void modifyMemo(
         @PathVariable UUID productId,
         @PathVariable UUID memoId,
-        @RequestBody ProductMemoCreateRequest request) {
+        @RequestBody ProductMemoSaveRequest request) {
         productCommandService.modifyMemo(productId, memoId, request);
     }
 

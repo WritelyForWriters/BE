@@ -67,10 +67,70 @@ public class ProductMemoRecord extends UpdatableRecordImpl<ProductMemoRecord> {
     }
 
     /**
+     * Setter for <code>public.product_memo.selected_text</code>.
+     */
+    public ProductMemoRecord setSelectedText(String value) {
+        set(3, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.selected_text</code>.
+     */
+    public String getSelectedText() {
+        return (String) get(3);
+    }
+
+    /**
+     * Setter for <code>public.product_memo.start_index</code>.
+     */
+    public ProductMemoRecord setStartIndex(Integer value) {
+        set(4, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.start_index</code>.
+     */
+    public Integer getStartIndex() {
+        return (Integer) get(4);
+    }
+
+    /**
+     * Setter for <code>public.product_memo.end_index</code>.
+     */
+    public ProductMemoRecord setEndIndex(Integer value) {
+        set(5, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.end_index</code>.
+     */
+    public Integer getEndIndex() {
+        return (Integer) get(5);
+    }
+
+    /**
+     * Setter for <code>public.product_memo.is_completed</code>. 완료여부
+     */
+    public ProductMemoRecord setIsCompleted(Boolean value) {
+        set(6, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.is_completed</code>. 완료여부
+     */
+    public Boolean getIsCompleted() {
+        return (Boolean) get(6);
+    }
+
+    /**
      * Setter for <code>public.product_memo.created_at</code>. 생성일시
      */
     public ProductMemoRecord setCreatedAt(LocalDateTime value) {
-        set(3, value);
+        set(7, value);
         return this;
     }
 
@@ -78,14 +138,14 @@ public class ProductMemoRecord extends UpdatableRecordImpl<ProductMemoRecord> {
      * Getter for <code>public.product_memo.created_at</code>. 생성일시
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(3);
+        return (LocalDateTime) get(7);
     }
 
     /**
      * Setter for <code>public.product_memo.created_by</code>. 생성자 ID
      */
     public ProductMemoRecord setCreatedBy(UUID value) {
-        set(4, value);
+        set(8, value);
         return this;
     }
 
@@ -93,14 +153,14 @@ public class ProductMemoRecord extends UpdatableRecordImpl<ProductMemoRecord> {
      * Getter for <code>public.product_memo.created_by</code>. 생성자 ID
      */
     public UUID getCreatedBy() {
-        return (UUID) get(4);
+        return (UUID) get(8);
     }
 
     /**
      * Setter for <code>public.product_memo.updated_at</code>. 수정일시
      */
     public ProductMemoRecord setUpdatedAt(LocalDateTime value) {
-        set(5, value);
+        set(9, value);
         return this;
     }
 
@@ -108,14 +168,14 @@ public class ProductMemoRecord extends UpdatableRecordImpl<ProductMemoRecord> {
      * Getter for <code>public.product_memo.updated_at</code>. 수정일시
      */
     public LocalDateTime getUpdatedAt() {
-        return (LocalDateTime) get(5);
+        return (LocalDateTime) get(9);
     }
 
     /**
      * Setter for <code>public.product_memo.updated_by</code>. 수정일시
      */
     public ProductMemoRecord setUpdatedBy(UUID value) {
-        set(6, value);
+        set(10, value);
         return this;
     }
 
@@ -123,7 +183,7 @@ public class ProductMemoRecord extends UpdatableRecordImpl<ProductMemoRecord> {
      * Getter for <code>public.product_memo.updated_by</code>. 수정일시
      */
     public UUID getUpdatedBy() {
-        return (UUID) get(6);
+        return (UUID) get(10);
     }
 
     // -------------------------------------------------------------------------
@@ -149,12 +209,16 @@ public class ProductMemoRecord extends UpdatableRecordImpl<ProductMemoRecord> {
     /**
      * Create a detached, initialised ProductMemoRecord
      */
-    public ProductMemoRecord(UUID id, UUID productId, String content, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
+    public ProductMemoRecord(UUID id, UUID productId, String content, String selectedText, Integer startIndex, Integer endIndex, Boolean isCompleted, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
         super(ProductMemo.PRODUCT_MEMO);
 
         setId(id);
         setProductId(productId);
         setContent(content);
+        setSelectedText(selectedText);
+        setStartIndex(startIndex);
+        setEndIndex(endIndex);
+        setIsCompleted(isCompleted);
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
         setUpdatedAt(updatedAt);
@@ -172,6 +236,10 @@ public class ProductMemoRecord extends UpdatableRecordImpl<ProductMemoRecord> {
             setId(value.getId());
             setProductId(value.getProductId());
             setContent(value.getContent());
+            setSelectedText(value.getSelectedText());
+            setStartIndex(value.getStartIndex());
+            setEndIndex(value.getEndIndex());
+            setIsCompleted(value.getIsCompleted());
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
             setUpdatedAt(value.getUpdatedAt());
