@@ -2,6 +2,8 @@ package com.writely.auth.helper;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,12 +19,15 @@ public class MailHelper {
     private final SpringTemplateEngine templateEngine;
 
     public void send (
-            MailType mailType, String mailTo, Context variables
+            MailType mailType, String mailTo, MailData data
     ) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         mimeMessageHelper.setTo(mailTo);
         mimeMessageHelper.setSubject(mailType.getSubject());
+
+        Context variables = new Context();
+        variables.setVariable("data", data);
         mimeMessageHelper.setText(templateEngine.process(mailType.getTemplatePath(), variables), true);
 
         javaMailSender.send(mimeMessage);
@@ -36,5 +41,13 @@ public class MailHelper {
 
         private final String subject;
         private final String templatePath;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class MailData {
+        private String token;
+        private String nickname;
     }
 }

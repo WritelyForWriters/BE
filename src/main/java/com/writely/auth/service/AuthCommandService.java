@@ -94,13 +94,14 @@ public class AuthCommandService {
 
         try {
             // 이메일 전송
-            Context emailCtx = new Context();
-            emailCtx.setVariable("joinToken", joinToken.getTokenString());
             mailHelper.send(
                     MailHelper.MailType.JOIN,
                     request.getEmail(),
-                    emailCtx
-            ); // todo: 메일 디자인
+                    MailHelper.MailData.builder()
+                            .nickname(request.getNickname())
+                            .token(joinToken.getTokenString())
+                            .build()
+            );
         } catch (MessagingException e) {
             throw new BaseException(AuthException.MAIL_SEND_FAILED);
         }
@@ -148,12 +149,13 @@ public class AuthCommandService {
 
         // 이메일 전송
         try {
-            Context emailCtx = new Context();
-            emailCtx.setVariable("changePasswordToken", changePasswordToken.getTokenString());
             mailHelper.send(
                     MailHelper.MailType.CHANGE_PASSWORD,
                     member.getEmail(),
-                    emailCtx
+                    MailHelper.MailData.builder()
+                            .nickname(member.getNickname())
+                            .token(changePasswordToken.getTokenString())
+                            .build()
             );
         } catch (MessagingException e) {
             throw new BaseException(AuthException.CHANGE_PASSWORD_EMAIL_NOT_FOUND);
