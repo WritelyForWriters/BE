@@ -21,7 +21,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
 import java.util.UUID;
 
@@ -43,10 +42,15 @@ public class AuthCommandService {
      * 토큰 재발급
      */
     public AuthTokenResponse reissueToken(ReissueRequest request) {
-        // 토큰이 비유효하면
+        // 리프래시 토큰이 비유효하면
         if (!jwtHelper.isTokenValid(request.getRefreshToken())) {
             throw new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID);
         }
+
+        // 레디스 검사
+        RefreshToken oldRefreshToken = refreshTokenRedisRepository.findById(request.getRefreshToken())
+                .orElseThrow(() -> new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID));
+        this.invalidateToken(oldRefreshToken);
 
         JwtPayload payload = jwtHelper.getPayload(request.getRefreshToken());
         return generateAuthTokens(payload.getMemberId());
@@ -65,10 +69,17 @@ public class AuthCommandService {
     }
 
     /**
+     * 로그아웃
+     */
+    public void logout(UUID memberId) {
+        refreshTokenRedisRepository.findByMemberId(memberId)
+                .ifPresent(this::invalidateToken);
+    }
+
+    /**
      * 회원 가입
      */
     public void join(JoinRequest request) {
-
         // 이미 있는 회원인지 검사
         if (memberJpaRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(AuthException.JOIN_ALREADY_EXIST_MEMBER);
@@ -203,7 +214,7 @@ public class AuthCommandService {
                 .build();
         String accessToken = jwtHelper.generateAccessToken(jwtPayload);
         String refreshToken = jwtHelper.generateRefreshToken(jwtPayload);
-        refreshTokenRedisRepository.save(new RefreshToken(refreshToken));
+        refreshTokenRedisRepository.save(new RefreshToken(refreshToken, memberId));;
 
         return new AuthTokenResponse(accessToken, refreshToken);
     }
