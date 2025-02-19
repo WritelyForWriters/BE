@@ -1,7 +1,6 @@
 package com.writely.terms.domain;
 
 import com.writely.terms.domain.enums.TermsCode;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

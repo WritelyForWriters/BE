@@ -16,6 +16,7 @@ import com.writely.member.domain.Member;
 import com.writely.member.domain.MemberPassword;
 import com.writely.member.repository.MemberPasswordJpaRepository;
 import com.writely.member.repository.MemberJpaRepository;
+import com.writely.terms.service.TermsQueryService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 public class AuthCommandService {
+    private final TermsQueryService termsQueryService;
     private final MemberJpaRepository memberJpaRepository;
     private final MemberPasswordJpaRepository memberPasswordJpaRepository;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
