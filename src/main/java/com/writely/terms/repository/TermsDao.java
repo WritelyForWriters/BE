@@ -1,37 +1,36 @@
 package com.writely.terms.repository;
 
+import com.writely.terms.domain.enums.TermsCode;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-import writely.tables.Terms;
-import static org.jooq.impl.DSL.*;
-import org.jooq.*;
-import org.jooq.impl.*;
 import writely.tables.records.TermsRecord;
 
 import java.util.List;
+import java.util.Optional;
+
+import static writely.tables.Terms.TERMS;
 
 @Repository
 @RequiredArgsConstructor
 public class TermsDao {
     private final DSLContext dsl;
-    private final Terms TERMS = writely.tables.Terms.TERMS;
 
-    public List<com.writely.terms.domain.Terms> selectLatestTermsList() {
-        Table<?> latestTerms = table(
-                select(TERMS.CD, max(TERMS.VERSION).as("max_version"))
+    public Optional<TermsRecord> selectLatestTermsByTermsCd(TermsCode termsCode) {
+        return Optional.ofNullable(
+                dsl.select()
                         .from(TERMS)
-                        .groupBy(TERMS.CD)
-        ).as("latest_terms");
-
-        return dsl.select() // 전체 필드 조회
-                .from(TERMS)
-                .join(latestTerms)
-                    .on(TERMS.CD.eq(latestTerms.field(TERMS.CD)))
-                    .and(TERMS.VERSION.eq(latestTerms.field("max_version", Integer.class)))
-                .fetchInto(TermsRecord.class)
-                .stream()
-                .map(com.writely.terms.domain.Terms::new)
-                .toList();
+                        .where(TERMS.CD.eq(termsCode.getCode()))
+                        .orderBy(TERMS.VERSION.desc())
+                        .fetchAnyInto(TermsRecord.class)
+        );
     }
+
+    public List<TermsRecord> selectAllLatestTermsList() {
+        return dsl.selectDistinct(TERMS.CD)
+                .from(TERMS)
+                .orderBy(TERMS.CD.asc(), TERMS.VERSION.desc())
+                .fetchInto(TermsRecord.class);
+    }
+
 }

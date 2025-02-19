@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class TermsRequest {
+public class TermsAgreeRequest {
     @NotNull
     private TermsCode termsCd;
 
