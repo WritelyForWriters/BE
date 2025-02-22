@@ -33,4 +33,9 @@ public class TermsDao {
                 .fetchInto(TermsRecord.class);
     }
 
+    public boolean isContainingRequiredTerms(List<TermsCode> termsCodeList) {
+
+        // todo
+        return true;
+    }
 }
