@@ -16,6 +16,7 @@ import com.writely.member.domain.Member;
 import com.writely.member.domain.MemberPassword;
 import com.writely.member.repository.MemberPasswordJpaRepository;
 import com.writely.member.repository.MemberJpaRepository;
+import com.writely.terms.request.TermsAgreeRequest;
 import com.writely.terms.service.TermsQueryService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -82,6 +83,13 @@ public class AuthCommandService {
      * 회원 가입
      */
     public void join(JoinRequest request) {
+        // 필수 약관이 모두 포함되어있는지 검사
+        if (!termsQueryService.isContainingRequiredTerms(
+                request.getTermsList().stream().map(TermsAgreeRequest::getTermsCd).toList())
+        ) {
+            throw new BaseException(AuthException.TERMS_AGREE_REQUIRED);
+        }
+
         // 이미 있는 회원인지 검사
         if (memberJpaRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(AuthException.JOIN_ALREADY_EXIST_MEMBER);

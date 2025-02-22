@@ -1,6 +1,5 @@
 package com.writely.terms.service;
 
-import com.writely.common.enums.code.ResultCodeInfo;
 import com.writely.common.exception.BaseException;
 import com.writely.terms.domain.enums.TermsCode;
 import com.writely.terms.domain.enums.TermsException;
@@ -24,6 +23,11 @@ public class TermsQueryService {
                 .orElseThrow(() -> new BaseException(TermsException.TERMS_NOT_FOUND));
 
         return new TermsDetailResponse(terms);
+    }
+
+    public boolean isContainingRequiredTerms(List<TermsCode> termsCodeList) {
+
+        return termsDao.isContainingRequiredTerms(termsCodeList);
     }
 
     public List<TermsDetailResponse> getAllTermsList() {
