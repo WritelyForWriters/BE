@@ -27,7 +27,8 @@ public class TermsDao {
     }
 
     public List<TermsRecord> selectAllLatestTermsList() {
-        return dsl.selectDistinct(TERMS.CD)
+        return dsl.select()
+                .distinctOn(TERMS.CD)
                 .from(TERMS)
                 .orderBy(TERMS.CD.asc(), TERMS.VERSION.desc())
                 .fetchInto(TermsRecord.class);

@@ -5,6 +5,7 @@ import com.writely.terms.domain.enums.TermsCode;
 import com.writely.terms.domain.enums.TermsException;
 import com.writely.terms.repository.TermsDao;
 import com.writely.terms.response.TermsDetailResponse;
+import com.writely.terms.response.TermsSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +31,11 @@ public class TermsQueryService {
         return termsDao.isContainingRequiredTerms(termsCodeList);
     }
 
-    public List<TermsDetailResponse> getAllTermsList() {
+    public List<TermsSummaryResponse> getAllTermsList() {
 
         return termsDao.selectAllLatestTermsList()
                 .stream()
-                .map(TermsDetailResponse::new)
+                .map(TermsSummaryResponse::new)
                 .toList();
     }
 }
