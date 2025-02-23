@@ -31,7 +31,7 @@ public enum TermsCode implements Codable {
         }
     }
 
-    public static class CodeConverter implements org.springframework.core.convert.converter.Converter<String, TermsCode> {
+    public static class SpringConverter implements org.springframework.core.convert.converter.Converter<String, TermsCode> {
         @Override
         public TermsCode convert(String code) {
             return TermsCode.fromCode(code);

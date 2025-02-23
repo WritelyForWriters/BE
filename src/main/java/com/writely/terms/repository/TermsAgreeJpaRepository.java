@@ -1,8 +1,8 @@
 package com.writely.terms.repository;
 
-import com.writely.terms.domain.TermsAgree;
+import com.writely.terms.domain.TermsAgreement;
 import org.springframework.data.repository.CrudRepository;
 
-public interface TermsAgreeJpaRepository extends CrudRepository<TermsAgree, String> {
+public interface TermsAgreeJpaRepository extends CrudRepository<TermsAgreement, String> {
 
 }

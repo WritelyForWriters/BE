@@ -26,9 +26,9 @@ public class TermsQueryService {
         return new TermsDetailResponse(terms);
     }
 
-    public boolean isContainingRequiredTerms(List<TermsCode> termsCodeList) {
+    public boolean isContainingAllRequiredTerms(List<TermsCode> termsCodeList) {
 
-        return termsDao.isContainingRequiredTerms(termsCodeList);
+        return termsDao.isContainingAllRequiredTerms(termsCodeList);
     }
 
     public List<TermsSummaryResponse> getAllTermsList() {
