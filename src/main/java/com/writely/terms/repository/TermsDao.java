@@ -9,6 +9,7 @@ import writely.tables.records.TermsRecord;
 import java.util.List;
 import java.util.Optional;
 
+import static org.jooq.impl.DSL.count;
 import static writely.tables.Terms.TERMS;
 
 @Repository
@@ -27,15 +28,22 @@ public class TermsDao {
     }
 
     public List<TermsRecord> selectAllLatestTermsList() {
-        return dsl.selectDistinct(TERMS.CD)
+        return dsl.select()
+                .distinctOn(TERMS.CD)
                 .from(TERMS)
                 .orderBy(TERMS.CD.asc(), TERMS.VERSION.desc())
                 .fetchInto(TermsRecord.class);
     }
 
-    public boolean isContainingRequiredTerms(List<TermsCode> termsCodeList) {
+    public boolean isContainingAllRequiredTerms(List<TermsCode> termsCodeList) {
+        int notAgreedTermsCount = dsl.selectCount()
+                .from(TERMS)
+                .where(
+                        TERMS.IS_REQUIRED.eq(true)
+                ).and(
+                        TERMS.CD.notIn(termsCodeList.stream().map(TermsCode::getCode).toList())
+                ).fetchOne(count());
 
-        // todo
-        return true;
+        return notAgreedTermsCount == 0;
     }
 }

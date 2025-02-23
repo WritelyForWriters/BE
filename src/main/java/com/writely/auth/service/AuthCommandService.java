@@ -16,6 +16,9 @@ import com.writely.member.domain.Member;
 import com.writely.member.domain.MemberPassword;
 import com.writely.member.repository.MemberPasswordJpaRepository;
 import com.writely.member.repository.MemberJpaRepository;
+import com.writely.terms.domain.TermsAgreement;
+import com.writely.terms.domain.enums.TermsCode;
+import com.writely.terms.repository.TermsAgreeJpaRepository;
 import com.writely.terms.request.TermsAgreeRequest;
 import com.writely.terms.service.TermsQueryService;
 import jakarta.mail.MessagingException;
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,6 +41,7 @@ public class AuthCommandService {
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final JoinTokenRedisRepository joinTokenRedisRepository;
     private final ChangePasswordTokenRedisRepository changePasswordTokenRedisRepository;
+    private final TermsAgreeJpaRepository termsAgreeJpaRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
     private final CryptoUtil cryptoUtil;
@@ -84,9 +89,12 @@ public class AuthCommandService {
      */
     public void join(JoinRequest request) {
         // 필수 약관이 모두 포함되어있는지 검사
-        if (!termsQueryService.isContainingRequiredTerms(
-                request.getTermsList().stream().map(TermsAgreeRequest::getTermsCd).toList())
-        ) {
+        List<TermsCode> agreedTermsList = request.getTermsList()
+                .stream()
+                .filter(TermsAgreeRequest::getIsAgreed)
+                .map(TermsAgreeRequest::getTermsCd)
+                .toList();
+        if (!termsQueryService.isContainingAllRequiredTerms(agreedTermsList)) {
             throw new BaseException(AuthException.TERMS_AGREE_REQUIRED);
         }
 
@@ -105,12 +113,18 @@ public class AuthCommandService {
                 .memberId(member.getId())
                 .password(passwordHash)
                 .build();
+        List<TermsAgreement> termsAgreementList = agreedTermsList.stream()
+                .map(t -> TermsAgreement.builder()
+                        .termsCd(t)
+                        .memberId(member.getId())
+                        .build()
+                ).toList();
         String jwtString = jwtHelper.generateJoinToken(
                 JwtPayload.builder().memberId(member.getId()).build()
         );
 
         // joinToken redis 저장
-        JoinToken joinToken = new JoinToken(jwtString, member, memberPassword);
+        JoinToken joinToken = new JoinToken(jwtString, member, memberPassword, termsAgreementList);
         joinTokenRedisRepository.save(joinToken);
 
         try {
@@ -147,6 +161,7 @@ public class AuthCommandService {
         // 가입 완료 처리
         memberJpaRepository.save(joinToken.getMember());
         memberPasswordJpaRepository.save(joinToken.getMemberPassword());
+        joinToken.getTermsAgreementList().forEach(termsAgreeJpaRepository::save);
 
         // 토큰 무효화
         this.invalidateToken(joinToken);
