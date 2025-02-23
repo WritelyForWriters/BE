@@ -10,72 +10,72 @@ import java.util.UUID;
 import org.jooq.Record2;
 import org.jooq.impl.UpdatableRecordImpl;
 
-import writely.tables.TermsAgree;
+import writely.tables.TermsAgreement;
 
 
 /**
  * 약관_동의
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
-public class TermsAgreeRecord extends UpdatableRecordImpl<TermsAgreeRecord> {
+public class TermsAgreementRecord extends UpdatableRecordImpl<TermsAgreementRecord> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.terms_agree.terms_cd</code>. 약관 코드
+     * Setter for <code>public.terms_agreement.terms_cd</code>. 약관 코드
      */
-    public TermsAgreeRecord setTermsCd(String value) {
+    public TermsAgreementRecord setTermsCd(String value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.terms_agree.terms_cd</code>. 약관 코드
+     * Getter for <code>public.terms_agreement.terms_cd</code>. 약관 코드
      */
     public String getTermsCd() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>public.terms_agree.member_id</code>. 회원 ID
+     * Setter for <code>public.terms_agreement.member_id</code>. 회원 ID
      */
-    public TermsAgreeRecord setMemberId(UUID value) {
+    public TermsAgreementRecord setMemberId(UUID value) {
         set(1, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.terms_agree.member_id</code>. 회원 ID
+     * Getter for <code>public.terms_agreement.member_id</code>. 회원 ID
      */
     public UUID getMemberId() {
         return (UUID) get(1);
     }
 
     /**
-     * Setter for <code>public.terms_agree.created_at</code>.
+     * Setter for <code>public.terms_agreement.created_at</code>.
      */
-    public TermsAgreeRecord setCreatedAt(OffsetDateTime value) {
+    public TermsAgreementRecord setCreatedAt(OffsetDateTime value) {
         set(2, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.terms_agree.created_at</code>.
+     * Getter for <code>public.terms_agreement.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
         return (OffsetDateTime) get(2);
     }
 
     /**
-     * Setter for <code>public.terms_agree.updated_at</code>.
+     * Setter for <code>public.terms_agreement.updated_at</code>.
      */
-    public TermsAgreeRecord setUpdatedAt(OffsetDateTime value) {
+    public TermsAgreementRecord setUpdatedAt(OffsetDateTime value) {
         set(3, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.terms_agree.updated_at</code>.
+     * Getter for <code>public.terms_agreement.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
         return (OffsetDateTime) get(3);
@@ -95,17 +95,17 @@ public class TermsAgreeRecord extends UpdatableRecordImpl<TermsAgreeRecord> {
     // -------------------------------------------------------------------------
 
     /**
-     * Create a detached TermsAgreeRecord
+     * Create a detached TermsAgreementRecord
      */
-    public TermsAgreeRecord() {
-        super(TermsAgree.TERMS_AGREE);
+    public TermsAgreementRecord() {
+        super(TermsAgreement.TERMS_AGREEMENT);
     }
 
     /**
-     * Create a detached, initialised TermsAgreeRecord
+     * Create a detached, initialised TermsAgreementRecord
      */
-    public TermsAgreeRecord(String termsCd, UUID memberId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(TermsAgree.TERMS_AGREE);
+    public TermsAgreementRecord(String termsCd, UUID memberId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(TermsAgreement.TERMS_AGREEMENT);
 
         setTermsCd(termsCd);
         setMemberId(memberId);
@@ -115,10 +115,10 @@ public class TermsAgreeRecord extends UpdatableRecordImpl<TermsAgreeRecord> {
     }
 
     /**
-     * Create a detached, initialised TermsAgreeRecord
+     * Create a detached, initialised TermsAgreementRecord
      */
-    public TermsAgreeRecord(writely.tables.pojos.TermsAgree value) {
-        super(TermsAgree.TERMS_AGREE);
+    public TermsAgreementRecord(writely.tables.pojos.TermsAgreement value) {
+        super(TermsAgreement.TERMS_AGREEMENT);
 
         if (value != null) {
             setTermsCd(value.getTermsCd());

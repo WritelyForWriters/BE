@@ -13,7 +13,7 @@ import java.util.UUID;
  * 약관_동의
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
-public class TermsAgree implements Serializable {
+public class TermsAgreement implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,14 +22,14 @@ public class TermsAgree implements Serializable {
     private final OffsetDateTime createdAt;
     private final OffsetDateTime updatedAt;
 
-    public TermsAgree(TermsAgree value) {
+    public TermsAgreement(TermsAgreement value) {
         this.termsCd = value.termsCd;
         this.memberId = value.memberId;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
     }
 
-    public TermsAgree(
+    public TermsAgreement(
         String termsCd,
         UUID memberId,
         OffsetDateTime createdAt,
@@ -42,28 +42,28 @@ public class TermsAgree implements Serializable {
     }
 
     /**
-     * Getter for <code>public.terms_agree.terms_cd</code>. 약관 코드
+     * Getter for <code>public.terms_agreement.terms_cd</code>. 약관 코드
      */
     public String getTermsCd() {
         return this.termsCd;
     }
 
     /**
-     * Getter for <code>public.terms_agree.member_id</code>. 회원 ID
+     * Getter for <code>public.terms_agreement.member_id</code>. 회원 ID
      */
     public UUID getMemberId() {
         return this.memberId;
     }
 
     /**
-     * Getter for <code>public.terms_agree.created_at</code>.
+     * Getter for <code>public.terms_agreement.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
         return this.createdAt;
     }
 
     /**
-     * Getter for <code>public.terms_agree.updated_at</code>.
+     * Getter for <code>public.terms_agreement.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
         return this.updatedAt;
@@ -77,7 +77,7 @@ public class TermsAgree implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final TermsAgree other = (TermsAgree) obj;
+        final TermsAgreement other = (TermsAgreement) obj;
         if (this.termsCd == null) {
             if (other.termsCd != null)
                 return false;
@@ -118,7 +118,7 @@ public class TermsAgree implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("TermsAgree (");
+        StringBuilder sb = new StringBuilder("TermsAgreement (");
 
         sb.append(termsCd);
         sb.append(", ").append(memberId);

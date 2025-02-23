@@ -21,7 +21,7 @@ import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
 import writely.tables.Terms;
-import writely.tables.TermsAgree;
+import writely.tables.TermsAgreement;
 import writely.tables.records.PgpArmorHeadersRecord;
 
 
@@ -133,5 +133,5 @@ public class Tables {
     /**
      * 약관_동의
      */
-    public static final TermsAgree TERMS_AGREE = TermsAgree.TERMS_AGREE;
+    public static final TermsAgreement TERMS_AGREEMENT = TermsAgreement.TERMS_AGREEMENT;
 }

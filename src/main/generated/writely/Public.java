@@ -27,7 +27,7 @@ import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
 import writely.tables.Terms;
-import writely.tables.TermsAgree;
+import writely.tables.TermsAgreement;
 import writely.tables.records.PgpArmorHeadersRecord;
 
 
@@ -146,7 +146,7 @@ public class Public extends SchemaImpl {
     /**
      * 약관_동의
      */
-    public final TermsAgree TERMS_AGREE = TermsAgree.TERMS_AGREE;
+    public final TermsAgreement TERMS_AGREEMENT = TermsAgreement.TERMS_AGREEMENT;
 
     /**
      * No further instances allowed
@@ -177,7 +177,7 @@ public class Public extends SchemaImpl {
             ProductSynopsis.PRODUCT_SYNOPSIS,
             ProductWorldview.PRODUCT_WORLDVIEW,
             Terms.TERMS,
-            TermsAgree.TERMS_AGREE
+            TermsAgreement.TERMS_AGREEMENT
         );
     }
 }
