@@ -1,6 +1,6 @@
 package com.writely.assistant.controller;
 
-import com.writely.assistant.request.AutoModifyRequest;
+import com.writely.assistant.request.AutoModifyMessageRequest;
 import com.writely.assistant.service.AutoModifyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,20 +15,20 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auto-modify")
+@RequestMapping("/assistant")
 @Tag(name = "AI 어시스턴트 - 자동 수정")
-public class AutoModifyController {
+public class AssistantController {
 
     private final AutoModifyService autoModifyService;
 
-    @Operation(summary = "메세지 저장")
-    @PostMapping("/messages")
-    public UUID createMessage(@RequestBody AutoModifyRequest request) {
+    @Operation(summary = "자동 수정 메세지 저장")
+    @PostMapping("/auto-modify/messages")
+    public UUID createMessage(@RequestBody AutoModifyMessageRequest request) {
         return autoModifyService.createMessage(request);
     }
 
-    @Operation(summary = "메세지 전송 및 응답(SSE)")
-    @GetMapping("/stream/messages")
+    @Operation(summary = "자동 수정 스트리밍")
+    @GetMapping("/auto-modify/stream")
     public SseEmitter streamMessage(
         @RequestParam UUID productId,
         @RequestParam UUID messageId

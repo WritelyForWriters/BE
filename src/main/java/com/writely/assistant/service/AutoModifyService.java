@@ -1,21 +1,29 @@
 package com.writely.assistant.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.writely.assistant.domain.automodify.AutoModifyMessage;
 import com.writely.assistant.domain.automodify.AutoModifyMessageJpaRepository;
 import com.writely.assistant.domain.enums.AssistantException;
 import com.writely.assistant.domain.enums.MessageSenderRole;
-import com.writely.assistant.request.AutoModifyRequest;
+import com.writely.assistant.request.AutoModifyMessageRequest;
+import com.writely.assistant.request.UserSetting;
 import com.writely.common.exception.BaseException;
+import com.writely.common.util.LogUtil;
 import com.writely.product.domain.enums.ProductException;
 import com.writely.product.repository.ProductJpaRepository;
+import com.writely.product.service.ProductQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -29,9 +37,10 @@ public class AutoModifyService {
 
     private final AutoModifyMessageJpaRepository autoModifyMessageRepository;
     private final ProductJpaRepository productRepository;
+    private final ProductQueryService productQueryService;
 
     @Transactional
-    public UUID createMessage(AutoModifyRequest request) {
+    public UUID createMessage(AutoModifyMessageRequest request) {
         verifyExistProduct(request.getProductId());
 
         AutoModifyMessage autoModifyMemberMessage = new AutoModifyMessage(request.getProductId(), MessageSenderRole.MEMBER, request.getContent());
@@ -42,25 +51,47 @@ public class AutoModifyService {
         verifyExistProduct(productId);
         AutoModifyMessage message = getById(messageId);
 
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("tenant_id", "1");
+        requestMap.put("query", message.getContent());
+        requestMap.put("user_setting", new UserSetting(productQueryService.getById(productId)));
+
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(requestMap);
+            LogUtil.info(jsonString);
+        } catch (Exception e) {
+
+        }
+
+
+
         SseEmitter emitter = new SseEmitter(TIMEOUT);
-        WebClient.create(assistantUrl + "/v1/assistant/feedback/stream")
-            .get()
-            .uri(uriBuilder -> uriBuilder
-                .queryParam("tenant_id", "1")
-                .queryParam("query", message.getContent())
-                .queryParam("user_setting", "")
-                .build())
+        WebClient.create(assistantUrl + "/v1/assistant/auto-modify/stream")
+            .post()
+            .bodyValue(requestMap)
             .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class)
+                    .doOnNext(errorBody -> LogUtil.error("Error response: " + errorBody)) // 오류 응답 출력
+                    .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody))) // 예외로 변환
+            )
             .bodyToFlux(String.class)
             .subscribe(
                 data -> {
                     try {
                         emitter.send(SseEmitter.event().data(data));
                     } catch (IOException e) {
-                        emitter.completeWithError(e);
+                        emitter.completeWithError(new BaseException(AssistantException.SSE_SEND_ERROR));
                     }
                 },
-                error -> emitter.completeWithError(error),
+                error -> {
+                    LogUtil.error(error);
+                    BaseException exception = new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR);
+                    emitter.completeWithError(exception);
+                    throw exception;
+                },
                 emitter::complete
             );
 
