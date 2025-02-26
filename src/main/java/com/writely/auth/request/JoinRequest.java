@@ -2,7 +2,7 @@ package com.writely.auth.request;
 
 import com.writely.common.validation.IsEmail;
 import com.writely.common.validation.IsPassword;
-import com.writely.terms.request.TermsRequest;
+import com.writely.terms.request.TermsAgreeRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +31,7 @@ public class JoinRequest {
     private String nickname;
 
     @NotNull
-    @Schema(title = "약관 목록", requiredMode = Schema.RequiredMode.REQUIRED, example = "[{termsCd: \"1001\", isAgreed: true}, {termsCd: \"1002\", isAgreed: false}]")
-    private List<TermsRequest> termsList;
+    @Schema(title = "약관 동의 목록", requiredMode = Schema.RequiredMode.REQUIRED, example = "[{termsCd: \"1001\", isAgreed: true}, {termsCd: \"1002\", isAgreed: false}]")
+    private List<TermsAgreeRequest> termsList;
 
 }

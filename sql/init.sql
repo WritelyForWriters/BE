@@ -47,17 +47,17 @@ comment on column terms.title is '약관 제목';
 comment on column terms.content is '약관 내용';
 comment on column terms.is_required is '동의 필수 여부';
 
-create table terms_agree
+create table terms_agreement
 (
     terms_cd     varchar(10)     not null,
     member_id    uuid     not null,
     created_at   timestamp with time zone    not null,
     updated_at   timestamp with time zone    not null,
-    constraint terms_agree_pk primary key (terms_cd, member_id)
+    constraint terms_agreement_pk primary key (terms_cd, member_id)
 );
-comment on table terms_agree is '약관_동의';
-comment on column terms_agree.terms_id is '약관 ID';
-comment on column terms_agree.member_id is '회원 ID';
+comment on table terms_agreement is '약관_동의';
+comment on column terms_agreement.terms_cd is '약관 코드';
+comment on column terms_agreement.member_id is '회원 ID';
 
 -- product
 create table product

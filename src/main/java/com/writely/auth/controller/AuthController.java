@@ -5,7 +5,9 @@ import com.writely.auth.response.AuthTokenResponse;
 import com.writely.auth.response.CheckEmailResponse;
 import com.writely.auth.service.AuthCommandService;
 import com.writely.auth.service.AuthQueryService;
+import com.writely.common.domain.MemberSession;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,13 @@ public class AuthController {
     public AuthTokenResponse login(@Valid @RequestBody LoginRequest request) {
 
         return authCommandService.login(request);
+    }
+
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public void logout(@Parameter(hidden = true) MemberSession memberSession) {
+
+        authCommandService.logout(memberSession.getMemberId());
     }
 
     @Operation(summary = "회원가입")

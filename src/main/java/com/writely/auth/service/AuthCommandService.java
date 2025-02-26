@@ -16,13 +16,18 @@ import com.writely.member.domain.Member;
 import com.writely.member.domain.MemberPassword;
 import com.writely.member.repository.MemberPasswordJpaRepository;
 import com.writely.member.repository.MemberJpaRepository;
+import com.writely.terms.domain.TermsAgreement;
+import com.writely.terms.domain.enums.TermsCode;
+import com.writely.terms.repository.TermsAgreeJpaRepository;
+import com.writely.terms.request.TermsAgreeRequest;
+import com.writely.terms.service.TermsQueryService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,11 +35,13 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 public class AuthCommandService {
+    private final TermsQueryService termsQueryService;
     private final MemberJpaRepository memberJpaRepository;
     private final MemberPasswordJpaRepository memberPasswordJpaRepository;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final JoinTokenRedisRepository joinTokenRedisRepository;
     private final ChangePasswordTokenRedisRepository changePasswordTokenRedisRepository;
+    private final TermsAgreeJpaRepository termsAgreeJpaRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
     private final CryptoUtil cryptoUtil;
@@ -43,10 +50,15 @@ public class AuthCommandService {
      * 토큰 재발급
      */
     public AuthTokenResponse reissueToken(ReissueRequest request) {
-        // 토큰이 비유효하면
+        // 리프래시 토큰이 비유효하면
         if (!jwtHelper.isTokenValid(request.getRefreshToken())) {
             throw new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID);
         }
+
+        // 레디스 검사
+        RefreshToken oldRefreshToken = refreshTokenRedisRepository.findById(request.getRefreshToken())
+                .orElseThrow(() -> new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID));
+        this.invalidateToken(oldRefreshToken);
 
         JwtPayload payload = jwtHelper.getPayload(request.getRefreshToken());
         return generateAuthTokens(payload.getMemberId());
@@ -65,9 +77,26 @@ public class AuthCommandService {
     }
 
     /**
+     * 로그아웃
+     */
+    public void logout(UUID memberId) {
+        refreshTokenRedisRepository.findByMemberId(memberId)
+                .ifPresent(this::invalidateToken);
+    }
+
+    /**
      * 회원 가입
      */
     public void join(JoinRequest request) {
+        // 필수 약관이 모두 포함되어있는지 검사
+        List<TermsCode> agreedTermsList = request.getTermsList()
+                .stream()
+                .filter(TermsAgreeRequest::getIsAgreed)
+                .map(TermsAgreeRequest::getTermsCd)
+                .toList();
+        if (!termsQueryService.isContainingAllRequiredTerms(agreedTermsList)) {
+            throw new BaseException(AuthException.TERMS_AGREE_REQUIRED);
+        }
 
         // 이미 있는 회원인지 검사
         if (memberJpaRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -84,12 +113,18 @@ public class AuthCommandService {
                 .memberId(member.getId())
                 .password(passwordHash)
                 .build();
+        List<TermsAgreement> termsAgreementList = agreedTermsList.stream()
+                .map(t -> TermsAgreement.builder()
+                        .termsCd(t)
+                        .memberId(member.getId())
+                        .build()
+                ).toList();
         String jwtString = jwtHelper.generateJoinToken(
                 JwtPayload.builder().memberId(member.getId()).build()
         );
 
         // joinToken redis 저장
-        JoinToken joinToken = new JoinToken(jwtString, member, memberPassword);
+        JoinToken joinToken = new JoinToken(jwtString, member, memberPassword, termsAgreementList);
         joinTokenRedisRepository.save(joinToken);
 
         try {
@@ -126,6 +161,7 @@ public class AuthCommandService {
         // 가입 완료 처리
         memberJpaRepository.save(joinToken.getMember());
         memberPasswordJpaRepository.save(joinToken.getMemberPassword());
+        joinToken.getTermsAgreementList().forEach(termsAgreeJpaRepository::save);
 
         // 토큰 무효화
         this.invalidateToken(joinToken);
@@ -203,7 +239,7 @@ public class AuthCommandService {
                 .build();
         String accessToken = jwtHelper.generateAccessToken(jwtPayload);
         String refreshToken = jwtHelper.generateRefreshToken(jwtPayload);
-        refreshTokenRedisRepository.save(new RefreshToken(refreshToken));
+        refreshTokenRedisRepository.save(new RefreshToken(refreshToken, memberId));;
 
         return new AuthTokenResponse(accessToken, refreshToken);
     }
