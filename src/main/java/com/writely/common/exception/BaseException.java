@@ -7,12 +7,18 @@ import lombok.Getter;
 public class BaseException extends RuntimeException {
 
   private CodeInfo codeInfo;
+  private Object extraParams;
 
   public BaseException() {
   }
 
   public BaseException(CodeInfo codeInfo) {
     this.codeInfo = codeInfo;
+  }
+
+  public BaseException(CodeInfo codeInfo, Object extraParams) {
+    this.codeInfo = codeInfo;
+    this.extraParams = extraParams;
   }
 
   @Override
