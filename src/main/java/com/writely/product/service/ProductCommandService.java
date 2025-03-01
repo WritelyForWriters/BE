@@ -3,6 +3,7 @@ package com.writely.product.service;
 import com.writely.common.exception.BaseException;
 import com.writely.product.domain.*;
 import com.writely.product.domain.enums.ProductException;
+import com.writely.product.domain.enums.ProductSectionType;
 import com.writely.product.repository.*;
 import com.writely.product.request.ProductMemoSaveRequest;
 import com.writely.product.request.ProductModifyRequest;
@@ -47,7 +48,6 @@ public class ProductCommandService {
         Product product = productQueryService.getById(productId);
 
         modifyCharacters(product, request.getCharacters());
-        modifyCustomFields(product, request.getCustomFields());
         modifyIdeaNote(product, request.getIdeaNote());
         modifyPlot(product, request.getPlot());
         modifySynopsis(product, request.getSynopsis());
@@ -86,15 +86,16 @@ public class ProductCommandService {
             .orElseThrow(() -> new BaseException(ProductException.NOT_EXIST_MEMO));
     }
 
-    private void modifyCharacters(Product product, List<ProductTemplateSaveRequest.Character> characters) {
+    private void modifyCharacters(Product product, List<ProductTemplateSaveRequest.Character> requestInfos) {
         Map<UUID, ProductCharacter> savedCharacterMap = product.getCharacters().stream()
             .collect(Collectors.toMap(ProductCharacter::getId, Function.identity()));
-        if (characters.isEmpty()) {
+        if (requestInfos == null || requestInfos.isEmpty()) {
+            productCustomFieldJpaRepository.deleteAllByProductIdAndSectionType(product.getId(), ProductSectionType.CHARACTER.getCode());
             productCharacterJpaRepository.deleteAll(savedCharacterMap.values());
             return;
         }
 
-        Set<UUID> modifyIds = characters.stream()
+        Set<UUID> modifyIds = requestInfos.stream()
             .map(ProductTemplateSaveRequest.Character::getId)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
@@ -106,127 +107,144 @@ public class ProductCommandService {
         productCharacterJpaRepository.deleteAll(deleteCharacters);
 
         List<ProductCharacter> addCharacters = new ArrayList<>();
-        characters.forEach(e -> {
-            if (e.getId() == null) {
-                addCharacters.add(e.toEntity(product.getId()));
+        requestInfos.forEach(request -> {
+            if (request.getId() == null) {
+                ProductCharacter newCharacter = request.toEntity(product.getId());
+                addCharacters.add(newCharacter);
+
+                modifyCustomFields(product.getId(), newCharacter.getId(), ProductSectionType.CHARACTER,
+                    request.getCustomFields(), List.of());
             } else {
-                ProductCharacter savedCharacter = savedCharacterMap.get(e.getId());
+                ProductCharacter savedCharacter = savedCharacterMap.get(request.getId());
                 if (savedCharacter == null) {
                     throw new BaseException(ProductException.NOT_EXIST_CHARACTER);
                 }
 
-                savedCharacter.update(e.getIntro(), e.getName(), e.getAge(), e.getGender(), e.getOccupation(),
-                    e.getAppearance(), e.getPersonality(), e.getCharacteristic(), e.getRelationship());
+                savedCharacter.update(request.getIntro(), request.getName(), request.getAge(), request.getGender(), request.getOccupation(),
+                    request.getAppearance(), request.getPersonality(), request.getCharacteristic(), request.getRelationship());
+
+                modifyCustomFields(product.getId(), savedCharacter.getId(), ProductSectionType.CHARACTER,
+                    request.getCustomFields(), savedCharacter.getCustomFields());
             }
         });
 
         productCharacterJpaRepository.saveAll(addCharacters);
     }
 
-    private void modifyCustomFields(Product product, List<ProductTemplateSaveRequest.CustomField> customFields) {
-        Map<UUID, ProductCustomField> savedCustomFieldMap = product.getCustomFields().stream()
+    private void modifyCustomFields(UUID productId, UUID sectionId, ProductSectionType sectionType,
+                                    List<ProductTemplateSaveRequest.CustomField> requestInfos,
+                                    List<ProductCustomField> savedCustomFields) {
+        Map<UUID, ProductCustomField> savedCustomFieldMap = savedCustomFields.stream()
             .collect(Collectors.toMap(ProductCustomField::getId, Function.identity()));
-        if (customFields.isEmpty()) {
-            productCustomFieldJpaRepository.deleteAll(savedCustomFieldMap.values());
+
+        if (requestInfos == null || requestInfos.isEmpty()) {
+            productCustomFieldJpaRepository.deleteAll(savedCustomFields);
             return;
         }
 
-        Set<UUID> modifyIds = customFields.stream()
+        Set<UUID> modifyIds = requestInfos.stream()
             .map(ProductTemplateSaveRequest.CustomField::getId)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
 
-        List<ProductCustomField> deleteCharacters = savedCustomFieldMap.values().stream()
-            .filter(e -> !modifyIds.contains(e.getId()))
+        List<ProductCustomField> deleteCustomFields = savedCustomFields.stream()
+            .filter(cf -> !modifyIds.contains(cf.getId()))
             .toList();
 
-        productCustomFieldJpaRepository.deleteAll(deleteCharacters);
+        productCustomFieldJpaRepository.deleteAll(deleteCustomFields);
 
         List<ProductCustomField> addCustomFields = new ArrayList<>();
-        customFields.forEach(e -> {
-            if (e.getId() == null) {
-                addCustomFields.add(e.toEntity(product.getId()));
+
+        for (ProductTemplateSaveRequest.CustomField request : requestInfos) {
+            if (request.getId() == null) {
+                addCustomFields.add(request.toEntity(productId, sectionId, sectionType));
             } else {
-                ProductCustomField savedCustomField = savedCustomFieldMap.get(e.getId());
-                if (savedCustomField == null) {
+                ProductCustomField savedField = savedCustomFieldMap.get(request.getId());
+                if (savedField == null) {
                     throw new BaseException(ProductException.NOT_EXIST_CUSTOM_FIELD);
                 }
-
-                savedCustomField.update(e.getSectionType(), e.getName(), e.getContent(), e.getSeq());
+                savedField.update(request.getName(), request.getContent());
             }
-        });
+        }
 
         productCustomFieldJpaRepository.saveAll(addCustomFields);
     }
 
-    private void modifyIdeaNote(Product product, ProductTemplateSaveRequest.IdeaNote ideaNote) {
+    private void modifyIdeaNote(Product product, ProductTemplateSaveRequest.IdeaNote requestInfo) {
         ProductIdeaNote savedIdeaNote = product.getIdeaNote();
 
-        if (ideaNote == null && savedIdeaNote != null) {
-            productIdeaNoteRepository.delete(savedIdeaNote);
+        if (requestInfo == null) {
+            if (savedIdeaNote != null) {
+                productIdeaNoteRepository.delete(savedIdeaNote);
+            }
             return;
         }
 
-        if (ideaNote != null) {
-            if (savedIdeaNote == null) {
-                ProductIdeaNote newIdeaNote = new ProductIdeaNote(product.getId(), ideaNote.getTitle(), ideaNote.getContent());
-                productIdeaNoteRepository.save(newIdeaNote);
-            } else {
-                savedIdeaNote.update(ideaNote.getTitle(), ideaNote.getContent());
-            }
+        if (savedIdeaNote == null) {
+            ProductIdeaNote newIdeaNote = new ProductIdeaNote(product.getId(), requestInfo.getTitle(), requestInfo.getContent());
+            productIdeaNoteRepository.save(newIdeaNote);
+        } else {
+            savedIdeaNote.update(requestInfo.getTitle(), requestInfo.getContent());
         }
     }
 
-    private void modifyPlot(Product product, ProductTemplateSaveRequest.Plot plot) {
+    private void modifyPlot(Product product, ProductTemplateSaveRequest.Plot requestInfo) {
         ProductPlot savedPlot = product.getPlot();
 
-        if (plot == null && savedPlot != null) {
-            productPlotRepository.delete(savedPlot);
+        if (requestInfo == null) {
+            if (savedPlot != null) {
+                productPlotRepository.delete(savedPlot);
+            }
             return;
         }
 
-        if (plot != null) {
-            if (savedPlot == null) {
-                productPlotRepository.save(plot.toEntity(product.getId()));
-            } else {
-                savedPlot.update(plot.getExposition(), plot.getComplication(), plot.getComplication(), plot.getComplication());
-            }
+        if (savedPlot == null) {
+            productPlotRepository.save(requestInfo.toEntity(product.getId()));
+        } else {
+            savedPlot.update(requestInfo.getContent());
         }
     }
 
-    private void modifySynopsis(Product product, ProductTemplateSaveRequest.Synopsis synopsis) {
+    private void modifySynopsis(Product product, ProductTemplateSaveRequest.Synopsis requestInfo) {
         ProductSynopsis savedSynopsis = product.getSynopsis();
 
-        if (synopsis == null && savedSynopsis != null) {
-            productSynopsisRepository.delete(savedSynopsis);
+        if (requestInfo == null) {
+            if (savedSynopsis != null) {
+                productSynopsisRepository.delete(savedSynopsis);
+            }
             return;
         }
 
-        if (synopsis != null) {
-            if (savedSynopsis == null) {
-                productSynopsisRepository.save(synopsis.toEntity(product.getId()));
-            } else {
-                savedSynopsis.update(synopsis.getGenre(), synopsis.getLength(), synopsis.getPurpose(), synopsis.getLogline(), synopsis.getExample());
-            }
+        if (savedSynopsis == null) {
+            productSynopsisRepository.save(requestInfo.toEntity(product.getId()));
+        } else {
+            savedSynopsis.update(requestInfo.getGenre(), requestInfo.getLength(), requestInfo.getPurpose(), requestInfo.getLogline(), requestInfo.getExample());
         }
     }
 
-    private void modifyWorldview(Product product, ProductTemplateSaveRequest.Worldview worldview) {
+    private void modifyWorldview(Product product, ProductTemplateSaveRequest.Worldview requestInfo) {
         ProductWorldview savedWorldview = product.getWorldview();
 
-        if (worldview == null && savedWorldview != null) {
-            productWorldviewRepository.delete(savedWorldview);
+        if (requestInfo == null) {
+            if (savedWorldview != null) {
+                productCustomFieldJpaRepository.deleteAllByProductIdAndSectionType(product.getId(), ProductSectionType.WORLDVIEW.getCode());
+                productWorldviewRepository.delete(savedWorldview);
+            }
             return;
         }
 
-        if (worldview != null) {
-            if (savedWorldview == null) {
-                productWorldviewRepository.save(worldview.toEntity(product.getId()));
-            } else {
-                savedWorldview.update(worldview.getGeography(), worldview.getHistory(), worldview.getPolitics(),
-                    worldview.getSociety(), worldview.getReligion(), worldview.getEconomy(), worldview.getTechnology(), worldview.getLifestyle(),
-                    worldview.getLanguage(), worldview.getCulture(), worldview.getSpecies(), worldview.getOccupation(), worldview.getConflict());
-            }
+        if (savedWorldview == null) {
+            ProductWorldview newWorldview = productWorldviewRepository.save(requestInfo.toEntity(product.getId()));
+
+            modifyCustomFields(product.getId(), newWorldview.getId(), ProductSectionType.WORLDVIEW,
+                requestInfo.getCustomFields(), List.of());
+        } else {
+            savedWorldview.update(requestInfo.getGeography(), requestInfo.getHistory(), requestInfo.getPolitics(),
+                requestInfo.getSociety(), requestInfo.getReligion(), requestInfo.getEconomy(), requestInfo.getTechnology(), requestInfo.getLifestyle(),
+                requestInfo.getLanguage(), requestInfo.getCulture(), requestInfo.getSpecies(), requestInfo.getOccupation(), requestInfo.getConflict());
+
+            modifyCustomFields(product.getId(), savedWorldview.getId(), ProductSectionType.WORLDVIEW,
+                requestInfo.getCustomFields(), savedWorldview.getCustomFields());
         }
     }
 

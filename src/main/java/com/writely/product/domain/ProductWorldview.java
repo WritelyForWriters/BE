@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -58,6 +61,11 @@ public class ProductWorldview extends BaseAuditTimeEntity {
 
     @Column(name = "conflict")
     private String conflict;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "section_id")
+    @SQLRestriction("section_type = 'worldview'")
+    private List<ProductCustomField> customFields = new ArrayList<>();
 
     @Builder
     public ProductWorldview(UUID id, String geography, String history, String politics, String society, String religion, String economy, String technology, String lifestyle, String language, String culture, String species, String occupation, String conflict) {

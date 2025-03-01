@@ -57,24 +57,9 @@ public class ProductPlot extends TableImpl<ProductPlotRecord> {
     public final TableField<ProductPlotRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false), this, "줄거리 ID");
 
     /**
-     * The column <code>public.product_plot.exposition</code>. 발단
+     * The column <code>public.product_plot.content</code>. 내용
      */
-    public final TableField<ProductPlotRecord, String> EXPOSITION = createField(DSL.name("exposition"), SQLDataType.CLOB, this, "발단");
-
-    /**
-     * The column <code>public.product_plot.complication</code>. 전개
-     */
-    public final TableField<ProductPlotRecord, String> COMPLICATION = createField(DSL.name("complication"), SQLDataType.CLOB, this, "전개");
-
-    /**
-     * The column <code>public.product_plot.climax</code>. 결말
-     */
-    public final TableField<ProductPlotRecord, String> CLIMAX = createField(DSL.name("climax"), SQLDataType.CLOB, this, "결말");
-
-    /**
-     * The column <code>public.product_plot.resolution</code>.
-     */
-    public final TableField<ProductPlotRecord, String> RESOLUTION = createField(DSL.name("resolution"), SQLDataType.CLOB, this, "");
+    public final TableField<ProductPlotRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB, this, "내용");
 
     /**
      * The column <code>public.product_plot.created_at</code>. 생성일시

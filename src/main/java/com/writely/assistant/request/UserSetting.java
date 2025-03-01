@@ -1,49 +1,46 @@
-package com.writely.product.response;
+package com.writely.assistant.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.writely.product.domain.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
-public class ProductTemplateResponse {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserSetting {
 
-    private final UUID id;
-    private final List<Character> characters;
-    private final IdeaNote ideaNote;
-    private final Plot plot;
     private final Synopsis synopsis;
     private final Worldview worldview;
+    private final List<Character> characters;
+    private final Plot plot;
+    private final IdeaNote ideaNote;
 
-    public ProductTemplateResponse(Product product) {
-        this.id = product.getId();
+    public UserSetting(Product product) {
         this.characters = product.getCharacters().stream()
-            .map(Character::new)
+            .map(UserSetting.Character::new)
             .toList();
-        this.ideaNote = product.getIdeaNote() != null ? new IdeaNote(product.getIdeaNote()) : null;
-        this.plot = product.getPlot() != null ? new Plot(product.getPlot()) : null;
-        this.synopsis = product.getSynopsis() != null ? new Synopsis(product.getSynopsis()) : null;
-        this.worldview = product.getWorldview() != null ? new Worldview(product.getWorldview()) : null;
+        this.ideaNote = product.getIdeaNote() != null ? new UserSetting.IdeaNote(product.getIdeaNote()) : null;
+        this.plot = product.getPlot() != null ? new UserSetting.Plot(product.getPlot()) : null;
+        this.synopsis = product.getSynopsis() != null ? new UserSetting.Synopsis(product.getSynopsis()) : null;
+        this.worldview = product.getWorldview() != null ? new UserSetting.Worldview(product.getWorldview()) : null;
     }
 
     @Getter
-    @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Character {
 
-        private final UUID id;
         @Schema(title = "소개", nullable = true)
         private final String intro;
         @Schema(name = "이름", nullable = true)
-        private final String name;
+        private final String character_name;
         @Schema(name = "나이", nullable = true)
-        private final Short age;
+        private final String age;
         @Schema(name = "성별", nullable = true)
         private final String gender;
         @Schema(name = "직업", nullable = true)
-        private final String occupation;
+        private final String character_occupation;
         @Schema(name = "외모", nullable = true)
         private final String appearance;
         @Schema(name = "성격", nullable = true)
@@ -56,12 +53,11 @@ public class ProductTemplateResponse {
         private final List<CustomField> customFields;
 
         public Character(ProductCharacter character) {
-            this.id = character.getId();
             this.intro = character.getIntro();
-            this.name = character.getName();
-            this.age = character.getAge();
+            this.character_name = character.getName();
+            this.age = String.valueOf(character.getAge());
             this.gender = character.getGender();
-            this.occupation = character.getOccupation();
+            this.character_occupation = character.getOccupation();
             this.appearance = character.getAppearance();
             this.personality = character.getPersonality();
             this.characteristic = character.getCharacteristic();
@@ -73,74 +69,63 @@ public class ProductTemplateResponse {
     }
 
     @Getter
-    @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CustomField {
 
-        private final UUID id;
         @Schema(title = "필드 이름")
-        private final String name;
+        private final String custom_field_name;
         @Schema(title = "필드 내용")
-        private final String content;
-        @Schema(title = "필드 순서")
-        private final Short seq;
+        private final String custom_field_content;
 
         public CustomField(ProductCustomField customField) {
-            this.id = customField.getId();
-            this.name = customField.getName();
-            this.content = customField.getContent();
-            this.seq = customField.getSeq();
+            this.custom_field_name = customField.getName();
+            this.custom_field_content = customField.getContent();
         }
     }
 
     @Getter
-    @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class IdeaNote {
 
-        private final UUID id;
         @Schema(title = "제목", nullable = true)
-        private final String title;
+        private final String idea_title;
         @Schema(title = "내용", nullable = true)
-        private final String content;
+        private final String idea_content;
 
         public IdeaNote(ProductIdeaNote ideaNote) {
-            this.id = ideaNote.getId();
-            this.title = ideaNote.getTitle();
-            this.content = ideaNote.getContent();
+            this.idea_title = ideaNote.getTitle();
+            this.idea_content = ideaNote.getContent();
         }
     }
 
     @Getter
-    @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Plot {
 
-        private final UUID id;
         @Schema(title = "내용", nullable = true)
         private final String content;
 
         public Plot(ProductPlot plot) {
-            this.id = plot.getId();
             this.content = plot.getContent();
         }
     }
 
     @Getter
-    @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Synopsis {
 
-        private final UUID id;
         @Schema(title = "장르")
         private final String genre;
         @Schema(title = "분량", nullable = true)
         private final String length;
         @Schema(title = "기획 의도", nullable = true)
         private final String purpose;
-        @Schema(title = "로그라인", nullable = true)
+        @Schema(title = "로그라인")
         private final String logline;
         @Schema(title = "예시 문장", nullable = true)
         private final String example;
 
         public Synopsis(ProductSynopsis synopsis) {
-            this.id = synopsis.getId();
             this.genre = synopsis.getGenre();
             this.length = synopsis.getLength();
             this.purpose = synopsis.getPurpose();
@@ -150,10 +135,9 @@ public class ProductTemplateResponse {
     }
 
     @Getter
-    @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Worldview {
 
-        private final UUID id;
         @Schema(title = "지리", nullable = true)
         private final String geography;
         @Schema(title = "역사", nullable = true)
@@ -184,7 +168,6 @@ public class ProductTemplateResponse {
         private final List<CustomField> customFields;
 
         public Worldview(ProductWorldview worldview) {
-            this.id = worldview.getId();
             this.geography = worldview.getGeography();
             this.history = worldview.getHistory();
             this.politics = worldview.getPolitics();

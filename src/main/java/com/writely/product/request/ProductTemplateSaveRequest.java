@@ -14,7 +14,6 @@ import java.util.UUID;
 public class ProductTemplateSaveRequest {
 
     private List<Character> characters;
-    private List<CustomField> customFields;
     private IdeaNote ideaNote;
     private Plot plot;
     private Synopsis synopsis;
@@ -26,24 +25,26 @@ public class ProductTemplateSaveRequest {
 
         @Schema(nullable = true)
         private UUID id;
-        @Schema(title = "소개", nullable = true)
+        @Schema(title = "소개", nullable = true, example = "미국 최고의 기업가")
         private String intro;
-        @Schema(title = "이름", nullable = true)
+        @Schema(title = "이름", nullable = true, example = "CEO")
         private String name;
-        @Schema(title = "나이", nullable = true)
+        @Schema(title = "나이", nullable = true, example = "40")
         private Short age;
-        @Schema(title = "성별", nullable = true)
+        @Schema(title = "성별", nullable = true, example = "남성")
         private String gender;
-        @Schema(title = "직업", nullable = true)
+        @Schema(title = "직업", nullable = true, example = "CEO")
         private String occupation;
-        @Schema(title = "외모", nullable = true)
+        @Schema(title = "외모", nullable = true, example = "평범")
         private String appearance;
-        @Schema(title = "성격", nullable = true)
+        @Schema(title = "성격", nullable = true, example = "다정함")
         private String personality;
         @Schema(title = "특징", nullable = true)
         private String characteristic;
         @Schema(title = "주요관계", nullable = true)
         private String relationship;
+        @Schema(title = "커스텀 필드", nullable = true)
+        private List<CustomField> customFields;
 
         public ProductCharacter toEntity(UUID productId) {
             return ProductCharacter.builder()
@@ -67,22 +68,19 @@ public class ProductTemplateSaveRequest {
 
         @Schema(nullable = true)
         private UUID id;
-        @Schema(title = "섹션 코드")
-        private ProductSectionType sectionType;
         @Schema(title = "필드 이름")
         private String name;
         @Schema(title = "필드 내용")
         private String content;
-        @Schema(title = "필드 순서")
-        private Short seq;
 
-        public ProductCustomField toEntity(UUID productId) {
+        public ProductCustomField toEntity(UUID productId, UUID sectionId, ProductSectionType sectionType) {
             return ProductCustomField.builder()
                 .productId(productId)
+                .sectionId(sectionId)
                 .sectionType(sectionType)
                 .name(name)
                 .content(content)
-                .seq(seq)
+                .seq((short) 1)
                 .build();
         }
     }
@@ -101,22 +99,13 @@ public class ProductTemplateSaveRequest {
     @Setter
     public static class Plot {
 
-        @Schema(title = "발단", nullable = true)
-        private String exposition;
-        @Schema(title = "전개", nullable = true)
-        private String complication;
-        @Schema(title = "위기", nullable = true)
-        private String climax;
-        @Schema(title = "결말", nullable = true)
-        private String resolution;
+        @Schema(title = "내용", nullable = true)
+        private String content;
 
         public ProductPlot toEntity(UUID productId) {
             return ProductPlot.builder()
                 .id(productId)
-                .exposition(exposition)
-                .complication(complication)
-                .climax(climax)
-                .resolution(resolution)
+                .content(content)
                 .build();
         }
     }
@@ -125,13 +114,13 @@ public class ProductTemplateSaveRequest {
     @Setter
     public static class Synopsis {
 
-        @Schema(title = "장르")
+        @Schema(title = "장르", example = "SF, 로맨스")
         private String genre;
         @Schema(title = "분량", nullable = true)
         private String length;
         @Schema(title = "기획 의도", nullable = true)
         private String purpose;
-        @Schema(title = "로그라인", nullable = true)
+        @Schema(title = "로그라인")
         private String logline;
         @Schema(title = "예시 문장", nullable = true)
         private String example;
@@ -178,6 +167,8 @@ public class ProductTemplateSaveRequest {
         private String occupation;
         @Schema(title = "갈등 관계", nullable = true)
         private String conflict;
+        @Schema(title = "커스텀 필드", nullable = true)
+        private List<CustomField> customFields;
 
         public ProductWorldview toEntity(UUID productId) {
             return ProductWorldview.builder()

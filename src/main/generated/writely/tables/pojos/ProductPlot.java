@@ -18,10 +18,7 @@ public class ProductPlot implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final UUID id;
-    private final String exposition;
-    private final String complication;
-    private final String climax;
-    private final String resolution;
+    private final String content;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
@@ -29,10 +26,7 @@ public class ProductPlot implements Serializable {
 
     public ProductPlot(ProductPlot value) {
         this.id = value.id;
-        this.exposition = value.exposition;
-        this.complication = value.complication;
-        this.climax = value.climax;
-        this.resolution = value.resolution;
+        this.content = value.content;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
@@ -41,20 +35,14 @@ public class ProductPlot implements Serializable {
 
     public ProductPlot(
         UUID id,
-        String exposition,
-        String complication,
-        String climax,
-        String resolution,
+        String content,
         LocalDateTime createdAt,
         UUID createdBy,
         LocalDateTime updatedAt,
         UUID updatedBy
     ) {
         this.id = id;
-        this.exposition = exposition;
-        this.complication = complication;
-        this.climax = climax;
-        this.resolution = resolution;
+        this.content = content;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
@@ -69,31 +57,10 @@ public class ProductPlot implements Serializable {
     }
 
     /**
-     * Getter for <code>public.product_plot.exposition</code>. 발단
+     * Getter for <code>public.product_plot.content</code>. 내용
      */
-    public String getExposition() {
-        return this.exposition;
-    }
-
-    /**
-     * Getter for <code>public.product_plot.complication</code>. 전개
-     */
-    public String getComplication() {
-        return this.complication;
-    }
-
-    /**
-     * Getter for <code>public.product_plot.climax</code>. 결말
-     */
-    public String getClimax() {
-        return this.climax;
-    }
-
-    /**
-     * Getter for <code>public.product_plot.resolution</code>.
-     */
-    public String getResolution() {
-        return this.resolution;
+    public String getContent() {
+        return this.content;
     }
 
     /**
@@ -139,29 +106,11 @@ public class ProductPlot implements Serializable {
         }
         else if (!this.id.equals(other.id))
             return false;
-        if (this.exposition == null) {
-            if (other.exposition != null)
+        if (this.content == null) {
+            if (other.content != null)
                 return false;
         }
-        else if (!this.exposition.equals(other.exposition))
-            return false;
-        if (this.complication == null) {
-            if (other.complication != null)
-                return false;
-        }
-        else if (!this.complication.equals(other.complication))
-            return false;
-        if (this.climax == null) {
-            if (other.climax != null)
-                return false;
-        }
-        else if (!this.climax.equals(other.climax))
-            return false;
-        if (this.resolution == null) {
-            if (other.resolution != null)
-                return false;
-        }
-        else if (!this.resolution.equals(other.resolution))
+        else if (!this.content.equals(other.content))
             return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
@@ -195,10 +144,7 @@ public class ProductPlot implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.exposition == null) ? 0 : this.exposition.hashCode());
-        result = prime * result + ((this.complication == null) ? 0 : this.complication.hashCode());
-        result = prime * result + ((this.climax == null) ? 0 : this.climax.hashCode());
-        result = prime * result + ((this.resolution == null) ? 0 : this.resolution.hashCode());
+        result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
@@ -211,10 +157,7 @@ public class ProductPlot implements Serializable {
         StringBuilder sb = new StringBuilder("ProductPlot (");
 
         sb.append(id);
-        sb.append(", ").append(exposition);
-        sb.append(", ").append(complication);
-        sb.append(", ").append(climax);
-        sb.append(", ").append(resolution);
+        sb.append(", ").append(content);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);

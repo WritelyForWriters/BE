@@ -24,6 +24,9 @@ public class ProductCustomField extends BaseAuditTimeEntity {
     @Column(name = "product_id", nullable = false)
     private UUID productId;
 
+    @Column(name = "section_id", nullable = false)
+    private UUID sectionId;
+
     @Convert(converter = ProductSectionType.TypeCodeConverter.class)
     @Column(name = "section_type", nullable = false)
     private ProductSectionType sectionType;
@@ -38,18 +41,17 @@ public class ProductCustomField extends BaseAuditTimeEntity {
     private Short seq;
 
     @Builder
-    public ProductCustomField(UUID productId, ProductSectionType sectionType, String name, String content, Short seq) {
+    public ProductCustomField(UUID productId, UUID sectionId, ProductSectionType sectionType, String name, String content, Short seq) {
         this.productId = productId;
+        this.sectionId = sectionId;
         this.sectionType = sectionType;
         this.name = name;
         this.content = content;
         this.seq = seq;
     }
 
-    public void update(ProductSectionType sectionType, String name, String content, Short seq) {
-        this.sectionType = sectionType;
+    public void update(String name, String content) {
         this.name = name;
         this.content = content;
-        this.seq = seq;
     }
 }

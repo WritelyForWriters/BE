@@ -9,6 +9,7 @@ import org.jooq.Field;
 import org.jooq.Result;
 
 import writely.tables.AutoModifyMessage;
+import writely.tables.LoginAttempt;
 import writely.tables.Member;
 import writely.tables.MemberPassword;
 import writely.tables.PgpArmorHeaders;
@@ -35,6 +36,11 @@ public class Tables {
      * 자동 수정 메세지
      */
     public static final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
+
+    /**
+     * 로그인_시도
+     */
+    public static final LoginAttempt LOGIN_ATTEMPT = LoginAttempt.LOGIN_ATTEMPT;
 
     /**
      * 회원
@@ -96,7 +102,7 @@ public class Tables {
     public static final ProductCharacter PRODUCT_CHARACTER = ProductCharacter.PRODUCT_CHARACTER;
 
     /**
-     * 작품 커스텀 필드
+     * The table <code>public.product_custom_field</code>.
      */
     public static final ProductCustomField PRODUCT_CUSTOM_FIELD = ProductCustomField.PRODUCT_CUSTOM_FIELD;
 
