@@ -27,6 +27,19 @@ comment on table member_password is '회원_비밀번호';
 comment on column member_password.member_id is '회원 ID';
 comment on column member_password.password is '회원 비밀번호';
 
+create table login_attempt
+(
+    id uuid constraint login_attempt_pk primary key,
+    email          varchar(255)                not null,
+    result         varchar(10)                 not null,
+    created_at     timestamp with time zone    not null,
+    updated_at     timestamp with time zone    not null
+);
+comment on table login_attempt is '로그인_시도';
+comment on column login_attempt.id is '로그인 시도 ID';
+comment on column login_attempt.email is '로그인 시도한 이메일';
+comment on column login_attempt.result is '로그인 시도 후 결과';
+
 -- terms
 create table terms
 (

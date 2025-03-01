@@ -2,13 +2,16 @@ package com.writely.auth.service;
 
 import com.writely.auth.domain.*;
 import com.writely.auth.domain.enums.AuthException;
+import com.writely.auth.domain.enums.LoginAttemptResultType;
 import com.writely.auth.helper.JwtHelper;
 import com.writely.auth.helper.MailHelper;
 import com.writely.auth.repository.ChangePasswordTokenRedisRepository;
 import com.writely.auth.repository.JoinTokenRedisRepository;
+import com.writely.auth.repository.LoginAttemptJpaRepository;
 import com.writely.auth.repository.RefreshTokenRedisRepository;
 import com.writely.auth.request.*;
 import com.writely.auth.response.AuthTokenResponse;
+import com.writely.auth.response.LoginFailResponse;
 import com.writely.common.enums.code.ResultCodeInfo;
 import com.writely.common.exception.BaseException;
 import com.writely.common.util.CryptoUtil;
@@ -27,12 +30,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class AuthCommandService {
     private final TermsQueryService termsQueryService;
@@ -42,6 +45,7 @@ public class AuthCommandService {
     private final JoinTokenRedisRepository joinTokenRedisRepository;
     private final ChangePasswordTokenRedisRepository changePasswordTokenRedisRepository;
     private final TermsAgreeJpaRepository termsAgreeJpaRepository;
+    private final LoginAttemptJpaRepository loginAttemptJpaRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
     private final CryptoUtil cryptoUtil;
@@ -49,6 +53,7 @@ public class AuthCommandService {
     /**
      * 토큰 재발급
      */
+    @Transactional
     public AuthTokenResponse reissueToken(ReissueRequest request) {
         // 리프래시 토큰이 비유효하면
         if (!jwtHelper.isTokenValid(request.getRefreshToken())) {
@@ -68,17 +73,53 @@ public class AuthCommandService {
      * 로그인
      */
     public AuthTokenResponse login(LoginRequest request) {
-        String passwordHash = cryptoUtil.hash(request.getPassword());
+        List<LoginAttempt> lastFiveAttempts = loginAttemptJpaRepository.findTop5ByEmailOrderByCreatedAtDesc(request.getEmail());
 
-        MemberPassword memberPassword = memberPasswordJpaRepository.findByPassword(passwordHash)
+        // 있는 이메일인지 검사
+        memberJpaRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BaseException(AuthException.LOGIN_FAILED));
 
+        // 로그인 시도가 블락 상태이고, 블락 시간으로부터 1시간이 지나지 않은 경우
+        if (
+                !lastFiveAttempts.isEmpty()
+                && lastFiveAttempts.getFirst().getResult() == LoginAttemptResultType.BLOCKED
+                && lastFiveAttempts.getFirst().getCreatedAt().isAfter(LocalDateTime.now().minusHours(1))
+        ) {
+            throw new BaseException(AuthException.LOGIN_BLOCKED);
+        }
+
+        String passwordHash = cryptoUtil.hash(request.getPassword());
+        MemberPassword memberPassword = memberPasswordJpaRepository.findByPassword(passwordHash).orElse(null);
+
+        LoginAttempt newLoginAttempt = new LoginAttempt();
+        newLoginAttempt.setEmail(request.getEmail());
+
+        if (memberPassword == null) {
+            int attemptsRemaining = 5 - 1;
+            // 남은 시도 횟수 계산
+            for (LoginAttempt attempt : lastFiveAttempts) {
+                if (attempt.getResult() != LoginAttemptResultType.FAILED) break;
+                attemptsRemaining -= 1;
+            }
+
+            newLoginAttempt.setResult(
+                    attemptsRemaining == 0
+                            ? LoginAttemptResultType.BLOCKED
+                            : LoginAttemptResultType.FAILED
+            );
+            loginAttemptJpaRepository.save(newLoginAttempt);
+            throw new BaseException(AuthException.LOGIN_FAILED, new LoginFailResponse(attemptsRemaining));
+        }
+
+        newLoginAttempt.setResult(LoginAttemptResultType.SUCCEED);
+        loginAttemptJpaRepository.save(newLoginAttempt);
         return generateAuthTokens(memberPassword.getMemberId());
     }
 
     /**
      * 로그아웃
      */
+    @Transactional
     public void logout(UUID memberId) {
         refreshTokenRedisRepository.findByMemberId(memberId)
                 .ifPresent(this::invalidateToken);
@@ -87,6 +128,7 @@ public class AuthCommandService {
     /**
      * 회원 가입
      */
+    @Transactional
     public void join(JoinRequest request) {
         // 필수 약관이 모두 포함되어있는지 검사
         List<TermsCode> agreedTermsList = request.getTermsList()
@@ -146,6 +188,7 @@ public class AuthCommandService {
     /**
      * 회원가입 완료
      */
+    @Transactional
     public AuthTokenResponse completeJoin(JoinCompletionRequest request) {
         final String joinTokenString = request.getJoinToken();
 
@@ -172,6 +215,7 @@ public class AuthCommandService {
     /**
      * 비밀번호 변경
      */
+    @Transactional
     public void changePassword(ChangePasswordRequest request) {
         Member member = memberJpaRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BaseException(AuthException.CHANGE_PASSWORD_EMAIL_NOT_FOUND));
@@ -202,6 +246,7 @@ public class AuthCommandService {
     /**
      * 비밀번호 변경 완료
      */
+    @Transactional
     public void completeChangePassword(ChangePasswordCompletionRequest request) {
         // 토큰이 비유효한 경우
         if (!jwtHelper.isTokenValid(request.getChangePasswordToken())) {
@@ -233,6 +278,7 @@ public class AuthCommandService {
     /**
      * 인증 토큰 발급 (액세스 + 리프래시)
      */
+    @Transactional
     private AuthTokenResponse generateAuthTokens(UUID memberId) {
         JwtPayload jwtPayload = JwtPayload.builder()
                 .memberId(memberId)
@@ -247,6 +293,7 @@ public class AuthCommandService {
     /**
      * 토큰 무효화 (Redis에서 관리하는 토큰의 경우)
      */
+    @Transactional
     private void invalidateToken(BaseToken token) {
         if (token instanceof RefreshToken refreshToken) {
             refreshTokenRedisRepository.delete(refreshToken);

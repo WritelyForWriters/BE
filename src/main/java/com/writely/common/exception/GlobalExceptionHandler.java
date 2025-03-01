@@ -16,15 +16,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({Exception.class})
   public ResponseEntity<BaseResponse<?>> handle(Exception e) {
+    LogUtil.error(e);
+
     HttpStatus status = null;
     BaseResponse<?> response = null;
 
     if (e instanceof BaseException ex) {
-      CodeInfo codeInfo = ex.getCodeInfo();
-
-      status = codeInfo.getStatus();
-      response = BaseResponse.failure(codeInfo);
-    } else if (e instanceof MethodArgumentNotValidException ex) {
+      status = ex.getCodeInfo().getStatus();
+      response = BaseResponse.failure(ex.getCodeInfo(), ex.getExtraParams());
+    }
+    else if (e instanceof MethodArgumentNotValidException ex) {
       CodeInfo codeInfo = ResultCodeInfo.BAD_REQUEST;
 
       status = codeInfo.getStatus();
@@ -46,7 +47,6 @@ public class GlobalExceptionHandler {
       response = BaseResponse.failure(ResultCodeInfo.FAILURE);
     }
 
-    LogUtil.error(e);
     return new ResponseEntity<>(response, status);
   }
 
