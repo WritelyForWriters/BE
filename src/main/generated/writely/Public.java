@@ -15,6 +15,7 @@ import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
 import writely.tables.AutoModifyMessage;
+import writely.tables.LoginAttempt;
 import writely.tables.Member;
 import writely.tables.MemberPassword;
 import writely.tables.PgpArmorHeaders;
@@ -48,6 +49,11 @@ public class Public extends SchemaImpl {
      * 자동 수정 메세지
      */
     public final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
+
+    /**
+     * 로그인_시도
+     */
+    public final LoginAttempt LOGIN_ATTEMPT = LoginAttempt.LOGIN_ATTEMPT;
 
     /**
      * 회원
@@ -109,7 +115,7 @@ public class Public extends SchemaImpl {
     public final ProductCharacter PRODUCT_CHARACTER = ProductCharacter.PRODUCT_CHARACTER;
 
     /**
-     * 작품 커스텀 필드
+     * The table <code>public.product_custom_field</code>.
      */
     public final ProductCustomField PRODUCT_CUSTOM_FIELD = ProductCustomField.PRODUCT_CUSTOM_FIELD;
 
@@ -165,6 +171,7 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             AutoModifyMessage.AUTO_MODIFY_MESSAGE,
+            LoginAttempt.LOGIN_ATTEMPT,
             Member.MEMBER,
             MemberPassword.MEMBER_PASSWORD,
             PgpArmorHeaders.PGP_ARMOR_HEADERS,

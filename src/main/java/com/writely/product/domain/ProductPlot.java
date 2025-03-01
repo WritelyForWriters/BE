@@ -20,27 +20,15 @@ public class ProductPlot extends BaseAuditTimeEntity {
     @Column(updatable = false, nullable = false)
     private UUID id;
     @Column
-    private String exposition;
-    @Column
-    private String complication;
-    @Column
-    private String climax;
-    @Column
-    private String resolution;
+    private String content;
 
     @Builder
-    public ProductPlot(UUID id, String exposition, String complication, String climax, String resolution) {
+    public ProductPlot(UUID id, String content) {
         this.id = id;
-        this.exposition = exposition;
-        this.complication = complication;
-        this.climax = climax;
-        this.resolution = resolution;
+        this.content = content;
     }
 
-    public void update(String exposition, String complication, String climax, String resolution) {
-        this.exposition = exposition;
-        this.complication = complication;
-        this.climax = climax;
-        this.resolution = resolution;
+    public void update(String content) {
+        this.content = content;
     }
 }

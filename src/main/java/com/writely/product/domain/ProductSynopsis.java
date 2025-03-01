@@ -29,7 +29,7 @@ public class ProductSynopsis extends BaseAuditTimeEntity {
     @Column(name = "purpose")
     private String purpose;
 
-    @Column(name = "logline")
+    @Column(name = "logline", nullable = false)
     private String logline;
 
     @Column(name = "example")

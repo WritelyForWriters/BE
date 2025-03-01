@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -49,6 +52,11 @@ public class ProductCharacter extends BaseAuditTimeEntity {
 
     @Column(name = "relationship")
     private String relationship;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "section_id")
+    @SQLRestriction("section_type = 'character'")
+    private List<ProductCustomField> customFields = new ArrayList<>();
 
     @Builder
     public ProductCharacter(UUID productId, String intro, String name, Short age, String gender, String occupation, String appearance, String personality, String characteristic, String relationship) {

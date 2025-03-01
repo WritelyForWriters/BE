@@ -1,6 +1,5 @@
 package com.writely.assistant.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.writely.assistant.domain.automodify.AutoModifyMessage;
 import com.writely.assistant.domain.automodify.AutoModifyMessageJpaRepository;
 import com.writely.assistant.domain.enums.AssistantException;
@@ -55,17 +54,6 @@ public class AutoModifyService {
         requestMap.put("tenant_id", "1");
         requestMap.put("query", message.getContent());
         requestMap.put("user_setting", new UserSetting(productQueryService.getById(productId)));
-
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonString = objectMapper.writeValueAsString(requestMap);
-            LogUtil.info(jsonString);
-        } catch (Exception e) {
-
-        }
-
-
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         WebClient.create(assistantUrl + "/v1/assistant/auto-modify/stream")

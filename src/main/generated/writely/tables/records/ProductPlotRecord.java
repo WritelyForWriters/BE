@@ -37,70 +37,25 @@ public class ProductPlotRecord extends UpdatableRecordImpl<ProductPlotRecord> {
     }
 
     /**
-     * Setter for <code>public.product_plot.exposition</code>. 발단
+     * Setter for <code>public.product_plot.content</code>. 내용
      */
-    public ProductPlotRecord setExposition(String value) {
+    public ProductPlotRecord setContent(String value) {
         set(1, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.product_plot.exposition</code>. 발단
+     * Getter for <code>public.product_plot.content</code>. 내용
      */
-    public String getExposition() {
+    public String getContent() {
         return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.product_plot.complication</code>. 전개
-     */
-    public ProductPlotRecord setComplication(String value) {
-        set(2, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>public.product_plot.complication</code>. 전개
-     */
-    public String getComplication() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.product_plot.climax</code>. 결말
-     */
-    public ProductPlotRecord setClimax(String value) {
-        set(3, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>public.product_plot.climax</code>. 결말
-     */
-    public String getClimax() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.product_plot.resolution</code>.
-     */
-    public ProductPlotRecord setResolution(String value) {
-        set(4, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>public.product_plot.resolution</code>.
-     */
-    public String getResolution() {
-        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.product_plot.created_at</code>. 생성일시
      */
     public ProductPlotRecord setCreatedAt(LocalDateTime value) {
-        set(5, value);
+        set(2, value);
         return this;
     }
 
@@ -108,14 +63,14 @@ public class ProductPlotRecord extends UpdatableRecordImpl<ProductPlotRecord> {
      * Getter for <code>public.product_plot.created_at</code>. 생성일시
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(5);
+        return (LocalDateTime) get(2);
     }
 
     /**
      * Setter for <code>public.product_plot.created_by</code>. 생성자 ID
      */
     public ProductPlotRecord setCreatedBy(UUID value) {
-        set(6, value);
+        set(3, value);
         return this;
     }
 
@@ -123,14 +78,14 @@ public class ProductPlotRecord extends UpdatableRecordImpl<ProductPlotRecord> {
      * Getter for <code>public.product_plot.created_by</code>. 생성자 ID
      */
     public UUID getCreatedBy() {
-        return (UUID) get(6);
+        return (UUID) get(3);
     }
 
     /**
      * Setter for <code>public.product_plot.updated_at</code>. 수정일시
      */
     public ProductPlotRecord setUpdatedAt(LocalDateTime value) {
-        set(7, value);
+        set(4, value);
         return this;
     }
 
@@ -138,14 +93,14 @@ public class ProductPlotRecord extends UpdatableRecordImpl<ProductPlotRecord> {
      * Getter for <code>public.product_plot.updated_at</code>. 수정일시
      */
     public LocalDateTime getUpdatedAt() {
-        return (LocalDateTime) get(7);
+        return (LocalDateTime) get(4);
     }
 
     /**
      * Setter for <code>public.product_plot.updated_by</code>. 수정자 ID
      */
     public ProductPlotRecord setUpdatedBy(UUID value) {
-        set(8, value);
+        set(5, value);
         return this;
     }
 
@@ -153,7 +108,7 @@ public class ProductPlotRecord extends UpdatableRecordImpl<ProductPlotRecord> {
      * Getter for <code>public.product_plot.updated_by</code>. 수정자 ID
      */
     public UUID getUpdatedBy() {
-        return (UUID) get(8);
+        return (UUID) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -179,14 +134,11 @@ public class ProductPlotRecord extends UpdatableRecordImpl<ProductPlotRecord> {
     /**
      * Create a detached, initialised ProductPlotRecord
      */
-    public ProductPlotRecord(UUID id, String exposition, String complication, String climax, String resolution, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
+    public ProductPlotRecord(UUID id, String content, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
         super(ProductPlot.PRODUCT_PLOT);
 
         setId(id);
-        setExposition(exposition);
-        setComplication(complication);
-        setClimax(climax);
-        setResolution(resolution);
+        setContent(content);
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
         setUpdatedAt(updatedAt);
@@ -202,10 +154,7 @@ public class ProductPlotRecord extends UpdatableRecordImpl<ProductPlotRecord> {
 
         if (value != null) {
             setId(value.getId());
-            setExposition(value.getExposition());
-            setComplication(value.getComplication());
-            setClimax(value.getClimax());
-            setResolution(value.getResolution());
+            setContent(value.getContent());
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
             setUpdatedAt(value.getUpdatedAt());

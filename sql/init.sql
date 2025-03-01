@@ -134,6 +134,7 @@ create table product_custom_field
         constraint product_custom_field_pk
             primary key,
     product_id   uuid                           not null,
+    section_id   uuid                           not null,
     section_type varchar(20)                    not null,
     name         varchar(30)                    not null,
     content      text                           not null,
@@ -144,9 +145,9 @@ create table product_custom_field
     updated_by   uuid                           not null
 );
 
-comment on table product_custom_field is '작품 커스텀 필드';
 comment on column product_custom_field.id is '커스텀 필드 ID';
 comment on column product_custom_field.product_id is '작품 ID';
+comment on column product_custom_field.section_id is '섹션 ID';
 comment on column product_custom_field.section_type is '섹션 타입';
 comment on column product_custom_field.name is '이름';
 comment on column product_custom_field.content is '내용';
@@ -158,6 +159,7 @@ comment on column product_custom_field.updated_by is '수정자 ID';
 
 alter table product_custom_field
     owner to postgres;
+
 
 --product_ideanote
 create table product_ideanote
@@ -219,25 +221,19 @@ alter table product_memo
 --product_plot
 create table product_plot
 (
-    id           uuid      not null
+    id         uuid      not null
         constraint product_plot_pk
             primary key,
-    exposition   text,
-    complication text,
-    climax       text,
-    resolution   text,
-    created_at   timestamp not null,
-    created_by   uuid      not null,
-    updated_at   timestamp not null,
-    updated_by   uuid      not null
+    content    text,
+    created_at timestamp not null,
+    created_by uuid      not null,
+    updated_at timestamp not null,
+    updated_by uuid      not null
 );
 
 comment on table product_plot is '작품 줄거리';
 comment on column product_plot.id is '줄거리 ID';
-comment on column product_plot.exposition is '발단';
-comment on column product_plot.complication is '전개';
-comment on column product_plot.climax is '위기';
-comment on column product_plot.climax is '결말';
+comment on column product_plot.content is '내용';
 comment on column product_plot.created_at is '생성일시';
 comment on column product_plot.created_by is '생성자 ID';
 comment on column product_plot.updated_at is '수정일시';

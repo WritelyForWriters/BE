@@ -1,5 +1,6 @@
 package com.writely.assistant.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.writely.product.domain.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -7,21 +8,18 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserSetting {
 
     private final Synopsis synopsis;
     private final Worldview worldview;
-    private final List<Character> character;
+    private final List<Character> characters;
     private final Plot plot;
     private final IdeaNote ideaNote;
-    private final List<CustomField> customField;
 
     public UserSetting(Product product) {
-        this.character = product.getCharacters().stream()
+        this.characters = product.getCharacters().stream()
             .map(UserSetting.Character::new)
-            .toList();
-        this.customField = product.getCustomFields().stream()
-            .map(UserSetting.CustomField::new)
             .toList();
         this.ideaNote = product.getIdeaNote() != null ? new UserSetting.IdeaNote(product.getIdeaNote()) : null;
         this.plot = product.getPlot() != null ? new UserSetting.Plot(product.getPlot()) : null;
@@ -30,6 +28,7 @@ public class UserSetting {
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Character {
 
         @Schema(title = "소개", nullable = true)
@@ -50,6 +49,8 @@ public class UserSetting {
         private final String characteristic;
         @Schema(name = "주요관계", nullable = true)
         private final String relationship;
+        @Schema(name = "커스텀 필드 목록", nullable = true)
+        private final List<CustomField> customFields;
 
         public Character(ProductCharacter character) {
             this.intro = character.getIntro();
@@ -61,27 +62,29 @@ public class UserSetting {
             this.personality = character.getPersonality();
             this.characteristic = character.getCharacteristic();
             this.relationship = character.getRelationship();
+            this.customFields = character.getCustomFields().stream()
+                .map(CustomField::new)
+                .toList();
         }
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CustomField {
 
-        @Schema(title = "섹션 코드")
-        private final String section_code;
         @Schema(title = "필드 이름")
         private final String custom_field_name;
         @Schema(title = "필드 내용")
         private final String custom_field_content;
 
         public CustomField(ProductCustomField customField) {
-            this.section_code = customField.getSectionType().getCode();
             this.custom_field_name = customField.getName();
             this.custom_field_content = customField.getContent();
         }
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class IdeaNote {
 
         @Schema(title = "제목", nullable = true)
@@ -96,26 +99,19 @@ public class UserSetting {
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Plot {
 
-        @Schema(title = "발단", nullable = true)
-        private final String exposition;
-        @Schema(title = "전개", nullable = true)
-        private final String complication;
-        @Schema(title = "위기", nullable = true)
-        private final String climax;
-        @Schema(title = "결말", nullable = true)
-        private final String resolution;
+        @Schema(title = "내용", nullable = true)
+        private final String content;
 
         public Plot(ProductPlot plot) {
-            this.exposition = plot.getExposition();
-            this.complication = plot.getComplication();
-            this.climax = plot.getClimax();
-            this.resolution = plot.getResolution();
+            this.content = plot.getContent();
         }
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Synopsis {
 
         @Schema(title = "장르")
@@ -124,7 +120,7 @@ public class UserSetting {
         private final String length;
         @Schema(title = "기획 의도", nullable = true)
         private final String purpose;
-        @Schema(title = "로그라인", nullable = true)
+        @Schema(title = "로그라인")
         private final String logline;
         @Schema(title = "예시 문장", nullable = true)
         private final String example;
@@ -139,6 +135,7 @@ public class UserSetting {
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Worldview {
 
         @Schema(title = "지리", nullable = true)
@@ -167,7 +164,8 @@ public class UserSetting {
         private final String occupation;
         @Schema(title = "갈등 관계", nullable = true)
         private final String conflict;
-        private final String custom_field;
+        @Schema(name = "커스텀 필드 목록", nullable = true)
+        private final List<CustomField> customFields;
 
         public Worldview(ProductWorldview worldview) {
             this.geography = worldview.getGeography();
@@ -183,7 +181,9 @@ public class UserSetting {
             this.species = worldview.getSpecies();
             this.occupation = worldview.getOccupation();
             this.conflict = worldview.getConflict();
-            this.custom_field = "";
+            this.customFields = worldview.getCustomFields().stream()
+                .map(CustomField::new)
+                .toList();
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.writely.product.response;
 
 import com.writely.product.domain.*;
-import com.writely.product.domain.enums.ProductSectionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,6 @@ public class ProductTemplateResponse {
 
     private final UUID id;
     private final List<Character> characters;
-    private final List<CustomField> customFields;
     private final IdeaNote ideaNote;
     private final Plot plot;
     private final Synopsis synopsis;
@@ -24,9 +22,6 @@ public class ProductTemplateResponse {
         this.id = product.getId();
         this.characters = product.getCharacters().stream()
             .map(Character::new)
-            .toList();
-        this.customFields = product.getCustomFields().stream()
-            .map(CustomField::new)
             .toList();
         this.ideaNote = product.getIdeaNote() != null ? new IdeaNote(product.getIdeaNote()) : null;
         this.plot = product.getPlot() != null ? new Plot(product.getPlot()) : null;
@@ -57,6 +52,8 @@ public class ProductTemplateResponse {
         private final String characteristic;
         @Schema(name = "주요관계", nullable = true)
         private final String relationship;
+        @Schema(name = "커스텀 필드 목록", nullable = true)
+        private final List<CustomField> customFields;
 
         public Character(ProductCharacter character) {
             this.id = character.getId();
@@ -69,6 +66,9 @@ public class ProductTemplateResponse {
             this.personality = character.getPersonality();
             this.characteristic = character.getCharacteristic();
             this.relationship = character.getRelationship();
+            this.customFields = character.getCustomFields().stream()
+                .map(CustomField::new)
+                .toList();
         }
     }
 
@@ -77,8 +77,6 @@ public class ProductTemplateResponse {
     public static class CustomField {
 
         private final UUID id;
-        @Schema(title = "섹션 코드")
-        private final ProductSectionType sectionType;
         @Schema(title = "필드 이름")
         private final String name;
         @Schema(title = "필드 내용")
@@ -88,7 +86,6 @@ public class ProductTemplateResponse {
 
         public CustomField(ProductCustomField customField) {
             this.id = customField.getId();
-            this.sectionType = customField.getSectionType();
             this.name = customField.getName();
             this.content = customField.getContent();
             this.seq = customField.getSeq();
@@ -117,21 +114,12 @@ public class ProductTemplateResponse {
     public static class Plot {
 
         private final UUID id;
-        @Schema(title = "발단", nullable = true)
-        private final String exposition;
-        @Schema(title = "전개", nullable = true)
-        private final String complication;
-        @Schema(title = "위기", nullable = true)
-        private final String climax;
-        @Schema(title = "결말", nullable = true)
-        private final String resolution;
+        @Schema(title = "내용", nullable = true)
+        private final String content;
 
         public Plot(ProductPlot plot) {
             this.id = plot.getId();
-            this.exposition = plot.getExposition();
-            this.complication = plot.getComplication();
-            this.climax = plot.getClimax();
-            this.resolution = plot.getResolution();
+            this.content = plot.getContent();
         }
     }
 
@@ -192,6 +180,8 @@ public class ProductTemplateResponse {
         private final String occupation;
         @Schema(title = "갈등 관계", nullable = true)
         private final String conflict;
+        @Schema(name = "커스텀 필드 목록", nullable = true)
+        private final List<CustomField> customFields;
 
         public Worldview(ProductWorldview worldview) {
             this.id = worldview.getId();
@@ -208,6 +198,9 @@ public class ProductTemplateResponse {
             this.species = worldview.getSpecies();
             this.occupation = worldview.getOccupation();
             this.conflict = worldview.getConflict();
+            this.customFields = worldview.getCustomFields().stream()
+                .map(CustomField::new)
+                .toList();
         }
     }
 }

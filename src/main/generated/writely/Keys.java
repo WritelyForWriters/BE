@@ -10,6 +10,7 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
 import writely.tables.AutoModifyMessage;
+import writely.tables.LoginAttempt;
 import writely.tables.Member;
 import writely.tables.MemberPassword;
 import writely.tables.Product;
@@ -23,6 +24,7 @@ import writely.tables.ProductWorldview;
 import writely.tables.Terms;
 import writely.tables.TermsAgreement;
 import writely.tables.records.AutoModifyMessageRecord;
+import writely.tables.records.LoginAttemptRecord;
 import writely.tables.records.MemberPasswordRecord;
 import writely.tables.records.MemberRecord;
 import writely.tables.records.ProductCharacterRecord;
@@ -49,6 +51,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<AutoModifyMessageRecord> AUTO_MODIFY_MESSAGE_PK = Internal.createUniqueKey(AutoModifyMessage.AUTO_MODIFY_MESSAGE, DSL.name("auto_modify_message_pk"), new TableField[] { AutoModifyMessage.AUTO_MODIFY_MESSAGE.ID }, true);
+    public static final UniqueKey<LoginAttemptRecord> LOGIN_ATTEMPT_PK = Internal.createUniqueKey(LoginAttempt.LOGIN_ATTEMPT, DSL.name("login_attempt_pk"), new TableField[] { LoginAttempt.LOGIN_ATTEMPT.ID }, true);
     public static final UniqueKey<MemberRecord> EMAIL_UK = Internal.createUniqueKey(Member.MEMBER, DSL.name("email_uk"), new TableField[] { Member.MEMBER.EMAIL }, true);
     public static final UniqueKey<MemberRecord> MEMBER_PK = Internal.createUniqueKey(Member.MEMBER, DSL.name("member_pk"), new TableField[] { Member.MEMBER.ID }, true);
     public static final UniqueKey<MemberRecord> NICKNAME_UK = Internal.createUniqueKey(Member.MEMBER, DSL.name("nickname_uk"), new TableField[] { Member.MEMBER.NICKNAME }, true);

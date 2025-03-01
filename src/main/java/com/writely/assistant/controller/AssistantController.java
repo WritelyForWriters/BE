@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/assistant")
-@Tag(name = "AI 어시스턴트 - 자동 수정")
+@Tag(name = "AI 어시스턴트")
 public class AssistantController {
 
     private final AutoModifyService autoModifyService;
