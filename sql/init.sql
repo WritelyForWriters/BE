@@ -362,3 +362,21 @@ comment on column auto_modify_message.updated_by is '수정자 ID';
 
 alter table auto_modify_message
     owner to postgres;
+
+create table user_modify_message
+(
+    id         uuid default gen_random_uuid() not null
+        constraint user_modify_message_pk
+            primary key,
+    product_id uuid                           not null,
+    role       varchar(10)                    not null,
+    content    text                           not null,
+    prompt     text                           not null,
+    created_at timestamp                      not null,
+    created_by uuid                           not null,
+    updated_at timestamp                      not null,
+    updated_by uuid                           not null
+);
+
+alter table user_modify_message
+    owner to postgres;

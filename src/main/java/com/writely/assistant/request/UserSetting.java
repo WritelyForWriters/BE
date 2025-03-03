@@ -50,7 +50,7 @@ public class UserSetting {
         @Schema(name = "주요관계", nullable = true)
         private final String relationship;
         @Schema(name = "커스텀 필드 목록", nullable = true)
-        private final List<CustomField> customFields;
+        private final List<CustomField> custom_fields;
 
         public Character(ProductCharacter character) {
             this.intro = character.getIntro();
@@ -62,7 +62,7 @@ public class UserSetting {
             this.personality = character.getPersonality();
             this.characteristic = character.getCharacteristic();
             this.relationship = character.getRelationship();
-            this.customFields = character.getCustomFields().stream()
+            this.custom_fields = character.getCustomFields().stream()
                 .map(CustomField::new)
                 .toList();
         }
@@ -165,7 +165,7 @@ public class UserSetting {
         @Schema(title = "갈등 관계", nullable = true)
         private final String conflict;
         @Schema(name = "커스텀 필드 목록", nullable = true)
-        private final List<CustomField> customFields;
+        private final List<CustomField> custom_fields;
 
         public Worldview(ProductWorldview worldview) {
             this.geography = worldview.getGeography();
@@ -181,7 +181,7 @@ public class UserSetting {
             this.species = worldview.getSpecies();
             this.occupation = worldview.getOccupation();
             this.conflict = worldview.getConflict();
-            this.customFields = worldview.getCustomFields().stream()
+            this.custom_fields = worldview.getCustomFields().stream()
                 .map(CustomField::new)
                 .toList();
         }

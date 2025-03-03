@@ -1,10 +1,10 @@
 package com.writely.assistant.service;
 
-import com.writely.assistant.domain.automodify.AutoModifyMessage;
-import com.writely.assistant.domain.automodify.AutoModifyMessageJpaRepository;
 import com.writely.assistant.domain.enums.AssistantException;
 import com.writely.assistant.domain.enums.MessageSenderRole;
-import com.writely.assistant.request.AutoModifyMessageRequest;
+import com.writely.assistant.domain.usermodify.UserModifyMessage;
+import com.writely.assistant.domain.usermodify.UserModifyMessageJpaRepository;
+import com.writely.assistant.request.UserModifyMessageRequest;
 import com.writely.assistant.request.UserSetting;
 import com.writely.common.exception.BaseException;
 import com.writely.common.util.LogUtil;
@@ -25,35 +25,37 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AutoModifyService {
+public class UserModifyService {
 
     @Value("${service.assistant.url}")
     private String assistantUrl;
 
     private final long TIMEOUT = 180_000L;
 
-    private final AutoModifyMessageJpaRepository autoModifyMessageRepository;
+    private final UserModifyMessageJpaRepository userModifyMessageJpaRepository;
     private final ProductQueryService productQueryService;
 
     @Transactional
-    public UUID createMessage(AutoModifyMessageRequest request) {
+    public UUID createMessage(UserModifyMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        AutoModifyMessage autoModifyMemberMessage = new AutoModifyMessage(request.getProductId(), MessageSenderRole.MEMBER, request.getContent());
-        return autoModifyMessageRepository.save(autoModifyMemberMessage).getId();
+        UserModifyMessage userModifyMemberMessage =
+            new UserModifyMessage(request.getProductId(), MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
+        return userModifyMessageJpaRepository.save(userModifyMemberMessage).getId();
     }
 
     public SseEmitter sendMessage(UUID productId, UUID messageId) {
         productQueryService.verifyExist(productId);
-        AutoModifyMessage message = getById(messageId);
+        UserModifyMessage message = getById(messageId);
 
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("tenant_id", "1");
-        requestMap.put("query", message.getContent());
         requestMap.put("user_setting", new UserSetting(productQueryService.getById(productId)));
+        requestMap.put("query", message.getContent());
+        requestMap.put("how_polish", message.getPrompt());
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
-        WebClient.create(assistantUrl + "/v1/assistant/auto-modify/stream")
+        WebClient.create(assistantUrl + "/v1/assistant/user-modify/stream")
             .post()
             .bodyValue(requestMap)
             .retrieve()
@@ -83,8 +85,8 @@ public class AutoModifyService {
         return emitter;
     }
 
-    private AutoModifyMessage getById(UUID messageId) {
-        return autoModifyMessageRepository.findById(messageId)
+    private UserModifyMessage getById(UUID messageId) {
+        return userModifyMessageJpaRepository.findById(messageId)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
     }
 }
