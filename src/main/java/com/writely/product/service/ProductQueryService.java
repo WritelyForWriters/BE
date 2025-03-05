@@ -51,4 +51,10 @@ public class ProductQueryService {
             .map(ProductMemoResponse::new)
             .toList();
     }
+
+    public void verifyExist(UUID productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new BaseException(ProductException.NOT_EXIST);
+        }
+    }
 }
