@@ -1,126 +1,50 @@
 plugins {
 	id 'java'
+	id 'java-library'
 	id 'org.springframework.boot' version '3.3.7'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'nu.studer.jooq' version '9.0'
 }
 
-group = 'com'
-version = '0.0.1-SNAPSHOT'
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
-repositories {
-	mavenCentral()
-}
-
-jar {
+bootJar {
 	enabled = false
 }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+allprojects {
+	group = 'writeon'
+	version = '0.0.1-SNAPSHOT'
 
-	/* DB */
-	runtimeOnly 'org.postgresql:postgresql'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	apply plugin: 'java'
+	apply plugin: 'java-library'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
 
-	/* jooq */
-	implementation 'org.springframework.boot:spring-boot-starter-jooq'
-		jooqGenerator 'org.postgresql:postgresql'
-
-	/* Lombok */
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	/* Mail */
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
-	/* Template engine */
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-
-	/* Common Util */
-	implementation 'org.apache.commons:commons-lang3:3.12.0'
-	implementation 'commons-io:commons-io:2.13.0'
-	implementation 'com.auth0:java-jwt:4.4.0'
-
-	/* Swagger */
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-
-	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
-}
-
-task copySecret(type: Copy) {
-	copy {
-		from './BE-secret'
-		include "*.yml"
-		into 'src/main/resources'
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(21)
+		}
 	}
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-def jooqDir = "src/main/generated"
-
-sourceSets {
-	main.java.srcDirs += [ jooqDir ]
-}
-
-tasks.withType(JavaCompile).configureEach {
-	options.getGeneratedSourceOutputDirectory().set(file(jooqDir))
-}
-
-jooq {
-	version = dependencyManagement.importedProperties['jooq.version']
-	edition = nu.studer.gradle.jooq.JooqEdition.OSS
 
 	configurations {
-		main {
-			generateSchemaSourceOnCompilation = false
-
-			generationTool {
-				logging = org.jooq.meta.jaxb.Logging.DEBUG
-				jdbc {
-					driver = 'org.postgresql.Driver'
-					url = 'jdbc:postgresql://db-instance-postgres.cv2280c0874d.ap-northeast-2.rds.amazonaws.com:5432/service'
-					user = 'postgres'
-					password = 'Writely0101%'
-				}
-				generator {
-					name = 'org.jooq.codegen.DefaultGenerator'
-					database {
-						name = 'org.jooq.meta.postgres.PostgresDatabase'
-						inputSchema = 'public'
-					}
-					generate {
-						deprecated = false
-						records = true
-						immutablePojos = true
-						fluentSetters = true
-					}
-					target {
-						packageName = 'writely'
-						directory = 'src/main/generated'
-					}
-					strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
-				}
-			}
+		compileOnly {
+			extendsFrom annotationProcessor
 		}
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+		/* Lombok */
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+
+		/* Common Util */
+		implementation 'org.apache.commons:commons-lang3:3.12.0'
+		implementation 'commons-io:commons-io:2.13.0'
+		implementation 'com.auth0:java-jwt:4.4.0'
 	}
 }
