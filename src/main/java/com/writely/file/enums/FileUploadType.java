@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public enum FileUploadType implements Codable {
-    IDEA_NOTE("idea-note", "/idea-note");
+    IDEA_NOTE("idea-note", "idea-note");
 
     private final String code;
     private final String path;

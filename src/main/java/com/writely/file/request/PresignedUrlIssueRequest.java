@@ -12,8 +12,9 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 public class PresignedUrlIssueRequest {
-    @Schema(title = "업로드 타입", requiredMode = Schema.RequiredMode.REQUIRED, example = "idea-note")
+    @Schema(title = "업로드 타입", requiredMode = Schema.RequiredMode.REQUIRED, example = "idea-note, ...")
     private FileUploadType fileUploadType;
+
     @Schema(title = "메타 데이터", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "test")
     private Map<String, String> metadata;
 }

@@ -4,6 +4,7 @@ import com.writely.file.request.PresignedUrlIssueRequest;
 import com.writely.file.response.PresignedUrlIssueResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -18,13 +19,17 @@ import java.util.UUID;
 @Slf4j
 public class FileService {
     private final S3Presigner s3Presigner;
-    private final String BUCKET_NAME = "writely-bucket";
     private final int PRESIGNED_URL_EXPIRATION_MINUTES = 10;
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+
     public PresignedUrlIssueResponse issuePresignedUrl(PresignedUrlIssueRequest params) {
+        final String uploadedFilePath = params.getFileUploadType().getPath() + "/" + UUID.randomUUID();
+
         PutObjectRequest objectRequest = PutObjectRequest.builder()
-                .bucket(BUCKET_NAME)
-                .key(params.getFileUploadType().getPath() + "/" + UUID.randomUUID())
+                .bucket(bucketName)
+                .key(uploadedFilePath)
                 .metadata(params.getMetadata())
                 .build();
 
@@ -35,7 +40,7 @@ public class FileService {
 
         PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
 
-        return new PresignedUrlIssueResponse(presignedRequest.url().toExternalForm());
+        return new PresignedUrlIssueResponse(presignedRequest.url().toExternalForm(), uploadedFilePath);
     }
 
 }
