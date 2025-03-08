@@ -53,6 +53,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
+	/* AWS SDK */
+	implementation 'software.amazon.awssdk:s3:2.30.31'
+
 	/* Common Util */
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	implementation 'commons-io:commons-io:2.13.0'
