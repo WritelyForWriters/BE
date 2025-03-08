@@ -1,9 +1,9 @@
 FROM openjdk:21-jdk-slim
 
-WORKDIR /writely
+WORKDIR /writeon
 
 ENV TZ=Asiz/Seoul
 
-COPY build/libs/*.jar writely.jar
+COPY api/build/libs/*.jar writeon.jar
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "writely.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "writeon.jar"]
