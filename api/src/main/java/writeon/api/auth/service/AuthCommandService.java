@@ -278,7 +278,6 @@ public class AuthCommandService {
     /**
      * 인증 토큰 발급 (액세스 + 리프래시)
      */
-    @Transactional
     private AuthTokenResponse generateAuthTokens(UUID memberId) {
         JwtPayload jwtPayload = JwtPayload.builder()
                 .memberId(memberId)
@@ -293,7 +292,6 @@ public class AuthCommandService {
     /**
      * 토큰 무효화 (Redis에서 관리하는 토큰의 경우)
      */
-    @Transactional
     private void invalidateToken(BaseToken token) {
         if (token instanceof RefreshToken refreshToken) {
             refreshTokenRedisRepository.delete(refreshToken);
