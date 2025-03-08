@@ -1,8 +1,8 @@
-package com.writely.file.controller;
+package writeon.api.file.controller;
 
-import com.writely.file.request.PresignedUrlIssueRequest;
-import com.writely.file.response.PresignedUrlIssueResponse;
-import com.writely.file.service.FileService;
+import writeon.api.file.request.PresignedUrlIssueRequest;
+import writeon.api.file.response.PresignedUrlIssueResponse;
+import writeon.api.file.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

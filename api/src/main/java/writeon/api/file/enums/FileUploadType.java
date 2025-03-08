@@ -1,13 +1,13 @@
-package com.writely.file.enums;
+package writeon.api.file.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.writely.common.converter.AbstractEnumCodeConverter;
-import com.writely.common.enums.Codable;
 import jakarta.persistence.Converter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import writeon.domain.common.converter.AbstractEnumCodeConverter;
+import writeon.domain.common.enums.Codable;
 
 @Getter
 @RequiredArgsConstructor

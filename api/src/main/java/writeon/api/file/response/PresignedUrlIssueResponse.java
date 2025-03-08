@@ -1,4 +1,4 @@
-package com.writely.file.response;
+package writeon.api.file.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
-package com.writely.file.service;
+package writeon.api.file.service;
 
-import com.writely.file.request.PresignedUrlIssueRequest;
-import com.writely.file.response.PresignedUrlIssueResponse;
+import writeon.api.file.request.PresignedUrlIssueRequest;
+import writeon.api.file.response.PresignedUrlIssueResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

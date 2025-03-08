@@ -1,6 +1,6 @@
-package com.writely.file.request;
+package writeon.api.file.request;
 
-import com.writely.file.enums.FileUploadType;
+import writeon.api.file.enums.FileUploadType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
