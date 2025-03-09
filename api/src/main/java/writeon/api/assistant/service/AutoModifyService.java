@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.AutoModifyMessageRequest;
+import writeon.api.assistant.request.AssistantAutoModifyMessageRequest;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
 import writeon.api.product.service.ProductQueryService;
@@ -30,10 +30,10 @@ public class AutoModifyService {
     private final AssistantApiClient assistantApiClient;
 
     @Transactional
-    public UUID createMessage(AutoModifyMessageRequest request) {
+    public UUID createMessage(AssistantAutoModifyMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        AutoModifyMessage memberMessage = new AutoModifyMessage(request.getProductId(), MessageSenderRole.MEMBER, request.getContent());
+        AutoModifyMessage memberMessage = new AutoModifyMessage(request.getProductId(), UUID.randomUUID(), MessageSenderRole.MEMBER, request.getContent());
         return autoModifyMessageRepository.save(memberMessage).getId();
     }
 
@@ -64,7 +64,7 @@ public class AutoModifyService {
                     throw exception;
                 },
                 () -> {
-                    AutoModifyMessage assistantMessage = new AutoModifyMessage(productId, MessageSenderRole.ASSISTANT, responseBuilder.toString());
+                    AutoModifyMessage assistantMessage = new AutoModifyMessage(productId, message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString());
                     autoModifyMessageRepository.save(assistantMessage);
                     emitter.complete();
                 }

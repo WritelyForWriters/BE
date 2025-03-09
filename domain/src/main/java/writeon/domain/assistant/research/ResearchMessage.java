@@ -1,4 +1,4 @@
-package writeon.domain.assistant.feedback;
+package writeon.domain.assistant.research;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,8 +12,8 @@ import java.util.UUID;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "feedback_message")
-public class FeedbackMessage extends BaseAuditTimeEntity {
+@Table(name = "research_message")
+public class ResearchMessage extends BaseAuditTimeEntity {
 
     @Id
     @Column(updatable = false, nullable = false)
@@ -28,10 +28,14 @@ public class FeedbackMessage extends BaseAuditTimeEntity {
     @Embedded
     private MessageContent messageContent;
 
-    public FeedbackMessage(UUID productId, UUID assistantId, MessageSenderRole role, String content) {
+    @Column(name = "prompt")
+    private String prompt;
+
+    public ResearchMessage(UUID productId, UUID assistantId, MessageSenderRole role, String content, String prompt) {
         this.productId = productId;
         this.assistantId = assistantId;
         this.messageContent = new MessageContent(role, content);
+        this.prompt = prompt;
     }
 
     public MessageSenderRole getRole() {

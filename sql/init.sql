@@ -335,24 +335,25 @@ comment on column product_worldview.updated_by is '수정자 ID';
 alter table product_worldview
     owner to postgres;
 
--- auto_modify_message
 create table auto_modify_message
 (
-    id         uuid default gen_random_uuid() not null
+    id           uuid default gen_random_uuid() not null
         constraint auto_modify_message_pk
             primary key,
-    product_id uuid                           not null,
-    role       varchar(10)                    not null,
-    content    text,
-    created_at timestamp                      not null,
-    created_by uuid                           not null,
-    updated_at timestamp                      not null,
-    updated_by uuid                           not null
+    product_id   uuid                           not null,
+    assistant_id uuid                           not null,
+    role         varchar(10)                    not null,
+    content      text                           not null,
+    created_at   timestamp                      not null,
+    created_by   uuid                           not null,
+    updated_at   timestamp                      not null,
+    updated_by   uuid                           not null
 );
 
 comment on table auto_modify_message is '자동 수정 메세지';
 comment on column auto_modify_message.id is '자동 수정 메세지 ID';
 comment on column auto_modify_message.product_id is '작품 ID';
+comment on column auto_modify_message.assistant_id is '어시스턴트 ID';
 comment on column auto_modify_message.role is '메세지 송신자';
 comment on column auto_modify_message.content is '내용';
 comment on column auto_modify_message.created_at is '생성일시';
@@ -365,17 +366,18 @@ alter table auto_modify_message
 
 create table user_modify_message
 (
-    id         uuid default gen_random_uuid() not null
+    id           uuid default gen_random_uuid() not null
         constraint user_modify_message_pk
             primary key,
-    product_id uuid                           not null,
-    role       varchar(10)                    not null,
-    content    text                           not null,
-    prompt     text,
-    created_at timestamp                      not null,
-    created_by uuid                           not null,
-    updated_at timestamp                      not null,
-    updated_by uuid                           not null
+    product_id   uuid                           not null,
+    assistant_id uuid                           not null,
+    role         varchar(10)                    not null,
+    content      text                           not null,
+    prompt       text,
+    created_at   timestamp                      not null,
+    created_by   uuid                           not null,
+    updated_at   timestamp                      not null,
+    updated_by   uuid                           not null
 );
 
 alter table user_modify_message
@@ -383,21 +385,23 @@ alter table user_modify_message
 
 create table feedback_message
 (
-    id         uuid default gen_random_uuid() not null
+    id           uuid default gen_random_uuid() not null
         constraint feedback_message_pk
             primary key,
-    product_id uuid                           not null,
-    role       varchar(10)                    not null,
-    content    text                           not null,
-    created_at timestamp                      not null,
-    created_by uuid                           not null,
-    updated_at timestamp                      not null,
-    updated_by uuid                           not null
+    product_id   uuid                           not null,
+    assistant_id uuid                           not null,
+    role         varchar(10)                    not null,
+    content      text                           not null,
+    created_at   timestamp                      not null,
+    created_by   uuid                           not null,
+    updated_at   timestamp                      not null,
+    updated_by   uuid                           not null
 );
 
 comment on table feedback_message is '피드백 메세지';
 comment on column feedback_message.id is '피드백 메세지 ID';
 comment on column feedback_message.product_id is '작품 ID';
+comment on column feedback_message.assistant_id is '어시스턴트 ID';
 comment on column feedback_message.role is '메세지 송신자';
 comment on column feedback_message.content is '내용';
 comment on column feedback_message.created_at is '생성일시';
@@ -407,4 +411,36 @@ comment on column feedback_message.updated_by is '수정자 ID';
 
 alter table feedback_message
     owner to postgres;
+
+create table research_message
+(
+    id           uuid default gen_random_uuid() not null
+        constraint research_message_pk
+            primary key,
+    product_id   uuid                           not null,
+    assistant_id uuid                           not null,
+    role         varchar(10)                    not null,
+    content      text,
+    prompt       text,
+    created_at   timestamp                      not null,
+    created_by   uuid                           not null,
+    updated_at   timestamp                      not null,
+    updated_by   uuid                           not null
+);
+
+comment on table research_message is '자유 대화 메세지';
+comment on column research_message.id is '자유 대화 메세지 ID';
+comment on column research_message.product_id is '작품 ID';
+comment on column research_message.assistant_id is '어시스턴트 ID';
+comment on column research_message.role is '메세지 송신자';
+comment on column research_message.content is '내용';
+comment on column research_message.prompt is '프롬프트';
+comment on column research_message.created_at is '생성일시';
+comment on column research_message.created_by is '생성자 ID';
+comment on column research_message.updated_at is '수정일시';
+comment on column research_message.updated_by is '수정자 ID';
+
+alter table research_message
+    owner to postgres;
+
 
