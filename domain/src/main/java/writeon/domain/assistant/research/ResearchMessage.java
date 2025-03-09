@@ -19,9 +19,6 @@ public class ResearchMessage extends BaseAuditTimeEntity {
     @Column(updatable = false, nullable = false)
     private final UUID id = UUID.randomUUID();
 
-    @Column(name = "product_id", nullable = false)
-    private UUID productId;
-
     @Column(name = "assistant_id", nullable = false)
     private UUID assistantId;
 
@@ -31,8 +28,7 @@ public class ResearchMessage extends BaseAuditTimeEntity {
     @Column(name = "prompt")
     private String prompt;
 
-    public ResearchMessage(UUID productId, UUID assistantId, MessageSenderRole role, String content, String prompt) {
-        this.productId = productId;
+    public ResearchMessage(UUID assistantId, MessageSenderRole role, String content, String prompt) {
         this.assistantId = assistantId;
         this.messageContent = new MessageContent(role, content);
         this.prompt = prompt;

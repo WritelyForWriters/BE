@@ -37,25 +37,10 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
     }
 
     /**
-     * Setter for <code>public.user_modify_message.product_id</code>.
-     */
-    public UserModifyMessageRecord setProductId(UUID value) {
-        set(1, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>public.user_modify_message.product_id</code>.
-     */
-    public UUID getProductId() {
-        return (UUID) get(1);
-    }
-
-    /**
      * Setter for <code>public.user_modify_message.assistant_id</code>.
      */
     public UserModifyMessageRecord setAssistantId(UUID value) {
-        set(2, value);
+        set(1, value);
         return this;
     }
 
@@ -63,14 +48,14 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.assistant_id</code>.
      */
     public UUID getAssistantId() {
-        return (UUID) get(2);
+        return (UUID) get(1);
     }
 
     /**
      * Setter for <code>public.user_modify_message.role</code>.
      */
     public UserModifyMessageRecord setRole(String value) {
-        set(3, value);
+        set(2, value);
         return this;
     }
 
@@ -78,14 +63,14 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.role</code>.
      */
     public String getRole() {
-        return (String) get(3);
+        return (String) get(2);
     }
 
     /**
      * Setter for <code>public.user_modify_message.content</code>.
      */
     public UserModifyMessageRecord setContent(String value) {
-        set(4, value);
+        set(3, value);
         return this;
     }
 
@@ -93,14 +78,14 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.content</code>.
      */
     public String getContent() {
-        return (String) get(4);
+        return (String) get(3);
     }
 
     /**
      * Setter for <code>public.user_modify_message.prompt</code>.
      */
     public UserModifyMessageRecord setPrompt(String value) {
-        set(5, value);
+        set(4, value);
         return this;
     }
 
@@ -108,14 +93,14 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.prompt</code>.
      */
     public String getPrompt() {
-        return (String) get(5);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.user_modify_message.created_at</code>.
      */
     public UserModifyMessageRecord setCreatedAt(LocalDateTime value) {
-        set(6, value);
+        set(5, value);
         return this;
     }
 
@@ -123,14 +108,14 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.created_at</code>.
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(6);
+        return (LocalDateTime) get(5);
     }
 
     /**
      * Setter for <code>public.user_modify_message.created_by</code>.
      */
     public UserModifyMessageRecord setCreatedBy(UUID value) {
-        set(7, value);
+        set(6, value);
         return this;
     }
 
@@ -138,14 +123,14 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.created_by</code>.
      */
     public UUID getCreatedBy() {
-        return (UUID) get(7);
+        return (UUID) get(6);
     }
 
     /**
      * Setter for <code>public.user_modify_message.updated_at</code>.
      */
     public UserModifyMessageRecord setUpdatedAt(LocalDateTime value) {
-        set(8, value);
+        set(7, value);
         return this;
     }
 
@@ -153,14 +138,14 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.updated_at</code>.
      */
     public LocalDateTime getUpdatedAt() {
-        return (LocalDateTime) get(8);
+        return (LocalDateTime) get(7);
     }
 
     /**
      * Setter for <code>public.user_modify_message.updated_by</code>.
      */
     public UserModifyMessageRecord setUpdatedBy(UUID value) {
-        set(9, value);
+        set(8, value);
         return this;
     }
 
@@ -168,7 +153,7 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
      * Getter for <code>public.user_modify_message.updated_by</code>.
      */
     public UUID getUpdatedBy() {
-        return (UUID) get(9);
+        return (UUID) get(8);
     }
 
     // -------------------------------------------------------------------------
@@ -194,11 +179,10 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
     /**
      * Create a detached, initialised UserModifyMessageRecord
      */
-    public UserModifyMessageRecord(UUID id, UUID productId, UUID assistantId, String role, String content, String prompt, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
+    public UserModifyMessageRecord(UUID id, UUID assistantId, String role, String content, String prompt, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
         super(UserModifyMessage.USER_MODIFY_MESSAGE);
 
         setId(id);
-        setProductId(productId);
         setAssistantId(assistantId);
         setRole(role);
         setContent(content);
@@ -218,7 +202,6 @@ public class UserModifyMessageRecord extends UpdatableRecordImpl<UserModifyMessa
 
         if (value != null) {
             setId(value.getId());
-            setProductId(value.getProductId());
             setAssistantId(value.getAssistantId());
             setRole(value.getRole());
             setContent(value.getContent());

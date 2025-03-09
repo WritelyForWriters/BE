@@ -14,6 +14,8 @@ import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
+import writely.tables.Assistant;
+import writely.tables.AssistantEvaluation;
 import writely.tables.AutoModifyMessage;
 import writely.tables.FeedbackMessage;
 import writely.tables.LoginAttempt;
@@ -47,6 +49,16 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * 어시스턴트
+     */
+    public final Assistant ASSISTANT = Assistant.ASSISTANT;
+
+    /**
+     * 어시스턴트 평가
+     */
+    public final AssistantEvaluation ASSISTANT_EVALUATION = AssistantEvaluation.ASSISTANT_EVALUATION;
 
     /**
      * 자동 수정 메세지
@@ -188,6 +200,8 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            Assistant.ASSISTANT,
+            AssistantEvaluation.ASSISTANT_EVALUATION,
             AutoModifyMessage.AUTO_MODIFY_MESSAGE,
             FeedbackMessage.FEEDBACK_MESSAGE,
             LoginAttempt.LOGIN_ATTEMPT,

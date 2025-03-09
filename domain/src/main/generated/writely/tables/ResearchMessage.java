@@ -57,11 +57,6 @@ public class ResearchMessage extends TableImpl<ResearchMessageRecord> {
     public final TableField<ResearchMessageRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "자유 대화 메세지 ID");
 
     /**
-     * The column <code>public.research_message.product_id</code>. 작품 ID
-     */
-    public final TableField<ResearchMessageRecord, UUID> PRODUCT_ID = createField(DSL.name("product_id"), SQLDataType.UUID.nullable(false), this, "작품 ID");
-
-    /**
      * The column <code>public.research_message.assistant_id</code>. 어시스턴트 ID
      */
     public final TableField<ResearchMessageRecord, UUID> ASSISTANT_ID = createField(DSL.name("assistant_id"), SQLDataType.UUID.nullable(false), this, "어시스턴트 ID");

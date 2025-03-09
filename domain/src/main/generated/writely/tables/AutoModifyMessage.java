@@ -62,6 +62,11 @@ public class AutoModifyMessage extends TableImpl<AutoModifyMessageRecord> {
     public final TableField<AutoModifyMessageRecord, UUID> PRODUCT_ID = createField(DSL.name("product_id"), SQLDataType.UUID.nullable(false), this, "작품 ID");
 
     /**
+     * The column <code>public.auto_modify_message.assistant_id</code>. 어시스턴트 ID
+     */
+    public final TableField<AutoModifyMessageRecord, UUID> ASSISTANT_ID = createField(DSL.name("assistant_id"), SQLDataType.UUID.nullable(false), this, "어시스턴트 ID");
+
+    /**
      * The column <code>public.auto_modify_message.role</code>. 메세지 송신자
      */
     public final TableField<AutoModifyMessageRecord, String> ROLE = createField(DSL.name("role"), SQLDataType.VARCHAR(10).nullable(false), this, "메세지 송신자");

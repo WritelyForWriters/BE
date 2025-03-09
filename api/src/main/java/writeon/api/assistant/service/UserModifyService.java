@@ -5,13 +5,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import writeon.api.assistant.request.AssistantUserModifyMessageRequest;
+import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.UserModifyRequest;
 import writeon.assistantapiclient.request.UserSetting;
+import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.enums.AssistantException;
+import writeon.domain.assistant.enums.AssistantStatus;
+import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.assistant.enums.MessageSenderRole;
 import writeon.domain.assistant.usermodify.UserModifyMessage;
 import writeon.domain.assistant.usermodify.UserModifyMessageJpaRepository;
@@ -26,23 +30,31 @@ public class UserModifyService {
     private final long TIMEOUT = 180_000L;
 
     private final UserModifyMessageJpaRepository userModifyMessageRepository;
-    private final ProductQueryService productQueryService;
     private final AssistantApiClient assistantApiClient;
+    private final AssistantService assistantService;
+    private final ProductQueryService productQueryService;
 
     @Transactional
-    public UUID createMessage(AssistantUserModifyMessageRequest request) {
+    public MessageCreateResponse createMessage(AssistantUserModifyMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);
         UserModifyMessage memberMessage =
-            new UserModifyMessage(request.getProductId(), UUID.randomUUID(), MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
-        return userModifyMessageRepository.save(memberMessage).getId();
+            new UserModifyMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
+        UUID messagedId = userModifyMessageRepository.save(memberMessage).getId();
+
+        return new MessageCreateResponse(assistantId, messagedId);
     }
 
-    public SseEmitter streamUserModify(UUID productId, UUID messageId) {
-        productQueryService.verifyExist(productId);
+    public SseEmitter streamUserModify(UUID assistantId, UUID messageId) {
+        Assistant assistant = assistantService.getById(assistantId);
+
+        verifyAnswered(assistantId);
+        productQueryService.verifyExist(assistant.getProductId());
+
         UserModifyMessage message = getById(messageId);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(productId));
+        UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         UserModifyRequest request = new UserModifyRequest(userSetting, message.getContent(), message.getPrompt());
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
@@ -65,8 +77,9 @@ public class UserModifyService {
                     throw exception;
                 },
                 () -> {
-                    UserModifyMessage assistantMessage = new UserModifyMessage(productId, message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString(), null);
+                    UserModifyMessage assistantMessage = new UserModifyMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString(), null);
                     userModifyMessageRepository.save(assistantMessage);
+                    assistant.updateStatus(AssistantStatus.IN_PROGRESS);
                     emitter.complete();
                 }
             );
@@ -77,5 +90,11 @@ public class UserModifyService {
     private UserModifyMessage getById(UUID messageId) {
         return userModifyMessageRepository.findById(messageId)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
+    }
+
+    private void verifyAnswered(UUID assistantId) {
+        if (userModifyMessageRepository.existsByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.ASSISTANT)) {
+            throw new BaseException(AssistantException.ALREADY_ANSWERED);
+        }
     }
 }

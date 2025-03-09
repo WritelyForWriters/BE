@@ -57,11 +57,6 @@ public class UserModifyMessage extends TableImpl<UserModifyMessageRecord> {
     public final TableField<UserModifyMessageRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "");
 
     /**
-     * The column <code>public.user_modify_message.product_id</code>.
-     */
-    public final TableField<UserModifyMessageRecord, UUID> PRODUCT_ID = createField(DSL.name("product_id"), SQLDataType.UUID.nullable(false), this, "");
-
-    /**
      * The column <code>public.user_modify_message.assistant_id</code>.
      */
     public final TableField<UserModifyMessageRecord, UUID> ASSISTANT_ID = createField(DSL.name("assistant_id"), SQLDataType.UUID.nullable(false), this, "");
