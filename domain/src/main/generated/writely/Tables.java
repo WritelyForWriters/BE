@@ -8,6 +8,8 @@ import org.jooq.Configuration;
 import org.jooq.Field;
 import org.jooq.Result;
 
+import writely.tables.Assistant;
+import writely.tables.AssistantEvaluation;
 import writely.tables.AutoModifyMessage;
 import writely.tables.FeedbackMessage;
 import writely.tables.LoginAttempt;
@@ -34,6 +36,16 @@ import writely.tables.records.PgpArmorHeadersRecord;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
+
+    /**
+     * 어시스턴트
+     */
+    public static final Assistant ASSISTANT = Assistant.ASSISTANT;
+
+    /**
+     * 어시스턴트 평가
+     */
+    public static final AssistantEvaluation ASSISTANT_EVALUATION = AssistantEvaluation.ASSISTANT_EVALUATION;
 
     /**
      * 자동 수정 메세지

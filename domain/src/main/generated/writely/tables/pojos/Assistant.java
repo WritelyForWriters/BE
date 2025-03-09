@@ -10,51 +10,47 @@ import java.util.UUID;
 
 
 /**
- * 자유 대화 메세지
+ * 어시스턴트
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
-public class ResearchMessage implements Serializable {
+public class Assistant implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final UUID id;
-    private final UUID assistantId;
-    private final String role;
-    private final String content;
-    private final String prompt;
+    private final UUID productId;
+    private final String type;
+    private final String status;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
     private final UUID updatedBy;
 
-    public ResearchMessage(ResearchMessage value) {
+    public Assistant(Assistant value) {
         this.id = value.id;
-        this.assistantId = value.assistantId;
-        this.role = value.role;
-        this.content = value.content;
-        this.prompt = value.prompt;
+        this.productId = value.productId;
+        this.type = value.type;
+        this.status = value.status;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
         this.updatedBy = value.updatedBy;
     }
 
-    public ResearchMessage(
+    public Assistant(
         UUID id,
-        UUID assistantId,
-        String role,
-        String content,
-        String prompt,
+        UUID productId,
+        String type,
+        String status,
         LocalDateTime createdAt,
         UUID createdBy,
         LocalDateTime updatedAt,
         UUID updatedBy
     ) {
         this.id = id;
-        this.assistantId = assistantId;
-        this.role = role;
-        this.content = content;
-        this.prompt = prompt;
+        this.productId = productId;
+        this.type = type;
+        this.status = status;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
@@ -62,63 +58,56 @@ public class ResearchMessage implements Serializable {
     }
 
     /**
-     * Getter for <code>public.research_message.id</code>. 자유 대화 메세지 ID
+     * Getter for <code>public.assistant.id</code>.
      */
     public UUID getId() {
         return this.id;
     }
 
     /**
-     * Getter for <code>public.research_message.assistant_id</code>. 어시스턴트 ID
+     * Getter for <code>public.assistant.product_id</code>. 작품 ID
      */
-    public UUID getAssistantId() {
-        return this.assistantId;
+    public UUID getProductId() {
+        return this.productId;
     }
 
     /**
-     * Getter for <code>public.research_message.role</code>. 메세지 송신자
+     * Getter for <code>public.assistant.type</code>. 기능 종류
      */
-    public String getRole() {
-        return this.role;
+    public String getType() {
+        return this.type;
     }
 
     /**
-     * Getter for <code>public.research_message.content</code>. 내용
+     * Getter for <code>public.assistant.status</code>. 진행 상태
      */
-    public String getContent() {
-        return this.content;
+    public String getStatus() {
+        return this.status;
     }
 
     /**
-     * Getter for <code>public.research_message.prompt</code>. 프롬프트
-     */
-    public String getPrompt() {
-        return this.prompt;
-    }
-
-    /**
-     * Getter for <code>public.research_message.created_at</code>. 생성일시
+     * Getter for <code>public.assistant.created_at</code>. 수정일시
      */
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
     /**
-     * Getter for <code>public.research_message.created_by</code>. 생성자 ID
+     * Getter for <code>public.assistant.created_by</code>. 수정자 ID
      */
     public UUID getCreatedBy() {
         return this.createdBy;
     }
 
     /**
-     * Getter for <code>public.research_message.updated_at</code>. 수정일시
+     * Getter for <code>public.assistant.updated_at</code>.
      */
     public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
     /**
-     * Getter for <code>public.research_message.updated_by</code>. 수정자 ID
+     * Getter for <code>public.assistant.updated_by</code>.
      */
     public UUID getUpdatedBy() {
         return this.updatedBy;
@@ -132,36 +121,30 @@ public class ResearchMessage implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final ResearchMessage other = (ResearchMessage) obj;
+        final Assistant other = (Assistant) obj;
         if (this.id == null) {
             if (other.id != null)
                 return false;
         }
         else if (!this.id.equals(other.id))
             return false;
-        if (this.assistantId == null) {
-            if (other.assistantId != null)
+        if (this.productId == null) {
+            if (other.productId != null)
                 return false;
         }
-        else if (!this.assistantId.equals(other.assistantId))
+        else if (!this.productId.equals(other.productId))
             return false;
-        if (this.role == null) {
-            if (other.role != null)
+        if (this.type == null) {
+            if (other.type != null)
                 return false;
         }
-        else if (!this.role.equals(other.role))
+        else if (!this.type.equals(other.type))
             return false;
-        if (this.content == null) {
-            if (other.content != null)
+        if (this.status == null) {
+            if (other.status != null)
                 return false;
         }
-        else if (!this.content.equals(other.content))
-            return false;
-        if (this.prompt == null) {
-            if (other.prompt != null)
-                return false;
-        }
-        else if (!this.prompt.equals(other.prompt))
+        else if (!this.status.equals(other.status))
             return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
@@ -195,10 +178,9 @@ public class ResearchMessage implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.assistantId == null) ? 0 : this.assistantId.hashCode());
-        result = prime * result + ((this.role == null) ? 0 : this.role.hashCode());
-        result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
-        result = prime * result + ((this.prompt == null) ? 0 : this.prompt.hashCode());
+        result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
+        result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
+        result = prime * result + ((this.status == null) ? 0 : this.status.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
@@ -208,13 +190,12 @@ public class ResearchMessage implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ResearchMessage (");
+        StringBuilder sb = new StringBuilder("Assistant (");
 
         sb.append(id);
-        sb.append(", ").append(assistantId);
-        sb.append(", ").append(role);
-        sb.append(", ").append(content);
-        sb.append(", ").append(prompt);
+        sb.append(", ").append(productId);
+        sb.append(", ").append(type);
+        sb.append(", ").append(status);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);

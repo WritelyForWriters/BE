@@ -18,7 +18,6 @@ public class UserModifyMessage implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final UUID id;
-    private final UUID productId;
     private final UUID assistantId;
     private final String role;
     private final String content;
@@ -30,7 +29,6 @@ public class UserModifyMessage implements Serializable {
 
     public UserModifyMessage(UserModifyMessage value) {
         this.id = value.id;
-        this.productId = value.productId;
         this.assistantId = value.assistantId;
         this.role = value.role;
         this.content = value.content;
@@ -43,7 +41,6 @@ public class UserModifyMessage implements Serializable {
 
     public UserModifyMessage(
         UUID id,
-        UUID productId,
         UUID assistantId,
         String role,
         String content,
@@ -54,7 +51,6 @@ public class UserModifyMessage implements Serializable {
         UUID updatedBy
     ) {
         this.id = id;
-        this.productId = productId;
         this.assistantId = assistantId;
         this.role = role;
         this.content = content;
@@ -70,13 +66,6 @@ public class UserModifyMessage implements Serializable {
      */
     public UUID getId() {
         return this.id;
-    }
-
-    /**
-     * Getter for <code>public.user_modify_message.product_id</code>.
-     */
-    public UUID getProductId() {
-        return this.productId;
     }
 
     /**
@@ -150,12 +139,6 @@ public class UserModifyMessage implements Serializable {
         }
         else if (!this.id.equals(other.id))
             return false;
-        if (this.productId == null) {
-            if (other.productId != null)
-                return false;
-        }
-        else if (!this.productId.equals(other.productId))
-            return false;
         if (this.assistantId == null) {
             if (other.assistantId != null)
                 return false;
@@ -212,7 +195,6 @@ public class UserModifyMessage implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
         result = prime * result + ((this.assistantId == null) ? 0 : this.assistantId.hashCode());
         result = prime * result + ((this.role == null) ? 0 : this.role.hashCode());
         result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
@@ -229,7 +211,6 @@ public class UserModifyMessage implements Serializable {
         StringBuilder sb = new StringBuilder("UserModifyMessage (");
 
         sb.append(id);
-        sb.append(", ").append(productId);
         sb.append(", ").append(assistantId);
         sb.append(", ").append(role);
         sb.append(", ").append(content);

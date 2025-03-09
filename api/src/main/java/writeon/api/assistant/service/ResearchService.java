@@ -9,6 +9,7 @@ import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.ResearchRequest;
 import writeon.assistantapiclient.request.UserSetting;
+import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.assistant.enums.MessageSenderRole;
 import writeon.domain.assistant.research.ResearchMessage;
 import writeon.domain.assistant.research.ResearchMessageJpaRepository;
@@ -19,19 +20,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ResearchService {
 
-    private final long TIMEOUT = 180_000L;
-
     private final ResearchMessageJpaRepository researchMessageRepository;
-    private final ProductQueryService productQueryService;
     private final AssistantApiClient assistantApiClient;
+    private final AssistantService assistantService;
+    private final ProductQueryService productQueryService;
 
     @Transactional
     public AssistantResponse research(AssistantResearchRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        UUID assistantId = UUID.randomUUID();
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.RESEARCH);
         ResearchMessage memberMessage =
-            new ResearchMessage(request.getProductId(), assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
+            new ResearchMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
         researchMessageRepository.save(memberMessage);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
@@ -40,7 +40,7 @@ public class ResearchService {
         String answer = assistantApiClient.research(researchRequest).block();
 
         ResearchMessage assistantMessage =
-            new ResearchMessage(request.getProductId(), assistantId, MessageSenderRole.ASSISTANT, answer, null);
+            new ResearchMessage(assistantId, MessageSenderRole.ASSISTANT, answer, null);
         researchMessageRepository.save(assistantMessage);
 
         return new AssistantResponse(assistantId, answer);

@@ -19,17 +19,13 @@ public class FeedbackMessage extends BaseAuditTimeEntity {
     @Column(updatable = false, nullable = false)
     private final UUID id = UUID.randomUUID();
 
-    @Column(name = "product_id", nullable = false)
-    private UUID productId;
-
     @Column(name = "assistant_id", nullable = false)
     private UUID assistantId;
 
     @Embedded
     private MessageContent messageContent;
 
-    public FeedbackMessage(UUID productId, UUID assistantId, MessageSenderRole role, String content) {
-        this.productId = productId;
+    public FeedbackMessage(UUID assistantId, MessageSenderRole role, String content) {
         this.assistantId = assistantId;
         this.messageContent = new MessageContent(role, content);
     }

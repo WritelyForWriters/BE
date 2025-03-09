@@ -19,6 +19,7 @@ public class AutoModifyMessage implements Serializable {
 
     private final UUID id;
     private final UUID productId;
+    private final UUID assistantId;
     private final String role;
     private final String content;
     private final LocalDateTime createdAt;
@@ -29,6 +30,7 @@ public class AutoModifyMessage implements Serializable {
     public AutoModifyMessage(AutoModifyMessage value) {
         this.id = value.id;
         this.productId = value.productId;
+        this.assistantId = value.assistantId;
         this.role = value.role;
         this.content = value.content;
         this.createdAt = value.createdAt;
@@ -40,6 +42,7 @@ public class AutoModifyMessage implements Serializable {
     public AutoModifyMessage(
         UUID id,
         UUID productId,
+        UUID assistantId,
         String role,
         String content,
         LocalDateTime createdAt,
@@ -49,6 +52,7 @@ public class AutoModifyMessage implements Serializable {
     ) {
         this.id = id;
         this.productId = productId;
+        this.assistantId = assistantId;
         this.role = role;
         this.content = content;
         this.createdAt = createdAt;
@@ -69,6 +73,13 @@ public class AutoModifyMessage implements Serializable {
      */
     public UUID getProductId() {
         return this.productId;
+    }
+
+    /**
+     * Getter for <code>public.auto_modify_message.assistant_id</code>. 어시스턴트 ID
+     */
+    public UUID getAssistantId() {
+        return this.assistantId;
     }
 
     /**
@@ -134,6 +145,12 @@ public class AutoModifyMessage implements Serializable {
         }
         else if (!this.productId.equals(other.productId))
             return false;
+        if (this.assistantId == null) {
+            if (other.assistantId != null)
+                return false;
+        }
+        else if (!this.assistantId.equals(other.assistantId))
+            return false;
         if (this.role == null) {
             if (other.role != null)
                 return false;
@@ -179,6 +196,7 @@ public class AutoModifyMessage implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
+        result = prime * result + ((this.assistantId == null) ? 0 : this.assistantId.hashCode());
         result = prime * result + ((this.role == null) ? 0 : this.role.hashCode());
         result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
@@ -194,6 +212,7 @@ public class AutoModifyMessage implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(productId);
+        sb.append(", ").append(assistantId);
         sb.append(", ").append(role);
         sb.append(", ").append(content);
         sb.append(", ").append(createdAt);

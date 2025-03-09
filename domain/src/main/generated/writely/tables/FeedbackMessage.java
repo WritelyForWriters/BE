@@ -62,6 +62,11 @@ public class FeedbackMessage extends TableImpl<FeedbackMessageRecord> {
     public final TableField<FeedbackMessageRecord, UUID> PRODUCT_ID = createField(DSL.name("product_id"), SQLDataType.UUID.nullable(false), this, "작품 ID");
 
     /**
+     * The column <code>public.feedback_message.assistant_id</code>. 어시스턴트 ID
+     */
+    public final TableField<FeedbackMessageRecord, UUID> ASSISTANT_ID = createField(DSL.name("assistant_id"), SQLDataType.UUID.nullable(false), this, "어시스턴트 ID");
+
+    /**
      * The column <code>public.feedback_message.role</code>. 메세지 송신자
      */
     public final TableField<FeedbackMessageRecord, String> ROLE = createField(DSL.name("role"), SQLDataType.VARCHAR(10).nullable(false), this, "메세지 송신자");
