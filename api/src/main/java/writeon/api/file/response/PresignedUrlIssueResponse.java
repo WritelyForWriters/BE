@@ -9,9 +9,9 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class PresignedUrlIssueResponse {
-    @Schema(title = "업로드 URL (presigned)", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://writely-bucket.s3.ap-northeast-2.amazonaws.com/idea-note/...")
-    private String presignedUrl;
+    @Schema(title = "파일 업로드 url (presigned)", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://writely-bucket.s3.ap-northeast-2.amazonaws.com/idea-note/...")
+    private String filePutUrl;
 
-    @Schema(title = "업로드 될 파일 경로", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://writely-bucket.s3.ap-northeast-2.amazonaws.com/idea-note/...")
-    private String uploadedFilePath;
+    @Schema(title = "파일 조회 url", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://writely-bucket.s3.ap-northeast-2.amazonaws.com/idea-note/...")
+    private String fileGetUrl;
 }

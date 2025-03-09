@@ -1,4 +1,4 @@
-package writeon.api.file.enums;
+package writeon.domain.file.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -9,14 +9,17 @@ import lombok.extern.slf4j.Slf4j;
 import writeon.domain.common.converter.AbstractEnumCodeConverter;
 import writeon.domain.common.enums.Codable;
 
+import java.util.List;
+
 @Getter
 @RequiredArgsConstructor
 @Slf4j
 public enum FileUploadType implements Codable {
-    IDEA_NOTE("idea-note", "idea-note");
+    IDEA_NOTE("idea-note", "idea-note", List.of("png", "jpeg", "jpg"));
 
     private final String code;
     private final String path;
+    private final List<String> allowedExtensions;
 
     @JsonCreator
     public static FileUploadType fromCode(final String code) {
