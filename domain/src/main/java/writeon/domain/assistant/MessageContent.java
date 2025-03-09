@@ -16,7 +16,7 @@ public class MessageContent {
     @Column(name = "role", nullable = false)
     private MessageSenderRole role;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content")
     private String content;
 
     public MessageContent(MessageSenderRole role, String content) {

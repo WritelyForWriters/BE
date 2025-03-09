@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.AutoModifyMessageRequest;
-import writeon.api.assistant.request.FeedbackMessageRequest;
-import writeon.api.assistant.request.UserModifyMessageRequest;
+import writeon.api.assistant.request.AssistantAutoModifyMessageRequest;
+import writeon.api.assistant.request.AssistantFeedbackMessageRequest;
+import writeon.api.assistant.request.AssistantResearchRequest;
+import writeon.api.assistant.request.AssistantUserModifyMessageRequest;
+import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.service.AutoModifyService;
 import writeon.api.assistant.service.FeedbackService;
+import writeon.api.assistant.service.ResearchService;
 import writeon.api.assistant.service.UserModifyService;
 
 import java.util.UUID;
@@ -26,23 +29,30 @@ public class AssistantController {
     private final AutoModifyService autoModifyService;
     private final FeedbackService feedbackService;
     private final UserModifyService userModifyService;
+    private final ResearchService researchService;
 
     @Operation(summary = "자동 수정 메세지 저장")
     @PostMapping("/auto-modify/messages")
-    public UUID createAutoModifyMessage(@RequestBody AutoModifyMessageRequest request) {
+    public UUID createAutoModifyMessage(@RequestBody AssistantAutoModifyMessageRequest request) {
         return autoModifyService.createMessage(request);
     }
 
     @Operation(summary = "구간 피드백 메세지 저장")
     @PostMapping("/feedback/messages")
-    public UUID createFeedbackMessage(@RequestBody FeedbackMessageRequest request) {
+    public UUID createFeedbackMessage(@RequestBody AssistantFeedbackMessageRequest request) {
         return feedbackService.createMessage(request);
     }
 
     @Operation(summary = "수동 수정 메세지 저장")
     @PostMapping("/user-modify/messages")
-    public UUID createUserModifyMessage(@RequestBody UserModifyMessageRequest request) {
+    public UUID createUserModifyMessage(@RequestBody AssistantUserModifyMessageRequest request) {
         return userModifyService.createMessage(request);
+    }
+
+    @Operation(summary = "자유 대화")
+    @PostMapping("/research")
+    public AssistantResponse research(@RequestBody AssistantResearchRequest request) {
+        return researchService.research(request);
     }
 
     @Operation(summary = "자동 수정 스트리밍")

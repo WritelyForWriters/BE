@@ -9,6 +9,7 @@ import java.util.List;
 
 import static writely.tables.Product.PRODUCT;
 
+
 @Repository
 @RequiredArgsConstructor
 public class ProductDao {

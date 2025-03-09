@@ -69,7 +69,7 @@ public class AutoModifyMessage extends TableImpl<AutoModifyMessageRecord> {
     /**
      * The column <code>public.auto_modify_message.content</code>. 내용
      */
-    public final TableField<AutoModifyMessageRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB, this, "내용");
+    public final TableField<AutoModifyMessageRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "내용");
 
     /**
      * The column <code>public.auto_modify_message.created_at</code>. 생성일시

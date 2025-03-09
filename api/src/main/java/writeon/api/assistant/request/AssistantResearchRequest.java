@@ -8,11 +8,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class UserModifyMessageRequest {
+public class AssistantResearchRequest {
 
     @Schema(title = "작품 ID")
     private UUID productId;
-    @Schema(title = "내용")
+    @Schema(title = "내용", nullable = true)
     private String content;
     @Schema(title = "프롬프트")
     private String prompt;

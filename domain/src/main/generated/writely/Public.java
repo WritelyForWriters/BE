@@ -28,8 +28,10 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
+import writely.tables.ResearchMessage;
 import writely.tables.Terms;
 import writely.tables.TermsAgreement;
+import writely.tables.UserModifyMessage;
 import writely.tables.records.PgpArmorHeadersRecord;
 
 
@@ -151,6 +153,11 @@ public class Public extends SchemaImpl {
     public final ProductWorldview PRODUCT_WORLDVIEW = ProductWorldview.PRODUCT_WORLDVIEW;
 
     /**
+     * 자유 대화 메세지
+     */
+    public final ResearchMessage RESEARCH_MESSAGE = ResearchMessage.RESEARCH_MESSAGE;
+
+    /**
      * 약관
      */
     public final Terms TERMS = Terms.TERMS;
@@ -159,6 +166,11 @@ public class Public extends SchemaImpl {
      * 약관_동의
      */
     public final TermsAgreement TERMS_AGREEMENT = TermsAgreement.TERMS_AGREEMENT;
+
+    /**
+     * The table <code>public.user_modify_message</code>.
+     */
+    public final UserModifyMessage USER_MODIFY_MESSAGE = UserModifyMessage.USER_MODIFY_MESSAGE;
 
     /**
      * No further instances allowed
@@ -190,8 +202,10 @@ public class Public extends SchemaImpl {
             ProductPlot.PRODUCT_PLOT,
             ProductSynopsis.PRODUCT_SYNOPSIS,
             ProductWorldview.PRODUCT_WORLDVIEW,
+            ResearchMessage.RESEARCH_MESSAGE,
             Terms.TERMS,
-            TermsAgreement.TERMS_AGREEMENT
+            TermsAgreement.TERMS_AGREEMENT,
+            UserModifyMessage.USER_MODIFY_MESSAGE
         );
     }
 }

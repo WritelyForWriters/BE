@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.FeedbackMessageRequest;
+import writeon.api.assistant.request.AssistantFeedbackMessageRequest;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
 import writeon.api.product.service.ProductQueryService;
@@ -30,10 +30,10 @@ public class FeedbackService {
     private final AssistantApiClient assistantApiClient;
 
     @Transactional
-    public UUID createMessage(FeedbackMessageRequest request) {
+    public UUID createMessage(AssistantFeedbackMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        FeedbackMessage memberMessage = new FeedbackMessage(request.getProductId(), MessageSenderRole.MEMBER, request.getContent());
+        FeedbackMessage memberMessage = new FeedbackMessage(request.getProductId(), UUID.randomUUID(), MessageSenderRole.MEMBER, request.getContent());
         return feedbackMessageRepository.save(memberMessage).getId();
     }
 
@@ -64,7 +64,7 @@ public class FeedbackService {
                     throw exception;
                 },
                 () -> {
-                    FeedbackMessage assistantMessage = new FeedbackMessage(productId, MessageSenderRole.ASSISTANT, responseBuilder.toString());
+                    FeedbackMessage assistantMessage = new FeedbackMessage(productId, message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString());
                     feedbackMessageRepository.save(assistantMessage);
                     emitter.complete();
                 }
