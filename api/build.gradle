@@ -8,6 +8,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
+	/* AWS SDK */
+	implementation 'software.amazon.awssdk:s3:2.30.31'
+
 	/* Swagger */
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
