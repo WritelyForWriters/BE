@@ -8,12 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.AutoModifyMessageRequest;
-import writeon.api.assistant.request.FeedbackMessageRequest;
-import writeon.api.assistant.request.UserModifyMessageRequest;
-import writeon.api.assistant.service.AutoModifyService;
-import writeon.api.assistant.service.FeedbackService;
-import writeon.api.assistant.service.UserModifyService;
+import writeon.api.assistant.request.*;
+import writeon.api.assistant.response.AssistantResponse;
+import writeon.api.assistant.response.MessageCreateResponse;
+import writeon.api.assistant.service.*;
 
 import java.util.UUID;
 
@@ -23,35 +21,50 @@ import java.util.UUID;
 @Tag(name = "AI 어시스턴트")
 public class AssistantController {
 
+    private final AssistantService assistantService;
+    private final AssistantEvaluationService assistantEvaluationService;
     private final AutoModifyService autoModifyService;
     private final FeedbackService feedbackService;
     private final UserModifyService userModifyService;
+    private final ResearchService researchService;
 
     @Operation(summary = "자동 수정 메세지 저장")
     @PostMapping("/auto-modify/messages")
-    public UUID createAutoModifyMessage(@RequestBody AutoModifyMessageRequest request) {
+    public MessageCreateResponse createAutoModifyMessage(@RequestBody AssistantAutoModifyMessageRequest request) {
         return autoModifyService.createMessage(request);
+    }
+
+    @Operation(summary = "평가")
+    @PostMapping("/evaluations")
+    public void evaluate(@RequestBody AssistantEvaluationRequest request) {
+        assistantEvaluationService.evaluate(request);
     }
 
     @Operation(summary = "구간 피드백 메세지 저장")
     @PostMapping("/feedback/messages")
-    public UUID createFeedbackMessage(@RequestBody FeedbackMessageRequest request) {
+    public MessageCreateResponse createFeedbackMessage(@RequestBody AssistantFeedbackMessageRequest request) {
         return feedbackService.createMessage(request);
     }
 
     @Operation(summary = "수동 수정 메세지 저장")
     @PostMapping("/user-modify/messages")
-    public UUID createUserModifyMessage(@RequestBody UserModifyMessageRequest request) {
+    public MessageCreateResponse createUserModifyMessage(@RequestBody AssistantUserModifyMessageRequest request) {
         return userModifyService.createMessage(request);
+    }
+
+    @Operation(summary = "자유 대화")
+    @PostMapping("/research")
+    public AssistantResponse research(@RequestBody AssistantResearchRequest request) {
+        return researchService.research(request);
     }
 
     @Operation(summary = "자동 수정 스트리밍")
     @GetMapping("/auto-modify/stream")
     public SseEmitter streamAutoModify(
-        @RequestParam UUID productId,
+        @RequestParam UUID assistantId,
         @RequestParam UUID messageId
     ) {
-        SseEmitter emitter = autoModifyService.streamAutoModify(productId, messageId);
+        SseEmitter emitter = autoModifyService.streamAutoModify(assistantId, messageId);
         setResponseHeaderForSSE();
         return emitter;
     }
@@ -59,10 +72,10 @@ public class AssistantController {
     @Operation(summary = "구간 피드백 스트리밍")
     @GetMapping("/feedback/stream")
     public SseEmitter streamFeedback(
-        @RequestParam UUID productId,
+        @RequestParam UUID assistantId,
         @RequestParam UUID messageId
     ) {
-        SseEmitter emitter = feedbackService.streamFeedback(productId, messageId);
+        SseEmitter emitter = feedbackService.streamFeedback(assistantId, messageId);
         setResponseHeaderForSSE();
         return emitter;
     }
@@ -70,12 +83,18 @@ public class AssistantController {
     @Operation(summary = "수동 수정 스트리밍")
     @GetMapping("/user-modify/stream")
     public SseEmitter streamUserModify(
-        @RequestParam UUID productId,
+        @RequestParam UUID assistantId,
         @RequestParam UUID messageId
     ) {
-        SseEmitter emitter = userModifyService.streamUserModify(productId, messageId);
+        SseEmitter emitter = userModifyService.streamUserModify(assistantId, messageId);
         setResponseHeaderForSSE();
         return emitter;
+    }
+
+    @Operation(summary = "응답 반영")
+    @PutMapping("/reflections/{assistantId}")
+    public void reflect(@PathVariable UUID assistantId) {
+        assistantService.reflect(assistantId);
     }
 
     private void setResponseHeaderForSSE() {

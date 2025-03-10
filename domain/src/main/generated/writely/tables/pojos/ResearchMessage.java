@@ -10,51 +10,51 @@ import java.util.UUID;
 
 
 /**
- * 자동 수정 메세지
+ * 자유 대화 메세지
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
-public class AutoModifyMessage implements Serializable {
+public class ResearchMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final UUID id;
-    private final UUID productId;
     private final UUID assistantId;
     private final String role;
     private final String content;
+    private final String prompt;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
     private final UUID updatedBy;
 
-    public AutoModifyMessage(AutoModifyMessage value) {
+    public ResearchMessage(ResearchMessage value) {
         this.id = value.id;
-        this.productId = value.productId;
         this.assistantId = value.assistantId;
         this.role = value.role;
         this.content = value.content;
+        this.prompt = value.prompt;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
         this.updatedBy = value.updatedBy;
     }
 
-    public AutoModifyMessage(
+    public ResearchMessage(
         UUID id,
-        UUID productId,
         UUID assistantId,
         String role,
         String content,
+        String prompt,
         LocalDateTime createdAt,
         UUID createdBy,
         LocalDateTime updatedAt,
         UUID updatedBy
     ) {
         this.id = id;
-        this.productId = productId;
         this.assistantId = assistantId;
         this.role = role;
         this.content = content;
+        this.prompt = prompt;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
@@ -62,63 +62,63 @@ public class AutoModifyMessage implements Serializable {
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.id</code>. 자동 수정 메세지 ID
+     * Getter for <code>public.research_message.id</code>. 자유 대화 메세지 ID
      */
     public UUID getId() {
         return this.id;
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.product_id</code>. 작품 ID
-     */
-    public UUID getProductId() {
-        return this.productId;
-    }
-
-    /**
-     * Getter for <code>public.auto_modify_message.assistant_id</code>. 어시스턴트 ID
+     * Getter for <code>public.research_message.assistant_id</code>. 어시스턴트 ID
      */
     public UUID getAssistantId() {
         return this.assistantId;
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.role</code>. 메세지 송신자
+     * Getter for <code>public.research_message.role</code>. 메세지 송신자
      */
     public String getRole() {
         return this.role;
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.content</code>. 내용
+     * Getter for <code>public.research_message.content</code>. 내용
      */
     public String getContent() {
         return this.content;
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.created_at</code>. 생성일시
+     * Getter for <code>public.research_message.prompt</code>. 프롬프트
+     */
+    public String getPrompt() {
+        return this.prompt;
+    }
+
+    /**
+     * Getter for <code>public.research_message.created_at</code>. 생성일시
      */
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.created_by</code>. 생성자 ID
+     * Getter for <code>public.research_message.created_by</code>. 생성자 ID
      */
     public UUID getCreatedBy() {
         return this.createdBy;
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.updated_at</code>. 수정일시
+     * Getter for <code>public.research_message.updated_at</code>. 수정일시
      */
     public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
     /**
-     * Getter for <code>public.auto_modify_message.updated_by</code>. 수정자 ID
+     * Getter for <code>public.research_message.updated_by</code>. 수정자 ID
      */
     public UUID getUpdatedBy() {
         return this.updatedBy;
@@ -132,18 +132,12 @@ public class AutoModifyMessage implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final AutoModifyMessage other = (AutoModifyMessage) obj;
+        final ResearchMessage other = (ResearchMessage) obj;
         if (this.id == null) {
             if (other.id != null)
                 return false;
         }
         else if (!this.id.equals(other.id))
-            return false;
-        if (this.productId == null) {
-            if (other.productId != null)
-                return false;
-        }
-        else if (!this.productId.equals(other.productId))
             return false;
         if (this.assistantId == null) {
             if (other.assistantId != null)
@@ -162,6 +156,12 @@ public class AutoModifyMessage implements Serializable {
                 return false;
         }
         else if (!this.content.equals(other.content))
+            return false;
+        if (this.prompt == null) {
+            if (other.prompt != null)
+                return false;
+        }
+        else if (!this.prompt.equals(other.prompt))
             return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
@@ -195,10 +195,10 @@ public class AutoModifyMessage implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
         result = prime * result + ((this.assistantId == null) ? 0 : this.assistantId.hashCode());
         result = prime * result + ((this.role == null) ? 0 : this.role.hashCode());
         result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
+        result = prime * result + ((this.prompt == null) ? 0 : this.prompt.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
@@ -208,13 +208,13 @@ public class AutoModifyMessage implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("AutoModifyMessage (");
+        StringBuilder sb = new StringBuilder("ResearchMessage (");
 
         sb.append(id);
-        sb.append(", ").append(productId);
         sb.append(", ").append(assistantId);
         sb.append(", ").append(role);
         sb.append(", ").append(content);
+        sb.append(", ").append(prompt);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);

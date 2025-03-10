@@ -52,10 +52,25 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
     }
 
     /**
+     * Setter for <code>public.feedback_message.assistant_id</code>. 어시스턴트 ID
+     */
+    public FeedbackMessageRecord setAssistantId(UUID value) {
+        set(2, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.feedback_message.assistant_id</code>. 어시스턴트 ID
+     */
+    public UUID getAssistantId() {
+        return (UUID) get(2);
+    }
+
+    /**
      * Setter for <code>public.feedback_message.role</code>. 메세지 송신자
      */
     public FeedbackMessageRecord setRole(String value) {
-        set(2, value);
+        set(3, value);
         return this;
     }
 
@@ -63,14 +78,14 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
      * Getter for <code>public.feedback_message.role</code>. 메세지 송신자
      */
     public String getRole() {
-        return (String) get(2);
+        return (String) get(3);
     }
 
     /**
      * Setter for <code>public.feedback_message.content</code>. 내용
      */
     public FeedbackMessageRecord setContent(String value) {
-        set(3, value);
+        set(4, value);
         return this;
     }
 
@@ -78,14 +93,14 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
      * Getter for <code>public.feedback_message.content</code>. 내용
      */
     public String getContent() {
-        return (String) get(3);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.feedback_message.created_at</code>. 생성일시
      */
     public FeedbackMessageRecord setCreatedAt(LocalDateTime value) {
-        set(4, value);
+        set(5, value);
         return this;
     }
 
@@ -93,14 +108,14 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
      * Getter for <code>public.feedback_message.created_at</code>. 생성일시
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(4);
+        return (LocalDateTime) get(5);
     }
 
     /**
      * Setter for <code>public.feedback_message.created_by</code>. 생성자 ID
      */
     public FeedbackMessageRecord setCreatedBy(UUID value) {
-        set(5, value);
+        set(6, value);
         return this;
     }
 
@@ -108,14 +123,14 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
      * Getter for <code>public.feedback_message.created_by</code>. 생성자 ID
      */
     public UUID getCreatedBy() {
-        return (UUID) get(5);
+        return (UUID) get(6);
     }
 
     /**
      * Setter for <code>public.feedback_message.updated_at</code>. 수정일시
      */
     public FeedbackMessageRecord setUpdatedAt(LocalDateTime value) {
-        set(6, value);
+        set(7, value);
         return this;
     }
 
@@ -123,14 +138,14 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
      * Getter for <code>public.feedback_message.updated_at</code>. 수정일시
      */
     public LocalDateTime getUpdatedAt() {
-        return (LocalDateTime) get(6);
+        return (LocalDateTime) get(7);
     }
 
     /**
      * Setter for <code>public.feedback_message.updated_by</code>. 수정자 ID
      */
     public FeedbackMessageRecord setUpdatedBy(UUID value) {
-        set(7, value);
+        set(8, value);
         return this;
     }
 
@@ -138,7 +153,7 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
      * Getter for <code>public.feedback_message.updated_by</code>. 수정자 ID
      */
     public UUID getUpdatedBy() {
-        return (UUID) get(7);
+        return (UUID) get(8);
     }
 
     // -------------------------------------------------------------------------
@@ -164,11 +179,12 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
     /**
      * Create a detached, initialised FeedbackMessageRecord
      */
-    public FeedbackMessageRecord(UUID id, UUID productId, String role, String content, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
+    public FeedbackMessageRecord(UUID id, UUID productId, UUID assistantId, String role, String content, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
         super(FeedbackMessage.FEEDBACK_MESSAGE);
 
         setId(id);
         setProductId(productId);
+        setAssistantId(assistantId);
         setRole(role);
         setContent(content);
         setCreatedAt(createdAt);
@@ -187,6 +203,7 @@ public class FeedbackMessageRecord extends UpdatableRecordImpl<FeedbackMessageRe
         if (value != null) {
             setId(value.getId());
             setProductId(value.getProductId());
+            setAssistantId(value.getAssistantId());
             setRole(value.getRole());
             setContent(value.getContent());
             setCreatedAt(value.getCreatedAt());

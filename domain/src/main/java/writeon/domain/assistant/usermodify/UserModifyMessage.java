@@ -17,10 +17,10 @@ public class UserModifyMessage extends BaseAuditTimeEntity {
 
     @Id
     @Column(updatable = false, nullable = false)
-    private UUID id = UUID.randomUUID();
+    private final UUID id = UUID.randomUUID();
 
-    @Column(name = "product_id", nullable = false)
-    private UUID productId;
+    @Column(name = "assistant_id", nullable = false)
+    private UUID assistantId;
 
     @Embedded
     private MessageContent messageContent;
@@ -28,8 +28,8 @@ public class UserModifyMessage extends BaseAuditTimeEntity {
     @Column(name = "prompt")
     private String prompt;
 
-    public UserModifyMessage(UUID productId, MessageSenderRole role, String content, String prompt) {
-        this.productId = productId;
+    public UserModifyMessage(UUID assistantId, MessageSenderRole role, String content, String prompt) {
+        this.assistantId = assistantId;
         this.messageContent = new MessageContent(role, content);
         this.prompt = prompt;
     }

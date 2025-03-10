@@ -9,6 +9,8 @@ import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
+import writely.tables.Assistant;
+import writely.tables.AssistantEvaluation;
 import writely.tables.AutoModifyMessage;
 import writely.tables.FeedbackMessage;
 import writely.tables.LoginAttempt;
@@ -22,8 +24,12 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
+import writely.tables.ResearchMessage;
 import writely.tables.Terms;
 import writely.tables.TermsAgreement;
+import writely.tables.UserModifyMessage;
+import writely.tables.records.AssistantEvaluationRecord;
+import writely.tables.records.AssistantRecord;
 import writely.tables.records.AutoModifyMessageRecord;
 import writely.tables.records.FeedbackMessageRecord;
 import writely.tables.records.LoginAttemptRecord;
@@ -37,8 +43,10 @@ import writely.tables.records.ProductPlotRecord;
 import writely.tables.records.ProductRecord;
 import writely.tables.records.ProductSynopsisRecord;
 import writely.tables.records.ProductWorldviewRecord;
+import writely.tables.records.ResearchMessageRecord;
 import writely.tables.records.TermsAgreementRecord;
 import writely.tables.records.TermsRecord;
+import writely.tables.records.UserModifyMessageRecord;
 
 
 /**
@@ -52,6 +60,8 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AssistantRecord> ASSISTANT_PK = Internal.createUniqueKey(Assistant.ASSISTANT, DSL.name("assistant_pk"), new TableField[] { Assistant.ASSISTANT.ID }, true);
+    public static final UniqueKey<AssistantEvaluationRecord> ASSISTANT_EVALUATION_PK = Internal.createUniqueKey(AssistantEvaluation.ASSISTANT_EVALUATION, DSL.name("assistant_evaluation_pk"), new TableField[] { AssistantEvaluation.ASSISTANT_EVALUATION.ASSISTANT_ID }, true);
     public static final UniqueKey<AutoModifyMessageRecord> AUTO_MODIFY_MESSAGE_PK = Internal.createUniqueKey(AutoModifyMessage.AUTO_MODIFY_MESSAGE, DSL.name("auto_modify_message_pk"), new TableField[] { AutoModifyMessage.AUTO_MODIFY_MESSAGE.ID }, true);
     public static final UniqueKey<FeedbackMessageRecord> FEEDBACK_MESSAGE_PK = Internal.createUniqueKey(FeedbackMessage.FEEDBACK_MESSAGE, DSL.name("feedback_message_pk"), new TableField[] { FeedbackMessage.FEEDBACK_MESSAGE.ID }, true);
     public static final UniqueKey<LoginAttemptRecord> LOGIN_ATTEMPT_PK = Internal.createUniqueKey(LoginAttempt.LOGIN_ATTEMPT, DSL.name("login_attempt_pk"), new TableField[] { LoginAttempt.LOGIN_ATTEMPT.ID }, true);
@@ -67,6 +77,8 @@ public class Keys {
     public static final UniqueKey<ProductPlotRecord> PRODUCT_PLOT_PK = Internal.createUniqueKey(ProductPlot.PRODUCT_PLOT, DSL.name("product_plot_pk"), new TableField[] { ProductPlot.PRODUCT_PLOT.ID }, true);
     public static final UniqueKey<ProductSynopsisRecord> PRODUCT_SYNOPSIS_PK = Internal.createUniqueKey(ProductSynopsis.PRODUCT_SYNOPSIS, DSL.name("product_synopsis_pk"), new TableField[] { ProductSynopsis.PRODUCT_SYNOPSIS.ID }, true);
     public static final UniqueKey<ProductWorldviewRecord> PRODUCT_WORLDVIEW_PK = Internal.createUniqueKey(ProductWorldview.PRODUCT_WORLDVIEW, DSL.name("product_worldview_pk"), new TableField[] { ProductWorldview.PRODUCT_WORLDVIEW.ID }, true);
+    public static final UniqueKey<ResearchMessageRecord> RESEARCH_MESSAGE_PK = Internal.createUniqueKey(ResearchMessage.RESEARCH_MESSAGE, DSL.name("research_message_pk"), new TableField[] { ResearchMessage.RESEARCH_MESSAGE.ID }, true);
     public static final UniqueKey<TermsRecord> TERMS_PK = Internal.createUniqueKey(Terms.TERMS, DSL.name("terms_pk"), new TableField[] { Terms.TERMS.ID }, true);
     public static final UniqueKey<TermsAgreementRecord> TERMS_AGREEMENT_PK = Internal.createUniqueKey(TermsAgreement.TERMS_AGREEMENT, DSL.name("terms_agreement_pk"), new TableField[] { TermsAgreement.TERMS_AGREEMENT.TERMS_CD, TermsAgreement.TERMS_AGREEMENT.MEMBER_ID }, true);
+    public static final UniqueKey<UserModifyMessageRecord> USER_MODIFY_MESSAGE_PK = Internal.createUniqueKey(UserModifyMessage.USER_MODIFY_MESSAGE, DSL.name("user_modify_message_pk"), new TableField[] { UserModifyMessage.USER_MODIFY_MESSAGE.ID }, true);
 }

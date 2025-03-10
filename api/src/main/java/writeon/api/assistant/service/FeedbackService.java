@@ -4,14 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.FeedbackMessageRequest;
+import writeon.api.assistant.request.AssistantFeedbackMessageRequest;
+import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.FeedbackRequest;
 import writeon.assistantapiclient.request.UserSetting;
+import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.enums.AssistantException;
+import writeon.domain.assistant.enums.AssistantStatus;
+import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.assistant.enums.MessageSenderRole;
 import writeon.domain.assistant.feedback.FeedbackMessage;
 import writeon.domain.assistant.feedback.FeedbackMessageJpaRepository;
@@ -26,22 +30,30 @@ public class FeedbackService {
     private final long TIMEOUT = 180_000L;
 
     private final FeedbackMessageJpaRepository feedbackMessageRepository;
-    private final ProductQueryService productQueryService;
     private final AssistantApiClient assistantApiClient;
+    private final AssistantService assistantService;
+    private final ProductQueryService productQueryService;
 
     @Transactional
-    public UUID createMessage(FeedbackMessageRequest request) {
+    public MessageCreateResponse createMessage(AssistantFeedbackMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        FeedbackMessage memberMessage = new FeedbackMessage(request.getProductId(), MessageSenderRole.MEMBER, request.getContent());
-        return feedbackMessageRepository.save(memberMessage).getId();
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.FEEDBACK);
+        FeedbackMessage memberMessage = new FeedbackMessage(assistantId, MessageSenderRole.MEMBER, request.getContent());
+        UUID messageId = feedbackMessageRepository.save(memberMessage).getId();
+
+        return new MessageCreateResponse(assistantId, messageId);
     }
 
-    public SseEmitter streamFeedback(UUID productId, UUID messageId) {
-        productQueryService.verifyExist(productId);
+    public SseEmitter streamFeedback(UUID assistantId, UUID messageId) {
+        Assistant assistant = assistantService.getById(assistantId);
+
+        verifyAnswered(assistantId);
+        productQueryService.verifyExist(assistant.getProductId());
+
         FeedbackMessage message = getById(messageId);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(productId));
+        UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         FeedbackRequest request = new FeedbackRequest(userSetting, message.getContent());
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
@@ -64,8 +76,9 @@ public class FeedbackService {
                     throw exception;
                 },
                 () -> {
-                    FeedbackMessage assistantMessage = new FeedbackMessage(productId, MessageSenderRole.ASSISTANT, responseBuilder.toString());
+                    FeedbackMessage assistantMessage = new FeedbackMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString());
                     feedbackMessageRepository.save(assistantMessage);
+                    assistant.updateStatus(AssistantStatus.IN_PROGRESS);
                     emitter.complete();
                 }
             );
@@ -76,5 +89,11 @@ public class FeedbackService {
     private FeedbackMessage getById(UUID messageId) {
         return feedbackMessageRepository.findById(messageId)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
+    }
+
+    private void verifyAnswered(UUID assistantId) {
+        if (feedbackMessageRepository.existsByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.ASSISTANT)) {
+            throw new BaseException(AssistantException.ALREADY_ANSWERED);
+        }
     }
 }
