@@ -31,7 +31,7 @@ public class FileService {
     private String bucketName;
 
     @Value("${cloud.aws.s3.host}")
-    private String hostName;
+    private String hostUrl;
 
     @Value("${cloud.aws.s3.presigned-url.expiration-seconds}")
     private Long expirationSeconds;
@@ -42,20 +42,22 @@ public class FileService {
         final String fileOriginalName = params.getOriginalFileName();
         final String fileExtension = FileUtil.getFileExtension(fileOriginalName);
         final String fileGetPath = uploadType.getPath() + "/" + UUID.randomUUID() + "." + fileExtension;
-        final String fileGetUrl = hostName + "/" + fileGetPath;
+        final String fileGetUrl = hostUrl + "/" + fileGetPath;
 
-        if (!uploadType.getAllowedExtensions().contains(fileExtension)) {
-            throw new BaseException(FileException.UNSUPPORTED_EXTENSION);
+        // 컨텐츠타입 허용 여부 검사
+        if (!uploadType.getAllowedContentType().contains(params.getContentType())) {
+            throw new BaseException(FileException.UNSUPPORTED_CONTENT_TYPE);
         }
-
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("fileOriginalName", fileOriginalName);
-        metadata.put("fileExtension", fileExtension);
+        // 파일 사이즈 검사
+        if (uploadType.getMaxFileSize() < params.getContentLength()) {
+            throw new BaseException(FileException.MAX_FILE_SIZE_EXCEEDED);
+        }
 
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileGetPath)
-                .metadata(metadata)
+                .contentType(params.getContentType())
+                .contentLength(params.getContentLength())
                 .build();
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()

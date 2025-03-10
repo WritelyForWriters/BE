@@ -15,11 +15,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public enum FileUploadType implements Codable {
-    IDEA_NOTE("idea-note", "idea-note", List.of("png", "jpeg", "jpg"));
+    IDEA_NOTE("idea-note", "idea-note", List.of("image/png", "image/jpeg", "image/webp"), 31457280L);
 
     private final String code;
     private final String path;
-    private final List<String> allowedExtensions;
+    private final List<String> allowedContentType;
+    private final Long maxFileSize;
 
     @JsonCreator
     public static FileUploadType fromCode(final String code) {
