@@ -13,14 +13,17 @@ import java.util.UUID;
 public class ProductResponse {
 
     private final UUID id;
-    @Schema(title = "제목")
+    @Schema(title = "제목", nullable = true)
     private final String title;
+    @Schema(title = "장르", nullable = true)
+    private final String genre;
     @Schema(title = "수정일시")
     private final LocalDateTime updatedAt;
 
-    public ProductResponse(ProductRecord product) {
+    public ProductResponse(ProductRecord product, String genre) {
         this.id = product.getId();
         this.title = product.getContent();
+        this.genre = genre;
         this.updatedAt = product.getUpdatedAt();
     }
 }

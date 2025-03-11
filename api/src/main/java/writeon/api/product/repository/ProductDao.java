@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static writely.tables.Product.PRODUCT;
+import static writely.tables.ProductSynopsis.PRODUCT_SYNOPSIS;
 
 
 @Repository
@@ -18,9 +19,11 @@ public class ProductDao {
 
     public List<ProductResponse> select() {
         return dsl
-            .selectFrom(PRODUCT)
+            .select(PRODUCT, PRODUCT_SYNOPSIS.GENRE)
+            .from(PRODUCT)
+            .leftJoin(PRODUCT_SYNOPSIS)
+            .on(PRODUCT.ID.eq(PRODUCT_SYNOPSIS.ID))
             .orderBy(PRODUCT.UPDATED_AT.desc())
-            .fetch()
-            .map(ProductResponse::new);
+            .fetchInto(ProductResponse.class);
     }
 }
