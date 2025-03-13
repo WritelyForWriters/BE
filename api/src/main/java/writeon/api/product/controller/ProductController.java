@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import writeon.api.product.request.ProductMemoSaveRequest;
-import writeon.api.product.request.ProductModifyRequest;
+import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
 import writeon.api.product.response.ProductDetailResponse;
 import writeon.api.product.response.ProductMemoResponse;
@@ -36,8 +36,8 @@ public class ProductController {
     @PostMapping("/{productId}")
     public UUID modify(
         @PathVariable UUID productId,
-        @RequestBody ProductModifyRequest request) {
-        return productCommandService.modify(productId, request);
+        @RequestBody ProductSaveRequest request) {
+        return productCommandService.save(productId, request);
     }
 
     @Operation(summary = "템플릿 저장")

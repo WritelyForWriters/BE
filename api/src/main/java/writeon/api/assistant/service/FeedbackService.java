@@ -54,7 +54,9 @@ public class FeedbackService {
         FeedbackMessage message = getById(messageId);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
-        FeedbackRequest request = new FeedbackRequest(userSetting, message.getContent());
+        FeedbackRequest request = new FeedbackRequest(
+            assistant.getProductId().toString().replaceAll("-", ""), userSetting, message.getContent()
+        );
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         StringBuilder responseBuilder = new StringBuilder();

@@ -55,7 +55,9 @@ public class UserModifyService {
         UserModifyMessage message = getById(messageId);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
-        UserModifyRequest request = new UserModifyRequest(userSetting, message.getContent(), message.getPrompt());
+        UserModifyRequest request = new UserModifyRequest(
+            assistant.getProductId().toString().replaceAll("-", ""), userSetting, message.getContent(), message.getPrompt()
+        );
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         StringBuilder responseBuilder = new StringBuilder();

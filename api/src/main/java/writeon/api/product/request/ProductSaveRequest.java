@@ -6,10 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductModifyRequest {
+public class ProductSaveRequest {
 
     @Schema(title = "제목")
     private String title;
     @Schema(title = "내용")
     private String content;
+    @Schema(title = "자동저장 여부")
+    private Boolean isAutoSave;
 }

@@ -13,8 +13,8 @@ public class UserModifyRequest {
     private final String query;
     private final String howPolish;
 
-    public UserModifyRequest(UserSetting userSetting, String query, String howPolish) {
-        this.tenantId = "1";
+    public UserModifyRequest(String tenantId, UserSetting userSetting, String query, String howPolish) {
+        this.tenantId = tenantId;
         this.userSetting = userSetting;
         this.query = query;
         this.howPolish = howPolish;
