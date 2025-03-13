@@ -12,8 +12,8 @@ public class AutoModifyRequest {
     private final UserSetting userSetting;
     private final String query;
 
-    public AutoModifyRequest(UserSetting userSetting, String query) {
-        this.tenantId = "1";
+    public AutoModifyRequest(String tenantId, UserSetting userSetting, String query) {
+        this.tenantId = tenantId;
         this.userSetting = userSetting;
         this.query = query;
     }

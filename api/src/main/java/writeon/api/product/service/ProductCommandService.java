@@ -3,9 +3,10 @@ package writeon.api.product.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import writeon.api.assistant.service.DocumentUploadService;
 import writeon.api.common.exception.BaseException;
 import writeon.api.product.request.ProductMemoSaveRequest;
-import writeon.api.product.request.ProductModifyRequest;
+import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
 import writeon.domain.product.*;
 import writeon.domain.product.enums.ProductException;
@@ -29,6 +30,8 @@ public class ProductCommandService {
     private final ProductPlotJpaRepository productPlotRepository;
     private final ProductSynopsisJpaRepository productSynopsisRepository;
     private final ProductWorldviewJpaRepository productWorldviewRepository;
+
+    private final DocumentUploadService documentUploadService;
 
     @Transactional
     public UUID create() {
@@ -55,10 +58,16 @@ public class ProductCommandService {
     }
 
     @Transactional
-    public UUID modify(UUID productId, ProductModifyRequest request) {
+    public UUID save(UUID productId, ProductSaveRequest request) {
         Product product = productQueryService.getById(productId);
 
         product.update(request.getTitle(), request.getContent());
+
+        // 수동 저장 시 작품 내용 임베딩
+        if (!request.getIsAutoSave()) {
+            documentUploadService.documentUpload(productId, product.getContent());
+        }
+
         return product.getId();
     }
 

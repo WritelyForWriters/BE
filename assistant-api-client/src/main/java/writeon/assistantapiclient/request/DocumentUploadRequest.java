@@ -6,15 +6,13 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class FeedbackRequest {
+public class DocumentUploadRequest {
 
     private final String tenantId;
-    private final UserSetting userSetting;
-    private final String query;
+    private final String content;
 
-    public FeedbackRequest(String tenantId, UserSetting userSetting, String query) {
+    public DocumentUploadRequest(String tenantId, String content) {
         this.tenantId = tenantId;
-        this.userSetting = userSetting;
-        this.query = query;
+        this.content = content;
     }
 }
