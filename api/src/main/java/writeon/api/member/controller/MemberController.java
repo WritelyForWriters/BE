@@ -18,8 +18,8 @@ public class MemberController {
     private final MemberQueryService memberQueryService;
 
     @GetMapping("/me/profile")
-    public MyProfileResponse getMyProfile(@Parameter(hidden = true) MemberSession memberSession) {
-        return memberQueryService.getMyProfile(memberSession);
+    public MyProfileResponse getMyProfile() {
+        return memberQueryService.getMyProfile();
     }
 
 }
