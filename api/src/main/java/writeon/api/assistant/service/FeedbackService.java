@@ -40,18 +40,18 @@ public class FeedbackService {
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.FEEDBACK);
         FeedbackMessage memberMessage = new FeedbackMessage(assistantId, MessageSenderRole.MEMBER, request.getContent());
-        UUID messageId = feedbackMessageRepository.save(memberMessage).getId();
+        feedbackMessageRepository.save(memberMessage);
 
-        return new MessageCreateResponse(assistantId, messageId);
+        return new MessageCreateResponse(assistantId);
     }
 
-    public SseEmitter streamFeedback(UUID assistantId, UUID messageId) {
+    public SseEmitter streamFeedback(UUID assistantId) {
         Assistant assistant = assistantService.getById(assistantId);
 
         verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
 
-        FeedbackMessage message = getById(messageId);
+        FeedbackMessage message = getMemberMessage(assistantId);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         FeedbackRequest request = new FeedbackRequest(
@@ -80,7 +80,8 @@ public class FeedbackService {
                 () -> {
                     FeedbackMessage assistantMessage = new FeedbackMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString());
                     feedbackMessageRepository.save(assistantMessage);
-                    assistant.updateStatus(AssistantStatus.IN_PROGRESS);
+
+                    assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
                     emitter.complete();
                 }
             );
@@ -88,8 +89,8 @@ public class FeedbackService {
         return emitter;
     }
 
-    private FeedbackMessage getById(UUID messageId) {
-        return feedbackMessageRepository.findById(messageId)
+    private FeedbackMessage getMemberMessage(UUID assistantId) {
+        return feedbackMessageRepository.findByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.MEMBER)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
     }
 
