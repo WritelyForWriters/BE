@@ -41,18 +41,18 @@ public class UserModifyService {
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);
         UserModifyMessage memberMessage =
             new UserModifyMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
-        UUID messagedId = userModifyMessageRepository.save(memberMessage).getId();
+        userModifyMessageRepository.save(memberMessage);
 
-        return new MessageCreateResponse(assistantId, messagedId);
+        return new MessageCreateResponse(assistantId);
     }
 
-    public SseEmitter streamUserModify(UUID assistantId, UUID messageId) {
+    public SseEmitter streamUserModify(UUID assistantId) {
         Assistant assistant = assistantService.getById(assistantId);
 
         verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
 
-        UserModifyMessage message = getById(messageId);
+        UserModifyMessage message = getMemberMessage(assistantId);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         UserModifyRequest request = new UserModifyRequest(
@@ -81,7 +81,8 @@ public class UserModifyService {
                 () -> {
                     UserModifyMessage assistantMessage = new UserModifyMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString(), null);
                     userModifyMessageRepository.save(assistantMessage);
-                    assistant.updateStatus(AssistantStatus.IN_PROGRESS);
+
+                    assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
                     emitter.complete();
                 }
             );
@@ -89,8 +90,8 @@ public class UserModifyService {
         return emitter;
     }
 
-    private UserModifyMessage getById(UUID messageId) {
-        return userModifyMessageRepository.findById(messageId)
+    private UserModifyMessage getMemberMessage(UUID assistantId) {
+        return userModifyMessageRepository.findByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.MEMBER)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
     }
 

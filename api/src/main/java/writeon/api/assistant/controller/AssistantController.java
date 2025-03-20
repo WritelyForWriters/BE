@@ -60,41 +60,32 @@ public class AssistantController {
 
     @Operation(summary = "자동 수정 스트리밍")
     @GetMapping("/auto-modify/stream")
-    public SseEmitter streamAutoModify(
-        @RequestParam UUID assistantId,
-        @RequestParam UUID messageId
-    ) {
-        SseEmitter emitter = autoModifyService.streamAutoModify(assistantId, messageId);
+    public SseEmitter streamAutoModify(@RequestParam UUID assistantId) {
+        SseEmitter emitter = autoModifyService.streamAutoModify(assistantId);
         setResponseHeaderForSSE();
         return emitter;
     }
 
     @Operation(summary = "구간 피드백 스트리밍")
     @GetMapping("/feedback/stream")
-    public SseEmitter streamFeedback(
-        @RequestParam UUID assistantId,
-        @RequestParam UUID messageId
-    ) {
-        SseEmitter emitter = feedbackService.streamFeedback(assistantId, messageId);
+    public SseEmitter streamFeedback(@RequestParam UUID assistantId) {
+        SseEmitter emitter = feedbackService.streamFeedback(assistantId);
         setResponseHeaderForSSE();
         return emitter;
     }
 
     @Operation(summary = "수동 수정 스트리밍")
     @GetMapping("/user-modify/stream")
-    public SseEmitter streamUserModify(
-        @RequestParam UUID assistantId,
-        @RequestParam UUID messageId
-    ) {
-        SseEmitter emitter = userModifyService.streamUserModify(assistantId, messageId);
+    public SseEmitter streamUserModify(@RequestParam UUID assistantId) {
+        SseEmitter emitter = userModifyService.streamUserModify(assistantId);
         setResponseHeaderForSSE();
         return emitter;
     }
 
-    @Operation(summary = "응답 반영")
-    @PutMapping("/reflections/{assistantId}")
-    public void reflect(@PathVariable UUID assistantId) {
-        assistantService.reflect(assistantId);
+    @Operation(summary = "AI 어시 기능 완료 처리")
+    @PutMapping("/{assistantId}/completed")
+    public void completed(@PathVariable UUID assistantId, @RequestBody AssistantCompletedRequest request) {
+        assistantService.completed(assistantId, request);
     }
 
     private void setResponseHeaderForSSE() {

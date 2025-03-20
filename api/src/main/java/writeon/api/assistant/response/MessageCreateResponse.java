@@ -10,11 +10,8 @@ public class MessageCreateResponse {
 
     @Schema(title = "어시스턴트 ID")
     private final UUID assistantId;
-    @Schema(title = "메세지 ID")
-    private final UUID messageId;
 
-    public MessageCreateResponse(UUID assistantId, UUID messageId) {
+    public MessageCreateResponse(UUID assistantId) {
         this.assistantId = assistantId;
-        this.messageId = messageId;
     }
 }

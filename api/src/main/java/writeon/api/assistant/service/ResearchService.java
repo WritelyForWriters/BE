@@ -29,16 +29,19 @@ public class ResearchService {
     public AssistantResponse research(AssistantResearchRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
+        // assistant 및 message 생성
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.RESEARCH);
         ResearchMessage memberMessage =
             new ResearchMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
         researchMessageRepository.save(memberMessage);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
-        ResearchRequest researchRequest = new ResearchRequest("1", userSetting, request.getContent());
+        ResearchRequest researchRequest = new ResearchRequest(request.getSessionId(), userSetting, request.getPrompt());
 
+        // 자유 대화 요청
         String answer = assistantApiClient.research(researchRequest).block();
 
+        // assistant 응답 저장
         ResearchMessage assistantMessage =
             new ResearchMessage(assistantId, MessageSenderRole.ASSISTANT, answer, null);
         researchMessageRepository.save(assistantMessage);

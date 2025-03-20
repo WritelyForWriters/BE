@@ -40,18 +40,18 @@ public class AutoModifyService {
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.AUTO_MODIFY);
         AutoModifyMessage memberMessage = new AutoModifyMessage(assistantId, MessageSenderRole.MEMBER, request.getContent());
-        UUID messageId = autoModifyMessageRepository.save(memberMessage).getId();
+        autoModifyMessageRepository.save(memberMessage);
 
-        return new MessageCreateResponse(assistantId, messageId);
+        return new MessageCreateResponse(assistantId);
     }
 
-    public SseEmitter streamAutoModify(UUID assistantId, UUID messageId) {
+    public SseEmitter streamAutoModify(UUID assistantId) {
         Assistant assistant = assistantService.getById(assistantId);
 
         verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
 
-        AutoModifyMessage message = getById(messageId);
+        AutoModifyMessage message = getMemberMessage(assistantId);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         AutoModifyRequest request = new AutoModifyRequest(
@@ -78,9 +78,10 @@ public class AutoModifyService {
                     throw exception;
                 },
                 () -> {
-                    AutoModifyMessage assistantMessage = new AutoModifyMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString());
+                    AutoModifyMessage assistantMessage = new AutoModifyMessage(assistantId, MessageSenderRole.ASSISTANT, responseBuilder.toString());
                     autoModifyMessageRepository.save(assistantMessage);
-                    assistant.updateStatus(AssistantStatus.IN_PROGRESS);
+
+                    assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
                     emitter.complete();
                 }
             );
@@ -88,8 +89,8 @@ public class AutoModifyService {
         return emitter;
     }
 
-    private AutoModifyMessage getById(UUID messageId) {
-        return autoModifyMessageRepository.findById(messageId)
+    private AutoModifyMessage getMemberMessage(UUID assistantId) {
+        return autoModifyMessageRepository.findByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.MEMBER)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
     }
 

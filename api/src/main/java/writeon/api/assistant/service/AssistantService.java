@@ -3,6 +3,7 @@ package writeon.api.assistant.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import writeon.api.assistant.request.AssistantCompletedRequest;
 import writeon.api.common.exception.BaseException;
 import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.AssistantJpaRepository;
@@ -25,9 +26,21 @@ public class AssistantService {
     }
 
     @Transactional
-    public void reflect(UUID assistantId) {
+    public void completed(UUID assistantId, AssistantCompletedRequest request) {
         Assistant assistant = getById(assistantId);
+
+        if (assistant.getStatus() != AssistantStatus.IN_PROGRESS) {
+            throw new BaseException(AssistantException.CANNOT_BE_COMPLETED);
+        }
+
         assistant.updateStatus(AssistantStatus.COMPLETED);
+    }
+
+    @Transactional
+    public void modifyStatus(UUID assistantId, AssistantStatus status) {
+        Assistant assistant = getById(assistantId);
+
+        assistant.updateStatus(status);
     }
 
     @Transactional(readOnly = true)
