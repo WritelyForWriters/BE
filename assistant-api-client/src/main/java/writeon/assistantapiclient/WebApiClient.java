@@ -19,6 +19,7 @@ public class WebApiClient {
         int readTimeoutMs
     ) {
         HttpClient httpClient = HttpClient.create()
+            .keepAlive(true)
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeoutMs)
             .doOnConnected(conn -> {
                 conn.addHandlerLast(new ReadTimeoutHandler(readTimeoutMs, TimeUnit.MILLISECONDS));

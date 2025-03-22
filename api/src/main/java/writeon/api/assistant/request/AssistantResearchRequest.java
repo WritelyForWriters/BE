@@ -14,7 +14,7 @@ public class AssistantResearchRequest {
     private UUID productId;
     @Schema(title = "세션 ID")
     private String sessionId;
-    @Schema(title = "내용", nullable = true)
+    @Schema(title = "선택 구간", nullable = true)
     private String content;
     @Schema(title = "프롬프트")
     private String prompt;
