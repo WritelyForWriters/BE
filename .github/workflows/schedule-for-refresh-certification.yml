@@ -27,7 +27,7 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --parameters commands='[
-              "docker run -it --rm --name writeon-certbot -p 80:80 -v "/etc/letsencrypt:/etc/letsencrypt"  -v "/var/lib/letsencrypt:/var/lib/letsencrypt" certbot/certbot certonly --standalone --force-renewal -d dev-api.writeon.ai.kr",
+              "docker run -it --rm --name writeon-certbot -p 80:80 -v \"/etc/letsencrypt:/etc/letsencrypt\"  -v \"/var/lib/letsencrypt:/var/lib/letsencrypt\" certbot/certbot certonly --standalone --force-renewal -d dev-api.writeon.ai.kr",
               "sudo cd /etc/letsencrypt/live/dev-api.writeon.ai.kr",
               "openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out keystore.p12 -name ttp -CAfile chain.pem -caname root -password pass:"
             ]' \
