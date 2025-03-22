@@ -1,8 +1,10 @@
 name: Schedule for refresh certification
 
 on:
+  push:
+    branches: [ "feat/cert" ]
   schedule:
-    - cron: "59 11 * * *"
+    - cron: "7 12 * * *"
   workflow_dispatch:
 
 jobs:
