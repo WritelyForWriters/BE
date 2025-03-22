@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = IsPasswordValidator.class)
 @Size(min = 8, max = 255)
 public @interface IsPassword {
-    String message() default "최소 8자 이상이며, 대문자, 소문자, 숫자, 특수문자 중 3가지를 포함해야 합니다.";
+    String message() default "최소 8자 이상이며, 대문자, 소문자, 숫자, 특수문자(@$!%*?&) 중 3가지를 포함해야 합니다.";
     Class[] groups() default {};
     Class[] payload() default {};
 }

@@ -1,5 +1,6 @@
 package writeon.api.auth.request;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import writeon.api.common.validation.IsEmail;
 import writeon.api.common.validation.IsPassword;
 import writeon.api.terms.request.TermsAgreeRequest;
@@ -31,7 +32,7 @@ public class JoinRequest {
     private String nickname;
 
     @NotNull
-    @Schema(title = "약관 동의 목록", requiredMode = Schema.RequiredMode.REQUIRED, example = "[{termsCd: \"1001\", isAgreed: true}, {termsCd: \"1002\", isAgreed: false}]")
+    @ArraySchema(schema = @Schema(implementation = TermsAgreeRequest.class))
     private List<TermsAgreeRequest> termsList;
 
 }
