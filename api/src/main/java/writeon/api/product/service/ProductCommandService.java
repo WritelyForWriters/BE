@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import writeon.api.assistant.service.DocumentUploadService;
 import writeon.api.common.exception.BaseException;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.request.ProductMemoSaveRequest;
 import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
@@ -40,7 +41,7 @@ public class ProductCommandService {
 
     @Transactional
     public void createMemo(UUID productId, ProductMemoSaveRequest request) {
-        verifyExistProduct(productId);
+        productQueryService.verifyExist(productId);
 
         productMemoRepository.save(new ProductMemo(productId, request.getContent(),
             request.getSelectedText(), request.getStartIndex(), request.getEndIndex()));
@@ -73,7 +74,7 @@ public class ProductCommandService {
 
     @Transactional
     public void modifyMemo(UUID productId, UUID memoId, ProductMemoSaveRequest request) {
-        verifyExistProduct(productId);
+        productQueryService.verifyExist(productId);
 
         ProductMemo memo = getMemoById(memoId);
 
@@ -83,7 +84,7 @@ public class ProductCommandService {
 
     @Transactional
     public void deleteMemo(UUID productId, UUID memoId) {
-        verifyExistProduct(productId);
+        productQueryService.verifyExist(productId);
 
         ProductMemo memo = getMemoById(memoId);
 
@@ -91,7 +92,7 @@ public class ProductCommandService {
     }
 
     private ProductMemo getMemoById(UUID memoId) {
-        return productMemoRepository.findById(memoId)
+        return productMemoRepository.findByIdAndCreatedBy(memoId, MemberUtil.getMemberId())
             .orElseThrow(() -> new BaseException(ProductException.NOT_EXIST_MEMO));
     }
 
@@ -254,12 +255,6 @@ public class ProductCommandService {
 
             modifyCustomFields(product.getId(), savedWorldview.getId(), ProductSectionType.WORLDVIEW,
                 requestInfo.getCustomFields(), savedWorldview.getCustomFields());
-        }
-    }
-
-    private void verifyExistProduct(UUID productId) {
-        if (!productRepository.existsById(productId)) {
-            throw new BaseException(ProductException.NOT_EXIST);
         }
     }
 }
