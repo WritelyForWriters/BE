@@ -29,20 +29,20 @@ jobs:
             --parameters commands='[
               "docker run -it --rm --name writeon-certbot -p 80:80 -v \"/etc/letsencrypt:/etc/letsencrypt\"  -v \"/var/lib/letsencrypt:/var/lib/letsencrypt\" certbot/certbot certonly --standalone --force-renewal -d dev-api.writeon.ai.kr",
               "sudo cd /etc/letsencrypt/live/dev-api.writeon.ai.kr",
-              "openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out keystore.p12 -name ttp -CAfile chain.pem -caname root -password pass:"
+              "sudo openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out keystore.p12 -name ttp -CAfile chain.pem -caname root -password pass:"
             ]' \
             --comment "Refresh let's encrypt certification"
 
-      - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY_URI }}
-
-      - name: Restart API Server
-        run: |
-          aws ssm send-command \
-            --document-name "AWS-RunShellScript" \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
-            --parameters commands='[
-              "[ $(docker ps --filter 'publish=8080' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=8080' -q)",
-              "docker run --rm -d -p 8080:8080 --name writely-api -v /writely/logs:/writely/logs ${{ secrets.ECR_REGISTRY_URI }}:latest"
-            ]' \
-            --comment "Restart API Server for apply new certification"
+#      - name: Login to Amazon ECR
+#        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY_URI }}
+#
+#      - name: Restart API Server
+#        run: |
+#          aws ssm send-command \
+#            --document-name "AWS-RunShellScript" \
+#            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+#            --parameters commands='[
+#              "[ $(docker ps --filter 'publish=8080' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=8080' -q)",
+#              "docker run --rm -d -p 8080:8080 --name writely-api -v /writely/logs:/writely/logs ${{ secrets.ECR_REGISTRY_URI }}:latest"
+#            ]' \
+#            --comment "Restart API Server for apply new certification"
