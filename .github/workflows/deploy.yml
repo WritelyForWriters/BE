@@ -57,9 +57,9 @@ jobs:
             --parameters commands='[
               "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY_URI }}",
               "cd /root",
-              "[ $(docker ps --filter 'publish=8080' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=8080' -q)",
+              "[ $(docker ps --filter 'publish=443' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=443' -q)",
               "[ $(docker images -q ${{ secrets.ECR_REGISTRY_URI }}:latest | wc -l) -gt 0 ] && docker rmi ${{ secrets.ECR_REGISTRY_URI }}:latest",
               "docker pull ${{ secrets.ECR_REGISTRY_URI }}:latest",
-              "docker run --rm -d -p 8080:8080 --name writely-api -v /writely/logs:/writely/logs ${{ secrets.ECR_REGISTRY_URI }}:latest"
+              "docker run --rm -d -p 443:443 --name writely-api -v /writely/logs:/writely/logs -v /etc/letsencrypt/live/dev-api.writeon.ai.kr:/writely/cert ${{ secrets.ECR_REGISTRY_URI }}:latest"
             ]' \
             --comment "Deploying Docker container"
