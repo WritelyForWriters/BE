@@ -25,7 +25,6 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
-import writely.tables.ResearchMessage;
 import writely.tables.Terms;
 import writely.tables.TermsAgreement;
 import writely.tables.UserModifyMessage;
@@ -156,11 +155,6 @@ public class Tables {
      * 작품 세계관
      */
     public static final ProductWorldview PRODUCT_WORLDVIEW = ProductWorldview.PRODUCT_WORLDVIEW;
-
-    /**
-     * 자유 대화 메세지
-     */
-    public static final ResearchMessage RESEARCH_MESSAGE = ResearchMessage.RESEARCH_MESSAGE;
 
     /**
      * 약관
