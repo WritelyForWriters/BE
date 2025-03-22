@@ -17,6 +17,7 @@ import org.jooq.impl.SchemaImpl;
 import writely.tables.Assistant;
 import writely.tables.AssistantEvaluation;
 import writely.tables.AutoModifyMessage;
+import writely.tables.ChatMessage;
 import writely.tables.FeedbackMessage;
 import writely.tables.LoginAttempt;
 import writely.tables.Member;
@@ -64,6 +65,11 @@ public class Public extends SchemaImpl {
      * 자동 수정 메세지
      */
     public final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
+
+    /**
+     * The table <code>public.chat_message</code>.
+     */
+    public final ChatMessage CHAT_MESSAGE = ChatMessage.CHAT_MESSAGE;
 
     /**
      * 피드백 메세지
@@ -203,6 +209,7 @@ public class Public extends SchemaImpl {
             Assistant.ASSISTANT,
             AssistantEvaluation.ASSISTANT_EVALUATION,
             AutoModifyMessage.AUTO_MODIFY_MESSAGE,
+            ChatMessage.CHAT_MESSAGE,
             FeedbackMessage.FEEDBACK_MESSAGE,
             LoginAttempt.LOGIN_ATTEMPT,
             Member.MEMBER,

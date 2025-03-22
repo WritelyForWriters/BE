@@ -11,6 +11,7 @@ import org.jooq.Result;
 import writely.tables.Assistant;
 import writely.tables.AssistantEvaluation;
 import writely.tables.AutoModifyMessage;
+import writely.tables.ChatMessage;
 import writely.tables.FeedbackMessage;
 import writely.tables.LoginAttempt;
 import writely.tables.Member;
@@ -51,6 +52,11 @@ public class Tables {
      * 자동 수정 메세지
      */
     public static final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
+
+    /**
+     * The table <code>public.chat_message</code>.
+     */
+    public static final ChatMessage CHAT_MESSAGE = ChatMessage.CHAT_MESSAGE;
 
     /**
      * 피드백 메세지
