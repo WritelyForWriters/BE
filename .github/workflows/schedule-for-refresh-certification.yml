@@ -44,6 +44,6 @@ jobs:
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --parameters commands='[
               "[ $(docker ps --filter 'publish=8080' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=8080' -q)",
-              "docker run --rm -d -p 8080:8080 --name writely-api -v /writely/logs:/writely/logs ${{ secrets.ECR_REGISTRY_URI }}:latest"
+              "docker run --rm -d -p 8080:8080 --name writely-api -v /writely/logs:/writely/logs -v /etc/letsencrypt/live/dev-api.writeon.ai.kr:/writely/cert / ${{ secrets.ECR_REGISTRY_URI }}:latest"
             ]' \
             --comment "Restart API Server for apply new certification"
