@@ -8,10 +8,12 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class AssistantFeedbackMessageRequest {
+public class AssistantChatMessageRequest {
 
     @Schema(title = "작품 ID")
     private UUID productId;
-    @Schema(title = "선택 구간")
+    @Schema(title = "선택 구간", nullable = true)
     private String content;
+    @Schema(title = "프롬프트")
+    private String prompt;
 }

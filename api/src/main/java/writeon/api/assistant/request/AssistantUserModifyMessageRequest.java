@@ -12,7 +12,7 @@ public class AssistantUserModifyMessageRequest {
 
     @Schema(title = "작품 ID")
     private UUID productId;
-    @Schema(title = "내용")
+    @Schema(title = "선택 구간")
     private String content;
     @Schema(title = "프롬프트", nullable = true)
     private String prompt;
