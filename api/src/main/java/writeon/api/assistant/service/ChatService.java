@@ -73,10 +73,8 @@ public class ChatService {
                     }
                 },
                 error -> {
-                    LogUtil.error(error);
-                    BaseException exception = new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR);
-                    emitter.completeWithError(exception);
-                    throw exception;
+                    LogUtil.error(error.getMessage());
+                    emitter.completeWithError(new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR));
                 },
                 () -> {
                     ChatMessage assistantMessage = new ChatMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString(), null);

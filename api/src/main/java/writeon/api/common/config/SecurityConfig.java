@@ -13,10 +13,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import writeon.api.common.exception.CustomAuthenticationEntryPoint;
+import writeon.api.common.exception.handler.CustomAuthenticationEntryPoint;
 import writeon.api.common.filter.CustomAuthenticationFilter;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/auth/logout").authenticated()
                         .requestMatchers("/terms/**").permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/assistant/**/stream")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
