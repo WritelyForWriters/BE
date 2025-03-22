@@ -28,7 +28,7 @@ jobs:
               "docker run -it --rm --name writeon-certbot -p 80:80 -v \"/etc/letsencrypt:/etc/letsencrypt\"  -v \"/var/lib/letsencrypt:/var/lib/letsencrypt\" certbot/certbot certonly --standalone --force-renewal -d dev-api.writeon.ai.kr",
               "sudo su",
               "cd /etc/letsencrypt/live/dev-api.writeon.ai.kr",
-              "openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out keystore.p12 -name ttp -CAfile chain.pem -caname root -password pass:"
+              "openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out keystore.p12 -CAfile chain.pem -caname root -password pass:${{ secrets.TLS_KEYSTORE_PASSWORD }}"
             ]' \
             --comment "Refresh let's encrypt certification"
 
