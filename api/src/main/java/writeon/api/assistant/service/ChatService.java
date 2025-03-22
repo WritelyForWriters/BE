@@ -5,12 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import writeon.api.assistant.request.AssistantChatMessageRequest;
+import writeon.api.assistant.request.AssistantResearchRequest;
+import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.ChatRequest;
+import writeon.assistantapiclient.request.ResearchRequest;
 import writeon.assistantapiclient.request.UserSetting;
 import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.chat.ChatMessage;
@@ -86,6 +89,30 @@ public class ChatService {
             );
 
         return emitter;
+    }
+
+    @Transactional
+    public AssistantResponse research(AssistantResearchRequest request) {
+        productQueryService.verifyExist(request.getProductId());
+
+        // assistant 및 message 생성
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.RESEARCH);
+        ChatMessage memberMessage =
+            new ChatMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
+        chatMessageRepository.save(memberMessage);
+
+        UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        ResearchRequest researchRequest = new ResearchRequest(userSetting, request.getContent(), request.getPrompt(), request.getSessionId());
+
+        // 웹 검색 요청
+        String answer = assistantApiClient.research(researchRequest).block();
+
+        // assistant 응답 저장
+        ChatMessage assistantMessage =
+            new ChatMessage(assistantId, MessageSenderRole.ASSISTANT, answer, null);
+        chatMessageRepository.save(assistantMessage);
+
+        return new AssistantResponse(assistantId, answer);
     }
 
     private ChatMessage getMemberMessage(UUID assistantId) {

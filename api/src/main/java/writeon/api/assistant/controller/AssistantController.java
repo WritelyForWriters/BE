@@ -27,7 +27,6 @@ public class AssistantController {
     private final ChatService chatService;
     private final FeedbackService feedbackService;
     private final UserModifyService userModifyService;
-    private final ResearchService researchService;
 
     @Operation(summary = "자동 수정 메세지 저장")
     @PostMapping("/auto-modify/messages")
@@ -59,10 +58,10 @@ public class AssistantController {
         return userModifyService.createMessage(request);
     }
 
-    @Operation(summary = "검색")
-    @PostMapping("/research")
+    @Operation(summary = "자유 대화 - 웹 검색 모드")
+    @PostMapping("/chat/research")
     public AssistantResponse research(@RequestBody AssistantResearchRequest request) {
-        return researchService.research(request);
+        return chatService.research(request);
     }
 
     @Operation(summary = "자동 수정 스트리밍")

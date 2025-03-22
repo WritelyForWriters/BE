@@ -8,13 +8,15 @@ import lombok.Getter;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ResearchRequest {
 
-    private final String sessionId;
     private final UserSetting userSetting;
     private final String query;
+    private final String userInput;
+    private final String sessionId;
 
-    public ResearchRequest(String sessionId, UserSetting userSetting, String query) {
-        this.sessionId = sessionId;
+    public ResearchRequest(UserSetting userSetting, String query, String userInput, String sessionId) {
         this.userSetting = userSetting;
         this.query = query;
+        this.userInput = userInput;
+        this.sessionId = sessionId;
     }
 }
