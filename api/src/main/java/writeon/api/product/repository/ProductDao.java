@@ -1,5 +1,6 @@
 package writeon.api.product.repository;
 
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.response.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -23,6 +24,7 @@ public class ProductDao {
             .from(PRODUCT)
             .leftJoin(PRODUCT_SYNOPSIS)
             .on(PRODUCT.ID.eq(PRODUCT_SYNOPSIS.ID))
+            .where(PRODUCT.CREATED_BY.eq(MemberUtil.getMemberId()))
             .orderBy(PRODUCT.UPDATED_AT.desc())
             .fetchInto(ProductResponse.class);
     }
