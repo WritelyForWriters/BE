@@ -2,7 +2,7 @@ name: Schedule for refresh certification
 
 on:
   schedule:
-    - cron: "0 0 */2 * *"
+    - cron: "0 15 1 */2 *"
   workflow_dispatch:
 
 jobs:
