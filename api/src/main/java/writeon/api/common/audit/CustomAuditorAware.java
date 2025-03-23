@@ -1,6 +1,7 @@
 package writeon.api.common.audit;
 
 import org.springframework.data.domain.AuditorAware;
+import writeon.api.common.util.MemberUtil;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +10,7 @@ public class CustomAuditorAware implements AuditorAware<UUID> {
 
   @Override
   public Optional<UUID> getCurrentAuditor() {
-    return Optional.of(UUID.randomUUID());
+    UUID memberId = MemberUtil.getMemberId();
+    return memberId != null ? Optional.of(memberId) : Optional.empty();
   }
 }

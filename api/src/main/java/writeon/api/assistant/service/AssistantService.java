@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import writeon.api.assistant.request.AssistantCompletedRequest;
 import writeon.api.common.exception.BaseException;
+import writeon.api.common.util.MemberUtil;
 import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.AssistantJpaRepository;
 import writeon.domain.assistant.enums.AssistantException;
@@ -45,13 +46,13 @@ public class AssistantService {
 
     @Transactional(readOnly = true)
     public Assistant getById(UUID assistantId) {
-        return assistantRepository.findById(assistantId)
+        return assistantRepository.findByIdAndCreatedBy(assistantId, MemberUtil.getMemberId())
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST));
     }
 
     @Transactional(readOnly = true)
     public void verifyExist(UUID assistantId) {
-        if (!assistantRepository.existsById(assistantId)) {
+        if (!assistantRepository.existsByIdAndCreatedBy(assistantId, MemberUtil.getMemberId())) {
             throw new BaseException(AssistantException.NOT_EXIST);
         }
     }

@@ -29,7 +29,7 @@ public class MemberSession implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return memberId.toString();
     }
 
     @Override

@@ -24,14 +24,20 @@ public class AssistantController {
     private final AssistantService assistantService;
     private final AssistantEvaluationService assistantEvaluationService;
     private final AutoModifyService autoModifyService;
+    private final ChatService chatService;
     private final FeedbackService feedbackService;
     private final UserModifyService userModifyService;
-    private final ResearchService researchService;
 
     @Operation(summary = "자동 수정 메세지 저장")
     @PostMapping("/auto-modify/messages")
     public MessageCreateResponse createAutoModifyMessage(@RequestBody AssistantAutoModifyMessageRequest request) {
         return autoModifyService.createMessage(request);
+    }
+
+    @Operation(summary = "자유 대화 메세지 저장")
+    @PostMapping("/chat/messages")
+    public MessageCreateResponse createChatMessage(@RequestBody AssistantChatMessageRequest request) {
+        return chatService.createMessage(request);
     }
 
     @Operation(summary = "평가")
@@ -52,16 +58,27 @@ public class AssistantController {
         return userModifyService.createMessage(request);
     }
 
-    @Operation(summary = "자유 대화")
-    @PostMapping("/research")
+    @Operation(summary = "자유 대화 - 웹 검색 모드")
+    @PostMapping("/chat/research")
     public AssistantResponse research(@RequestBody AssistantResearchRequest request) {
-        return researchService.research(request);
+        return chatService.research(request);
     }
 
     @Operation(summary = "자동 수정 스트리밍")
     @GetMapping("/auto-modify/stream")
     public SseEmitter streamAutoModify(@RequestParam UUID assistantId) {
         SseEmitter emitter = autoModifyService.streamAutoModify(assistantId);
+        setResponseHeaderForSSE();
+        return emitter;
+    }
+
+    @Operation(summary = "자유 대화 스트리밍")
+    @GetMapping("/chat/stream")
+    public SseEmitter streamChat(
+        @RequestParam UUID assistantId,
+        @RequestParam String sessionId
+    ) {
+        SseEmitter emitter = chatService.streamChat(assistantId, sessionId);
         setResponseHeaderForSSE();
         return emitter;
     }

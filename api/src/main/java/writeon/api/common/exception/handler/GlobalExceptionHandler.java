@@ -1,4 +1,4 @@
-package writeon.api.common.exception;
+package writeon.api.common.exception.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import writeon.api.common.enums.code.ResultCodeInfo;
+import writeon.api.common.exception.BaseException;
 import writeon.api.common.response.BaseResponse;
 import writeon.api.common.util.LogUtil;
 import writeon.domain.common.enums.CodeInfo;

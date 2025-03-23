@@ -11,7 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import writeon.api.auth.helper.JwtHelper;
+import writeon.api.common.exception.BaseException;
 import writeon.domain.auth.JwtPayload;
+import writeon.domain.auth.enums.AuthException;
 import writeon.domain.common.MemberSession;
 
 import java.io.IOException;
@@ -24,8 +26,13 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
+        String path = request.getRequestURI();
 
         if (authorization == null) {
+            if (path.matches("/assistant/.*/stream")) {
+                throw new BaseException(AuthException.ACCESS_TOKEN_NOT_VALID);
+            }
+
             filterChain.doFilter(request, response);
             return;
         }

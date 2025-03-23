@@ -1,4 +1,4 @@
-package writeon.api.common.exception;
+package writeon.api.common.exception.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

@@ -17,6 +17,7 @@ import org.jooq.impl.SchemaImpl;
 import writely.tables.Assistant;
 import writely.tables.AssistantEvaluation;
 import writely.tables.AutoModifyMessage;
+import writely.tables.ChatMessage;
 import writely.tables.FeedbackMessage;
 import writely.tables.LoginAttempt;
 import writely.tables.Member;
@@ -30,7 +31,6 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
-import writely.tables.ResearchMessage;
 import writely.tables.Terms;
 import writely.tables.TermsAgreement;
 import writely.tables.UserModifyMessage;
@@ -64,6 +64,11 @@ public class Public extends SchemaImpl {
      * 자동 수정 메세지
      */
     public final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
+
+    /**
+     * The table <code>public.chat_message</code>.
+     */
+    public final ChatMessage CHAT_MESSAGE = ChatMessage.CHAT_MESSAGE;
 
     /**
      * 피드백 메세지
@@ -165,11 +170,6 @@ public class Public extends SchemaImpl {
     public final ProductWorldview PRODUCT_WORLDVIEW = ProductWorldview.PRODUCT_WORLDVIEW;
 
     /**
-     * 자유 대화 메세지
-     */
-    public final ResearchMessage RESEARCH_MESSAGE = ResearchMessage.RESEARCH_MESSAGE;
-
-    /**
      * 약관
      */
     public final Terms TERMS = Terms.TERMS;
@@ -203,6 +203,7 @@ public class Public extends SchemaImpl {
             Assistant.ASSISTANT,
             AssistantEvaluation.ASSISTANT_EVALUATION,
             AutoModifyMessage.AUTO_MODIFY_MESSAGE,
+            ChatMessage.CHAT_MESSAGE,
             FeedbackMessage.FEEDBACK_MESSAGE,
             LoginAttempt.LOGIN_ATTEMPT,
             Member.MEMBER,
@@ -216,7 +217,6 @@ public class Public extends SchemaImpl {
             ProductPlot.PRODUCT_PLOT,
             ProductSynopsis.PRODUCT_SYNOPSIS,
             ProductWorldview.PRODUCT_WORLDVIEW,
-            ResearchMessage.RESEARCH_MESSAGE,
             Terms.TERMS,
             TermsAgreement.TERMS_AGREEMENT,
             UserModifyMessage.USER_MODIFY_MESSAGE

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import writeon.api.common.exception.BaseException;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.repository.ProductDao;
 import writeon.api.product.response.ProductDetailResponse;
 import writeon.api.product.response.ProductMemoResponse;
@@ -35,7 +36,7 @@ public class ProductQueryService {
     }
 
     public Product getById(UUID productId) {
-        return productRepository.findById(productId)
+        return productRepository.findByIdAndCreatedBy(productId, MemberUtil.getMemberId())
             .orElseThrow(() -> new BaseException(ProductException.NOT_EXIST));
     }
 
@@ -53,7 +54,7 @@ public class ProductQueryService {
     }
 
     public void verifyExist(UUID productId) {
-        if (!productRepository.existsById(productId)) {
+        if (!productRepository.existsByIdAndCreatedBy(productId, MemberUtil.getMemberId())) {
             throw new BaseException(ProductException.NOT_EXIST);
         }
     }

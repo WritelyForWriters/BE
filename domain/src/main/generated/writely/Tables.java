@@ -11,6 +11,7 @@ import org.jooq.Result;
 import writely.tables.Assistant;
 import writely.tables.AssistantEvaluation;
 import writely.tables.AutoModifyMessage;
+import writely.tables.ChatMessage;
 import writely.tables.FeedbackMessage;
 import writely.tables.LoginAttempt;
 import writely.tables.Member;
@@ -24,7 +25,6 @@ import writely.tables.ProductMemo;
 import writely.tables.ProductPlot;
 import writely.tables.ProductSynopsis;
 import writely.tables.ProductWorldview;
-import writely.tables.ResearchMessage;
 import writely.tables.Terms;
 import writely.tables.TermsAgreement;
 import writely.tables.UserModifyMessage;
@@ -51,6 +51,11 @@ public class Tables {
      * 자동 수정 메세지
      */
     public static final AutoModifyMessage AUTO_MODIFY_MESSAGE = AutoModifyMessage.AUTO_MODIFY_MESSAGE;
+
+    /**
+     * The table <code>public.chat_message</code>.
+     */
+    public static final ChatMessage CHAT_MESSAGE = ChatMessage.CHAT_MESSAGE;
 
     /**
      * 피드백 메세지
@@ -150,11 +155,6 @@ public class Tables {
      * 작품 세계관
      */
     public static final ProductWorldview PRODUCT_WORLDVIEW = ProductWorldview.PRODUCT_WORLDVIEW;
-
-    /**
-     * 자유 대화 메세지
-     */
-    public static final ResearchMessage RESEARCH_MESSAGE = ResearchMessage.RESEARCH_MESSAGE;
 
     /**
      * 약관
