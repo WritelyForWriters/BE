@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import writeon.api.auth.helper.JwtHelper;
 import writeon.api.auth.helper.MailHelper;
@@ -11,6 +12,7 @@ import writeon.api.auth.request.*;
 import writeon.api.auth.response.AuthTokenResponse;
 import writeon.api.auth.response.LoginFailResponse;
 import writeon.api.common.enums.code.ResultCodeInfo;
+import writeon.api.common.enums.exception.InternalServerException;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.CryptoUtil;
 import writeon.api.terms.request.TermsAgreeRequest;
@@ -38,6 +40,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthCommandService {
+    private final AuthQueryService authQueryService;
     private final TermsQueryService termsQueryService;
     private final MemberJpaRepository memberJpaRepository;
     private final MemberPasswordJpaRepository memberPasswordJpaRepository;
@@ -48,7 +51,6 @@ public class AuthCommandService {
     private final LoginAttemptJpaRepository loginAttemptJpaRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
-    private final CryptoUtil cryptoUtil;
 
     /**
      * 토큰 재발급
@@ -73,12 +75,12 @@ public class AuthCommandService {
      * 로그인
      */
     public AuthTokenResponse login(LoginRequest request) {
-        List<LoginAttempt> lastFiveAttempts = loginAttemptJpaRepository.findTop5ByEmailOrderByCreatedAtDesc(request.getEmail());
-
-        // 있는 이메일인지 검사
-        memberJpaRepository.findByEmail(request.getEmail())
+        Member member = memberJpaRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BaseException(AuthException.LOGIN_FAILED));
+        MemberPassword memberPassword = memberPasswordJpaRepository.findById(member.getId())
+                .orElseThrow(() -> new BaseException(AuthException.AUTH_FAILED_BY_UNKNOWN_ERROR));
 
+        List<LoginAttempt> lastFiveAttempts = loginAttemptJpaRepository.findTop5ByEmailOrderByCreatedAtDesc(request.getEmail());
         // 로그인 시도가 블락 상태이고, 블락 시간으로부터 1시간이 지나지 않은 경우
         if (
                 !lastFiveAttempts.isEmpty()
@@ -88,13 +90,11 @@ public class AuthCommandService {
             throw new BaseException(AuthException.LOGIN_BLOCKED);
         }
 
-        String passwordHash = cryptoUtil.hash(request.getPassword());
-        MemberPassword memberPassword = memberPasswordJpaRepository.findByPassword(passwordHash).orElse(null);
-
         LoginAttempt newLoginAttempt = new LoginAttempt();
         newLoginAttempt.setEmail(request.getEmail());
 
-        if (memberPassword == null) {
+        final boolean isPasswordCorrect = BCrypt.checkpw(request.getPassword(), memberPassword.getPassword());
+        if (!isPasswordCorrect) {
             int attemptsRemaining = 5 - 1;
             // 남은 시도 횟수 계산
             for (LoginAttempt attempt : lastFiveAttempts) {
@@ -136,17 +136,23 @@ public class AuthCommandService {
                 .filter(TermsAgreeRequest::getIsAgreed)
                 .map(TermsAgreeRequest::getTermsCd)
                 .toList();
+
+        // 필수 약관 검사
         if (!termsQueryService.isContainingAllRequiredTerms(agreedTermsList)) {
             throw new BaseException(AuthException.TERMS_AGREE_REQUIRED);
         }
-
-        // 이미 있는 회원인지 검사
+        // 이메일 중복 검사
         if (memberJpaRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(AuthException.JOIN_ALREADY_EXIST_MEMBER);
         }
+        // 닉네임 중복 검사
+        if (memberJpaRepository.findByNickname(request.getNickname()).isPresent()) {
+            throw new BaseException(AuthException.NICKNAME_ALREADY_EXIST);
+        }
 
         // 회원 정보 설정
-        String passwordHash = cryptoUtil.hash(request.getPassword());
+        String passwordHash = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
+
         Member member = Member.builder()
                 .email(request.getEmail())
                 .nickname(request.getNickname())
@@ -260,15 +266,15 @@ public class AuthCommandService {
 
         // 비밀번호 조회
         MemberPassword memberPassword = memberPasswordJpaRepository.findById(payload.getMemberId())
-                .orElseThrow(() -> new BaseException(ResultCodeInfo.FAILURE));
-        String passwordHash = cryptoUtil.hash(request.getPassword());
+                .orElseThrow(() -> new BaseException(AuthException.AUTH_FAILED_BY_UNKNOWN_ERROR));
 
-        // 이전 비밀번호와 동일한 경우
-        if (passwordHash.equals(memberPassword.getPassword())) {
+        final boolean isPasswordUsedBefore = BCrypt.checkpw(request.getPassword(), memberPassword.getPassword());
+        if (isPasswordUsedBefore) {
             throw new BaseException(AuthException.CHANGE_PASSWORD_USED_PASSWORD_BEFORE);
         }
 
         // 비밀번호 변경
+        final String passwordHash = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
         memberPassword.setPassword(passwordHash);
 
         // 토큰 무효화

@@ -5,7 +5,7 @@ create table member
 (
     id uuid default gen_random_uuid() constraint member_pk primary key,
     email          varchar(255) constraint email_uk unique not null,
-    nickname       varchar(10)  constraint nickname_uk unique not null,
+    nickname       varchar(20)  constraint nickname_uk unique not null,
     profile_image  varchar(255),
     created_at     timestamp with time zone    not null,
     updated_at     timestamp with time zone    not null
