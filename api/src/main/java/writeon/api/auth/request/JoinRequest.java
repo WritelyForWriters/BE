@@ -2,6 +2,7 @@ package writeon.api.auth.request;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import writeon.api.common.validation.IsEmail;
+import writeon.api.common.validation.IsNickname;
 import writeon.api.common.validation.IsPassword;
 import writeon.api.terms.request.TermsAgreeRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,7 +28,8 @@ public class JoinRequest {
     private String password;
 
     @NotBlank
-    @Size(max = 10)
+    @Size(min = 2, max = 20)
+    @IsNickname
     @Schema(title = "닉네임", requiredMode = Schema.RequiredMode.REQUIRED, example = "노래하는뱁새")
     private String nickname;
 

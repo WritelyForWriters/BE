@@ -76,4 +76,11 @@ public class AuthController {
 
         return authQueryService.checkEmail(request);
     }
+
+    @Operation(summary = "닉네임 중복 조회")
+    @GetMapping("/check-nickname")
+    public CheckEmailResponse checkNickname(@Valid CheckNicknameRequest request) {
+
+        return authQueryService.checkNickname(request);
+    }
 }
