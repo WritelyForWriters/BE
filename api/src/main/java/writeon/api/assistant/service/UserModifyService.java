@@ -8,6 +8,7 @@ import writeon.api.assistant.request.AssistantUserModifyMessageRequest;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.UserModifyRequest;
@@ -39,15 +40,21 @@ public class UserModifyService {
         productQueryService.verifyExist(request.getProductId());
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);
-        UserModifyMessage memberMessage =
-            new UserModifyMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
+        UserModifyMessage memberMessage = UserModifyMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .prompt(request.getPrompt())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+
         userModifyMessageRepository.save(memberMessage);
 
         return new MessageCreateResponse(assistantId);
     }
 
     public SseEmitter streamUserModify(UUID assistantId) {
-        Assistant assistant = assistantService.getById(assistantId);
+        Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
         verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
@@ -79,7 +86,13 @@ public class UserModifyService {
                     throw exception;
                 },
                 () -> {
-                    UserModifyMessage assistantMessage = new UserModifyMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString(), null);
+                    UserModifyMessage assistantMessage = UserModifyMessage.builder()
+                        .assistantId(assistantId)
+                        .role(MessageSenderRole.ASSISTANT)
+                        .content(responseBuilder.toString())
+                        .createdBy(message.getCreatedBy())
+                        .build();
+
                     userModifyMessageRepository.save(assistantMessage);
 
                     assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);

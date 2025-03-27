@@ -8,6 +8,7 @@ import writeon.api.assistant.request.AssistantAutoModifyMessageRequest;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.AutoModifyRequest;
@@ -39,14 +40,20 @@ public class AutoModifyService {
         productQueryService.verifyExist(request.getProductId());
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.AUTO_MODIFY);
-        AutoModifyMessage memberMessage = new AutoModifyMessage(assistantId, MessageSenderRole.MEMBER, request.getContent());
+        AutoModifyMessage memberMessage = AutoModifyMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+
         autoModifyMessageRepository.save(memberMessage);
 
         return new MessageCreateResponse(assistantId);
     }
 
     public SseEmitter streamAutoModify(UUID assistantId) {
-        Assistant assistant = assistantService.getById(assistantId);
+        Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
         verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
@@ -78,7 +85,12 @@ public class AutoModifyService {
                     throw exception;
                 },
                 () -> {
-                    AutoModifyMessage assistantMessage = new AutoModifyMessage(assistantId, MessageSenderRole.ASSISTANT, responseBuilder.toString());
+                    AutoModifyMessage assistantMessage = AutoModifyMessage.builder()
+                        .assistantId(assistantId)
+                        .role(MessageSenderRole.ASSISTANT)
+                        .content(responseBuilder.toString())
+                        .createdBy(message.getCreatedBy())
+                        .build();
                     autoModifyMessageRepository.save(assistantMessage);
 
                     assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);

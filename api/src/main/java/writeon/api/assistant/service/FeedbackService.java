@@ -8,6 +8,7 @@ import writeon.api.assistant.request.AssistantFeedbackMessageRequest;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.FeedbackRequest;
@@ -39,14 +40,20 @@ public class FeedbackService {
         productQueryService.verifyExist(request.getProductId());
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.FEEDBACK);
-        FeedbackMessage memberMessage = new FeedbackMessage(assistantId, MessageSenderRole.MEMBER, request.getContent());
+        FeedbackMessage memberMessage = FeedbackMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+
         feedbackMessageRepository.save(memberMessage);
 
         return new MessageCreateResponse(assistantId);
     }
 
     public SseEmitter streamFeedback(UUID assistantId) {
-        Assistant assistant = assistantService.getById(assistantId);
+        Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
         verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
@@ -78,7 +85,13 @@ public class FeedbackService {
                     throw exception;
                 },
                 () -> {
-                    FeedbackMessage assistantMessage = new FeedbackMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString());
+                    FeedbackMessage assistantMessage = FeedbackMessage.builder()
+                        .assistantId(assistantId)
+                        .role(MessageSenderRole.ASSISTANT)
+                        .content(responseBuilder.toString())
+                        .createdBy(message.getCreatedBy())
+                        .build();
+
                     feedbackMessageRepository.save(assistantMessage);
 
                     assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);

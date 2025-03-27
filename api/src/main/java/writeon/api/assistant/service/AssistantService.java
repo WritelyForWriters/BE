@@ -22,7 +22,7 @@ public class AssistantService {
 
     @Transactional
     public UUID create(UUID productId, AssistantType type) {
-        Assistant assistant = new Assistant(productId, type);
+        Assistant assistant = new Assistant(productId, type, MemberUtil.getMemberId());
         return assistantRepository.save(assistant).getId();
     }
 
@@ -46,7 +46,13 @@ public class AssistantService {
 
     @Transactional(readOnly = true)
     public Assistant getById(UUID assistantId) {
-        return assistantRepository.findByIdAndCreatedBy(assistantId, MemberUtil.getMemberId())
+        return assistantRepository.findById(assistantId)
+            .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST));
+    }
+
+    @Transactional(readOnly = true)
+    public Assistant getById(UUID assistantId, UUID memberId) {
+        return assistantRepository.findByIdAndCreatedBy(assistantId, memberId)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST));
     }
 
