@@ -43,7 +43,7 @@ public class ProductCommandService {
     public void createMemo(UUID productId, ProductMemoSaveRequest request) {
         productQueryService.verifyExist(productId);
 
-        productMemoRepository.save(new ProductMemo(productId, request.getContent(),
+        productMemoRepository.save(new ProductMemo(productId, request.getTitle(), request.getContent(),
             request.getSelectedText(), request.getStartIndex(), request.getEndIndex()));
     }
 
@@ -78,8 +78,8 @@ public class ProductCommandService {
 
         ProductMemo memo = getMemoById(memoId);
 
-        memo.update(request.getContent(), request.getSelectedText(), request.getStartIndex()
-            , request.getEndIndex(), request.getIsCompleted());
+        memo.update(request.getTitle(), request.getContent(), request.getSelectedText(),
+            request.getStartIndex(), request.getEndIndex(), request.getIsCompleted());
     }
 
     @Transactional
