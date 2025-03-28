@@ -22,7 +22,7 @@ public class ProductResponse {
 
     public ProductResponse(ProductRecord product, String genre) {
         this.id = product.getId();
-        this.title = product.getContent();
+        this.title = product.getTitle();
         this.genre = genre;
         this.updatedAt = product.getUpdatedAt();
     }

@@ -15,32 +15,21 @@ import java.util.UUID;
 public class ProductDetailResponse {
 
     private final UUID id;
+    @Schema(title = "제목")
+    private final String title;
     @Schema(title = "내용")
     private final String content;
     @Schema(title = "수정일시")
     private final LocalDateTime updatedAt;
-    private final List<Memo> memos;
+    private final List<ProductMemoResponse> memos;
 
     public ProductDetailResponse(Product product) {
         this.id = product.getId();
+        this.title = product.getTitle();
         this.content = product.getContent();
         this.updatedAt = product.getUpdatedAt();
         this.memos = product.getMemos().stream()
-            .map(Memo::new)
+            .map(ProductMemoResponse::new)
             .toList();
-    }
-
-    @Getter
-    @Setter
-    public static class Memo {
-
-        private final UUID id;
-        @Schema(title = "내용")
-        private final String content;
-
-        public Memo(ProductMemo memo) {
-            this.id = memo.getId();
-            this.content = memo.getContent();
-        }
     }
 }

@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
   postgres:
@@ -13,6 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - ./db:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   redis:
     image: redis:7.2.4-alpine3.19
