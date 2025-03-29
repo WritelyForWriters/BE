@@ -195,7 +195,7 @@ public class AuthCommandService {
      * 회원가입 완료
      */
     @Transactional
-    public AuthTokenResponse completeJoin(JoinCompletionRequest request) {
+    public void completeJoin(JoinCompletionRequest request) {
         final String joinTokenString = request.getJoinToken();
 
         // 토큰이 비유효한 경우
@@ -214,8 +214,6 @@ public class AuthCommandService {
 
         // 토큰 무효화
         this.invalidateToken(joinToken);
-
-        return generateAuthTokens(joinToken.getMember().getId());
     }
 
     /**

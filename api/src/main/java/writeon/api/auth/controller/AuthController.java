@@ -51,9 +51,9 @@ public class AuthController {
 
     @Operation(summary = "회원가입 완료")
     @PostMapping("/join/complete")
-    public AuthTokenResponse completeJoin(@Valid @RequestBody JoinCompletionRequest request) {
+    public void completeJoin(@Valid @RequestBody JoinCompletionRequest request) {
 
-        return authCommandService.completeJoin(request);
+        authCommandService.completeJoin(request);
     }
 
     @Operation(summary = "비밀번호 변경")
