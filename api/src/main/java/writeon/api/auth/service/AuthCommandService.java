@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import writeon.api.auth.helper.JwtHelper;
 import writeon.api.auth.helper.MailHelper;
+import writeon.api.auth.helper.MemberHelper;
 import writeon.api.auth.request.*;
 import writeon.api.auth.response.AuthTokenResponse;
 import writeon.api.auth.response.LoginFailResponse;
@@ -24,6 +25,7 @@ import writeon.domain.auth.repository.ChangePasswordTokenRedisRepository;
 import writeon.domain.auth.repository.JoinTokenRedisRepository;
 import writeon.domain.auth.repository.LoginAttemptJpaRepository;
 import writeon.domain.auth.repository.RefreshTokenRedisRepository;
+import writeon.domain.common.MemberSession;
 import writeon.domain.member.Member;
 import writeon.domain.member.MemberPassword;
 import writeon.domain.member.repository.MemberJpaRepository;
@@ -120,8 +122,10 @@ public class AuthCommandService {
      * 로그아웃
      */
     @Transactional
-    public void logout(UUID memberId) {
-        refreshTokenRedisRepository.findByMemberId(memberId)
+    public void logout() {
+        MemberSession memberSession = MemberHelper.getMemberSession();
+
+        refreshTokenRedisRepository.findByMemberId(memberSession.getMemberId())
                 .ifPresent(this::invalidateToken);
     }
 

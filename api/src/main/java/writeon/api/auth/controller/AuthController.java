@@ -37,9 +37,9 @@ public class AuthController {
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
-    public void logout(@Parameter(hidden = true) MemberSession memberSession) {
+    public void logout() {
 
-        authCommandService.logout(memberSession.getMemberId());
+        authCommandService.logout();
     }
 
     @Operation(summary = "회원가입")
