@@ -1,19 +1,20 @@
 package writeon.domain.assistant.feedback;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import writeon.domain.assistant.MessageContent;
 import writeon.domain.assistant.enums.MessageSenderRole;
-import writeon.domain.common.BaseAuditTimeEntity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @Table(name = "feedback_message")
-public class FeedbackMessage extends BaseAuditTimeEntity {
+public class FeedbackMessage {
 
     @Id
     @Column(updatable = false, nullable = false)
@@ -25,9 +26,17 @@ public class FeedbackMessage extends BaseAuditTimeEntity {
     @Embedded
     private MessageContent messageContent;
 
-    public FeedbackMessage(UUID assistantId, MessageSenderRole role, String content) {
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private final LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "created_by", updatable = false, nullable = false)
+    private UUID createdBy;
+
+    @Builder
+    public FeedbackMessage(UUID assistantId, MessageSenderRole role, String content, UUID createdBy) {
         this.assistantId = assistantId;
         this.messageContent = new MessageContent(role, content);
+        this.createdBy = createdBy;
     }
 
     public MessageSenderRole getRole() {

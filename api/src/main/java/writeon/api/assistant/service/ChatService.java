@@ -10,6 +10,7 @@ import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.ChatRequest;
@@ -41,16 +42,21 @@ public class ChatService {
     public MessageCreateResponse createMessage(AssistantChatMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);
-        ChatMessage memberMessage =
-            new ChatMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
+        ChatMessage memberMessage = ChatMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .prompt(request.getPrompt())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
         chatMessageRepository.save(memberMessage);
 
         return new MessageCreateResponse(assistantId);
     }
 
     public SseEmitter streamChat(UUID assistantId, String sessionId) {
-        Assistant assistant = assistantService.getById(assistantId);
+        Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
         verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
@@ -80,7 +86,12 @@ public class ChatService {
                     emitter.completeWithError(new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR));
                 },
                 () -> {
-                    ChatMessage assistantMessage = new ChatMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString(), null);
+                    ChatMessage assistantMessage = ChatMessage.builder()
+                        .assistantId(assistantId)
+                        .role(MessageSenderRole.ASSISTANT)
+                        .content(responseBuilder.toString())
+                        .createdBy(message.getCreatedBy())
+                        .build();
                     chatMessageRepository.save(assistantMessage);
 
                     assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
@@ -96,9 +107,9 @@ public class ChatService {
         productQueryService.verifyExist(request.getProductId());
 
         // assistant 및 message 생성
-        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.RESEARCH);
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
         ChatMessage memberMessage =
-            new ChatMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
+            new ChatMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt(), MemberUtil.getMemberId());
         chatMessageRepository.save(memberMessage);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
@@ -109,7 +120,7 @@ public class ChatService {
 
         // assistant 응답 저장
         ChatMessage assistantMessage =
-            new ChatMessage(assistantId, MessageSenderRole.ASSISTANT, answer, null);
+            new ChatMessage(assistantId, MessageSenderRole.ASSISTANT, answer, null, MemberUtil.getMemberId());
         chatMessageRepository.save(assistantMessage);
 
         return new AssistantResponse(assistantId, answer);
