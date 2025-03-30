@@ -42,7 +42,7 @@ public class ChatService {
     public MessageCreateResponse createMessage(AssistantChatMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
         ChatMessage memberMessage = ChatMessage.builder()
             .assistantId(assistantId)
             .role(MessageSenderRole.MEMBER)
@@ -107,7 +107,7 @@ public class ChatService {
         productQueryService.verifyExist(request.getProductId());
 
         // assistant 및 message 생성
-        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.RESEARCH);
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
         ChatMessage memberMessage =
             new ChatMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt(), MemberUtil.getMemberId());
         chatMessageRepository.save(memberMessage);

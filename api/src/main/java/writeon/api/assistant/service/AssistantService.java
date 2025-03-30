@@ -39,9 +39,7 @@ public class AssistantService {
 
     @Transactional
     public void modifyStatus(UUID assistantId, AssistantStatus status) {
-        Assistant assistant = getById(assistantId);
-
-        assistant.updateStatus(status);
+        assistantRepository.updateStatus(assistantId, status);
     }
 
     @Transactional(readOnly = true)
