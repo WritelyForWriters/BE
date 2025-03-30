@@ -9,6 +9,7 @@ import java.util.UUID;
 public class ProductMemoResponse {
 
     private final UUID id;
+    private final String title;
     private final String content;
     private final String selectedText;
     private final Integer startIndex;
@@ -17,6 +18,7 @@ public class ProductMemoResponse {
 
     public ProductMemoResponse(ProductMemo memo) {
         this.id = memo.getId();
+        this.title = memo.getTitle();
         this.content = memo.getContent();
         this.selectedText = memo.getSelectedText();
         this.startIndex = memo.getStartIndex();
