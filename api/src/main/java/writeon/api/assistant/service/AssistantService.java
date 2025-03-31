@@ -1,29 +1,39 @@
 package writeon.api.assistant.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.request.AssistantCompletedRequest;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.MemberUtil;
 import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.AssistantJpaRepository;
+import writeon.domain.assistant.AssistantMessage;
+import writeon.domain.assistant.AssistantMessageJpaRepository;
 import writeon.domain.assistant.enums.AssistantException;
 import writeon.domain.assistant.enums.AssistantStatus;
 import writeon.domain.assistant.enums.AssistantType;
-
-import java.util.UUID;
+import writeon.domain.assistant.enums.MessageSenderRole;
 
 @Service
 @RequiredArgsConstructor
 public class AssistantService {
 
     private final AssistantJpaRepository assistantRepository;
+    private final AssistantMessageJpaRepository assistantMessageRepository;
 
     @Transactional
     public UUID create(UUID productId, AssistantType type) {
         Assistant assistant = new Assistant(productId, type, MemberUtil.getMemberId());
         return assistantRepository.save(assistant).getId();
+    }
+
+    @Transactional
+    public UUID createMessage(AssistantMessage message) {
+        return assistantMessageRepository.save(message).getId();
     }
 
     @Transactional
@@ -52,6 +62,19 @@ public class AssistantService {
     public Assistant getById(UUID assistantId, UUID memberId) {
         return assistantRepository.findByIdAndCreatedBy(assistantId, memberId)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST));
+    }
+
+    @Transactional(readOnly = true)
+    public AssistantMessage getMessage(UUID assistantId, MessageSenderRole role) {
+        return assistantMessageRepository.findByAssistantIdAndMessageContent_Role(assistantId, role)
+            .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
+    }
+
+    @Transactional(readOnly = true)
+    public void verifyAnswered(UUID assistantId) {
+        if (assistantMessageRepository.existsByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.ASSISTANT)) {
+            throw new BaseException(AssistantException.ALREADY_ANSWERED);
+        }
     }
 
     @Transactional(readOnly = true)

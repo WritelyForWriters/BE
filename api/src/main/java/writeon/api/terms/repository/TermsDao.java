@@ -1,16 +1,17 @@
 package writeon.api.terms.repository;
 
-import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-import writely.tables.records.TermsRecord;
-import writeon.domain.terms.enums.TermsCode;
 
 import java.util.List;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
+import writeon.domain.terms.enums.TermsCode;
+import writeon.tables.records.TermsRecord;
+
 import static org.jooq.impl.DSL.count;
-import static writely.tables.Terms.TERMS;
+import static writeon.tables.Terms.TERMS;
 
 @Repository
 @RequiredArgsConstructor

@@ -382,33 +382,10 @@ comment on column assistant_evaluation.created_by is '생성자 ID';
 alter table assistant_evaluation
     owner to postgres;
 
-create table auto_modify_message
+create table assistant_message
 (
     id           uuid default gen_random_uuid() not null
-        constraint auto_modify_message_pk
-            primary key,
-    assistant_id uuid                           not null,
-    role         varchar(10)                    not null,
-    content      text                           not null,
-    created_at   timestamp                      not null,
-    created_by   uuid                           not null
-);
-
-comment on table auto_modify_message is '자동 수정 메세지';
-comment on column auto_modify_message.id is '자동 수정 메세지 ID';
-comment on column auto_modify_message.assistant_id is '어시스턴트 ID';
-comment on column auto_modify_message.role is '메세지 송신자';
-comment on column auto_modify_message.content is '내용';
-comment on column auto_modify_message.created_at is '생성일시';
-comment on column auto_modify_message.created_by is '생성자 ID';
-
-alter table auto_modify_message
-    owner to postgres;
-
-create table chat_message
-(
-    id           uuid default gen_random_uuid() not null
-        constraint chat_message_pk
+        constraint assistant_message_pk
             primary key,
     assistant_id uuid                           not null,
     role         varchar(10)                    not null,
@@ -418,45 +395,5 @@ create table chat_message
     created_by   uuid                           not null
 );
 
-alter table chat_message
+alter table assistant_message
     owner to postgres;
-
-create table feedback_message
-(
-    id           uuid default gen_random_uuid() not null
-        constraint feedback_message_pk
-            primary key,
-    assistant_id uuid                           not null,
-    role         varchar(10)                    not null,
-    content      text                           not null,
-    created_at   timestamp                      not null,
-    created_by   uuid                           not null
-);
-
-comment on table feedback_message is '피드백 메세지';
-comment on column feedback_message.id is '피드백 메세지 ID';
-comment on column feedback_message.assistant_id is '어시스턴트 ID';
-comment on column feedback_message.role is '메세지 송신자';
-comment on column feedback_message.content is '내용';
-comment on column feedback_message.created_at is '생성일시';
-comment on column feedback_message.created_by is '생성자 ID';
-
-alter table feedback_message
-    owner to postgres;
-
-create table user_modify_message
-(
-    id           uuid default gen_random_uuid() not null
-        constraint user_modify_message_pk
-            primary key,
-    assistant_id uuid                           not null,
-    role         varchar(10)                    not null,
-    content      text                           not null,
-    prompt       text,
-    created_at   timestamp                      not null,
-    created_by   uuid                           not null
-);
-
-alter table user_modify_message
-    owner to postgres;
-

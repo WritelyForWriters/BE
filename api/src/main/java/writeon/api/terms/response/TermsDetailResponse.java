@@ -1,13 +1,13 @@
 package writeon.api.terms.response;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import writely.tables.records.TermsRecord;
 import writeon.domain.terms.enums.TermsCode;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
+import writeon.tables.records.TermsRecord;
 
 @Getter
 @Setter

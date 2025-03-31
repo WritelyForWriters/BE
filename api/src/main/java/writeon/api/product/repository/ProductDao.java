@@ -1,15 +1,16 @@
 package writeon.api.product.repository;
 
-import writeon.api.common.util.MemberUtil;
-import writeon.api.product.response.ProductResponse;
-import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static writely.tables.Product.PRODUCT;
-import static writely.tables.ProductSynopsis.PRODUCT_SYNOPSIS;
+import lombok.RequiredArgsConstructor;
+import writeon.api.common.util.MemberUtil;
+import writeon.api.product.response.ProductResponse;
+
+import static writeon.tables.Product.PRODUCT;
+import static writeon.tables.ProductSynopsis.PRODUCT_SYNOPSIS;
 
 
 @Repository
