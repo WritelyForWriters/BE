@@ -3,12 +3,16 @@ package writeon.api.assistant.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
+import writeon.api.assistant.repository.AssistantDao;
 import writeon.api.assistant.request.AssistantCompletedRequest;
+import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.MemberUtil;
+import writeon.api.product.service.ProductQueryService;
 import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.AssistantJpaRepository;
 import writeon.domain.assistant.AssistantMessage;
@@ -24,6 +28,9 @@ public class AssistantService {
 
     private final AssistantJpaRepository assistantRepository;
     private final AssistantMessageJpaRepository assistantMessageRepository;
+    private final AssistantDao assistantDao;
+
+    private final ProductQueryService productQueryService;
 
     @Transactional
     public UUID create(UUID productId, AssistantType type) {
@@ -62,6 +69,13 @@ public class AssistantService {
     public Assistant getById(UUID assistantId, UUID memberId) {
         return assistantRepository.findByIdAndCreatedBy(assistantId, memberId)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AssistantHistoryResponse> getHistories(UUID productId) {
+        productQueryService.verifyExist(productId);
+
+        return assistantDao.selectHistories(productId);
     }
 
     @Transactional(readOnly = true)

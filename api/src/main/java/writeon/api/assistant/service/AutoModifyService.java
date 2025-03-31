@@ -84,10 +84,11 @@ public class AutoModifyService {
                     throw exception;
                 },
                 () -> {
+                    String answer = responseBuilder.toString().replace("[DONE]", "").trim();
                     AssistantMessage assistantMessage = AssistantMessage.builder()
                         .assistantId(assistantId)
                         .role(MessageSenderRole.ASSISTANT)
-                        .content(responseBuilder.toString())
+                        .content(answer)
                         .createdBy(assistant.getCreatedBy())
                         .build();
                     assistantService.createMessage(assistantMessage);

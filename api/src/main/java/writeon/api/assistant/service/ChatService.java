@@ -1,9 +1,13 @@
 package writeon.api.assistant.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.IOException;
+import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.request.AssistantChatMessageRequest;
 import writeon.api.assistant.request.AssistantResearchRequest;
 import writeon.api.assistant.response.AssistantResponse;
@@ -22,9 +26,6 @@ import writeon.domain.assistant.enums.AssistantException;
 import writeon.domain.assistant.enums.AssistantStatus;
 import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.assistant.enums.MessageSenderRole;
-
-import java.io.IOException;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -84,10 +85,11 @@ public class ChatService {
                     emitter.completeWithError(new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR));
                 },
                 () -> {
+                    String answer = responseBuilder.toString().replace("[DONE]", "").trim();
                     AssistantMessage assistantMessage = AssistantMessage.builder()
                         .assistantId(assistantId)
                         .role(MessageSenderRole.ASSISTANT)
-                        .content(responseBuilder.toString())
+                        .content(answer)
                         .createdBy(memberMessage.getCreatedBy())
                         .build();
                     assistantService.createMessage(assistantMessage);
