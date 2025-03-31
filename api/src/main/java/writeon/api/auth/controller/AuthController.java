@@ -1,17 +1,21 @@
 package writeon.api.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import writeon.api.auth.helper.AuthCookieHelper;
 import writeon.api.auth.request.*;
-import writeon.api.auth.response.AuthTokenResponse;
 import writeon.api.auth.response.CheckEmailResponse;
+import writeon.api.auth.response.TokenReissueResponse;
 import writeon.api.auth.service.AuthCommandService;
 import writeon.api.auth.service.AuthQueryService;
-import writeon.domain.common.MemberSession;
+import writeon.api.common.response.BaseResponse;
+import writeon.api.common.util.LogUtil;
+import writeon.domain.auth.dto.AuthTokenDto;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,26 +24,50 @@ import writeon.domain.common.MemberSession;
 public class AuthController {
     private final AuthQueryService authQueryService;
     private final AuthCommandService authCommandService;
+    private final AuthCookieHelper authCookieHelper;
 
     @Operation(summary = "토큰 재발급")
     @PostMapping("/token/reissue")
-    public AuthTokenResponse reissueToken(@Valid @RequestBody ReissueRequest request) {
+    public ResponseEntity<BaseResponse<TokenReissueResponse>> reissueToken(@CookieValue(value = "refreshToken", defaultValue="") String tokenString) {
+        LogUtil.info("token" + tokenString);
+        AuthTokenDto tokens = authCommandService.reissueToken(tokenString);
+        TokenReissueResponse response = new TokenReissueResponse(tokens.getAccessToken());
 
-        return authCommandService.reissueToken(request);
+        String cookieString = authCookieHelper.createNewCookie(tokens.getRefreshToken());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE, cookieString);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(BaseResponse.success(response));
     }
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    public AuthTokenResponse login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<BaseResponse<TokenReissueResponse>> login(@Valid @RequestBody LoginRequest request) {
+        AuthTokenDto tokens = authCommandService.login(request);
+        TokenReissueResponse response = new TokenReissueResponse(tokens.getAccessToken());
 
-        return authCommandService.login(request);
+        String cookieString = authCookieHelper.createNewCookie(tokens.getRefreshToken());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE, cookieString);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(BaseResponse.success(response));
     }
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
-    public void logout(@Parameter(hidden = true) MemberSession memberSession) {
+    public ResponseEntity<BaseResponse<?>> logout() {
+        authCommandService.logout();
 
-        authCommandService.logout(memberSession.getMemberId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE, authCookieHelper.createExpiredCookie());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(null);
     }
 
     @Operation(summary = "회원가입")
@@ -51,9 +79,9 @@ public class AuthController {
 
     @Operation(summary = "회원가입 완료")
     @PostMapping("/join/complete")
-    public AuthTokenResponse completeJoin(@Valid @RequestBody JoinCompletionRequest request) {
+    public void completeJoin(@Valid @RequestBody JoinCompletionRequest request) {
 
-        return authCommandService.completeJoin(request);
+        authCommandService.completeJoin(request);
     }
 
     @Operation(summary = "비밀번호 변경")
@@ -83,4 +111,5 @@ public class AuthController {
 
         return authQueryService.checkNickname(request);
     }
+
 }

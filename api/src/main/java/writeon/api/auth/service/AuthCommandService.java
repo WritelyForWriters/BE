@@ -8,22 +8,21 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import writeon.api.auth.helper.JwtHelper;
 import writeon.api.auth.helper.MailHelper;
+import writeon.api.auth.helper.MemberHelper;
 import writeon.api.auth.request.*;
-import writeon.api.auth.response.AuthTokenResponse;
 import writeon.api.auth.response.LoginFailResponse;
-import writeon.api.common.enums.code.ResultCodeInfo;
-import writeon.api.common.enums.exception.InternalServerException;
 import writeon.api.common.exception.BaseException;
-import writeon.api.common.util.CryptoUtil;
 import writeon.api.terms.request.TermsAgreeRequest;
 import writeon.api.terms.service.TermsQueryService;
 import writeon.domain.auth.*;
+import writeon.domain.auth.dto.AuthTokenDto;
 import writeon.domain.auth.enums.AuthException;
 import writeon.domain.auth.enums.LoginAttemptResultType;
 import writeon.domain.auth.repository.ChangePasswordTokenRedisRepository;
 import writeon.domain.auth.repository.JoinTokenRedisRepository;
 import writeon.domain.auth.repository.LoginAttemptJpaRepository;
 import writeon.domain.auth.repository.RefreshTokenRedisRepository;
+import writeon.domain.common.MemberSession;
 import writeon.domain.member.Member;
 import writeon.domain.member.MemberPassword;
 import writeon.domain.member.repository.MemberJpaRepository;
@@ -56,25 +55,25 @@ public class AuthCommandService {
      * 토큰 재발급
      */
     @Transactional
-    public AuthTokenResponse reissueToken(ReissueRequest request) {
+    public AuthTokenDto reissueToken(String tokenString) {
         // 리프래시 토큰이 비유효하면
-        if (!jwtHelper.isTokenValid(request.getRefreshToken())) {
+        if (!jwtHelper.isTokenValid(tokenString)) {
             throw new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID);
         }
 
         // 레디스 검사
-        RefreshToken oldRefreshToken = refreshTokenRedisRepository.findById(request.getRefreshToken())
+        RefreshToken oldRefreshToken = refreshTokenRedisRepository.findById(tokenString)
                 .orElseThrow(() -> new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID));
         this.invalidateToken(oldRefreshToken);
 
-        JwtPayload payload = jwtHelper.getPayload(request.getRefreshToken());
+        JwtPayload payload = jwtHelper.getPayload(tokenString);
         return generateAuthTokens(payload.getMemberId());
     }
 
     /**
      * 로그인
      */
-    public AuthTokenResponse login(LoginRequest request) {
+    public AuthTokenDto login(LoginRequest request) {
         Member member = memberJpaRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BaseException(AuthException.LOGIN_FAILED));
         MemberPassword memberPassword = memberPasswordJpaRepository.findById(member.getId())
@@ -120,8 +119,10 @@ public class AuthCommandService {
      * 로그아웃
      */
     @Transactional
-    public void logout(UUID memberId) {
-        refreshTokenRedisRepository.findByMemberId(memberId)
+    public void logout() {
+        MemberSession memberSession = MemberHelper.getMemberSession();
+
+        refreshTokenRedisRepository.findByMemberId(memberSession.getMemberId())
                 .ifPresent(this::invalidateToken);
     }
 
@@ -195,7 +196,7 @@ public class AuthCommandService {
      * 회원가입 완료
      */
     @Transactional
-    public AuthTokenResponse completeJoin(JoinCompletionRequest request) {
+    public void completeJoin(JoinCompletionRequest request) {
         final String joinTokenString = request.getJoinToken();
 
         // 토큰이 비유효한 경우
@@ -214,8 +215,6 @@ public class AuthCommandService {
 
         // 토큰 무효화
         this.invalidateToken(joinToken);
-
-        return generateAuthTokens(joinToken.getMember().getId());
     }
 
     /**
@@ -284,7 +283,7 @@ public class AuthCommandService {
     /**
      * 인증 토큰 발급 (액세스 + 리프래시)
      */
-    private AuthTokenResponse generateAuthTokens(UUID memberId) {
+    private AuthTokenDto generateAuthTokens(UUID memberId) {
         JwtPayload jwtPayload = JwtPayload.builder()
                 .memberId(memberId)
                 .build();
@@ -292,7 +291,7 @@ public class AuthCommandService {
         String refreshToken = jwtHelper.generateRefreshToken(jwtPayload);
         refreshTokenRedisRepository.save(new RefreshToken(refreshToken, memberId));;
 
-        return new AuthTokenResponse(accessToken, refreshToken);
+        return new AuthTokenDto(accessToken, refreshToken);
     }
 
     /**
