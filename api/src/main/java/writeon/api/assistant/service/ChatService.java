@@ -1,30 +1,31 @@
 package writeon.api.assistant.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.IOException;
+import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.request.AssistantChatMessageRequest;
 import writeon.api.assistant.request.AssistantResearchRequest;
 import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.ChatRequest;
 import writeon.assistantapiclient.request.ResearchRequest;
 import writeon.assistantapiclient.request.UserSetting;
 import writeon.domain.assistant.Assistant;
-import writeon.domain.assistant.chat.ChatMessage;
-import writeon.domain.assistant.chat.ChatMessageJpaRepository;
+import writeon.domain.assistant.AssistantMessage;
 import writeon.domain.assistant.enums.AssistantException;
 import writeon.domain.assistant.enums.AssistantStatus;
 import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.assistant.enums.MessageSenderRole;
-
-import java.io.IOException;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,6 @@ public class ChatService {
 
     private final long TIMEOUT = 180_000L;
 
-    private final ChatMessageJpaRepository chatMessageRepository;
     private final AssistantApiClient assistantApiClient;
     private final AssistantService assistantService;
     private final ProductQueryService productQueryService;
@@ -41,25 +41,30 @@ public class ChatService {
     public MessageCreateResponse createMessage(AssistantChatMessageRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);
-        ChatMessage memberMessage =
-            new ChatMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
-        chatMessageRepository.save(memberMessage);
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
+        AssistantMessage memberMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .prompt(request.getPrompt())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(memberMessage);
 
         return new MessageCreateResponse(assistantId);
     }
 
     public SseEmitter streamChat(UUID assistantId, String sessionId) {
-        Assistant assistant = assistantService.getById(assistantId);
+        Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
-        verifyAnswered(assistantId);
+        assistantService.verifyAnswered(assistantId);
         productQueryService.verifyExist(assistant.getProductId());
 
-        ChatMessage message = getMemberMessage(assistantId);
+        AssistantMessage memberMessage = assistantService.getMessage(assistantId, MessageSenderRole.MEMBER);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         ChatRequest request = new ChatRequest(
-            userSetting, message.getContent(), message.getPrompt(), sessionId
+            userSetting, memberMessage.getContent(), memberMessage.getPrompt(), sessionId
         );
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
@@ -80,8 +85,14 @@ public class ChatService {
                     emitter.completeWithError(new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR));
                 },
                 () -> {
-                    ChatMessage assistantMessage = new ChatMessage(message.getAssistantId(), MessageSenderRole.ASSISTANT, responseBuilder.toString(), null);
-                    chatMessageRepository.save(assistantMessage);
+                    String answer = responseBuilder.toString().replace("[DONE]", "").trim();
+                    AssistantMessage assistantMessage = AssistantMessage.builder()
+                        .assistantId(assistantId)
+                        .role(MessageSenderRole.ASSISTANT)
+                        .content(answer)
+                        .createdBy(memberMessage.getCreatedBy())
+                        .build();
+                    assistantService.createMessage(assistantMessage);
 
                     assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
                     emitter.complete();
@@ -96,10 +107,16 @@ public class ChatService {
         productQueryService.verifyExist(request.getProductId());
 
         // assistant 및 message 생성
-        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.RESEARCH);
-        ChatMessage memberMessage =
-            new ChatMessage(assistantId, MessageSenderRole.MEMBER, request.getContent(), request.getPrompt());
-        chatMessageRepository.save(memberMessage);
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
+
+        AssistantMessage memberMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .prompt(request.getPrompt())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(memberMessage);
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
         ResearchRequest researchRequest = new ResearchRequest(userSetting, request.getContent(), request.getPrompt(), request.getSessionId());
@@ -108,21 +125,14 @@ public class ChatService {
         String answer = assistantApiClient.research(researchRequest).block();
 
         // assistant 응답 저장
-        ChatMessage assistantMessage =
-            new ChatMessage(assistantId, MessageSenderRole.ASSISTANT, answer, null);
-        chatMessageRepository.save(assistantMessage);
+        AssistantMessage assistantMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.ASSISTANT)
+            .content(answer)
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(assistantMessage);
 
         return new AssistantResponse(assistantId, answer);
-    }
-
-    private ChatMessage getMemberMessage(UUID assistantId) {
-        return chatMessageRepository.findByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.MEMBER)
-            .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
-    }
-
-    private void verifyAnswered(UUID assistantId) {
-        if (chatMessageRepository.existsByAssistantIdAndMessageContent_Role(assistantId, MessageSenderRole.ASSISTANT)) {
-            throw new BaseException(AssistantException.ALREADY_ANSWERED);
-        }
     }
 }

@@ -3,7 +3,7 @@ package writeon.api.terms.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import writely.tables.records.TermsRecord;
+import writeon.tables.records.TermsRecord;
 import writeon.api.common.exception.BaseException;
 import writeon.api.terms.repository.TermsDao;
 import writeon.api.terms.response.TermsDetailResponse;

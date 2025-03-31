@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import writeon.domain.assistant.enums.AssistantStatus;
 import writeon.domain.assistant.enums.AssistantType;
-import writeon.domain.common.BaseAuditTimeEntity;
+import writeon.domain.common.BaseTimeEntity;
 
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Table(name = "assistant")
-public class Assistant extends BaseAuditTimeEntity {
+public class Assistant extends BaseTimeEntity {
 
     @Id
     @Column(name = "id", updatable = false)
@@ -31,10 +31,14 @@ public class Assistant extends BaseAuditTimeEntity {
     @Column(name = "status", nullable = false)
     private AssistantStatus status = AssistantStatus.DRAFT;
 
+    @Column(name = "created_by", updatable = false, nullable = false)
+    private UUID createdBy;
+
     @Builder
-    public Assistant(UUID productId, AssistantType type) {
+    public Assistant(UUID productId, AssistantType type, UUID createdBy) {
         this.productId = productId;
         this.type = type;
+        this.createdBy = createdBy;
     }
 
     public void updateStatus(AssistantStatus status) {

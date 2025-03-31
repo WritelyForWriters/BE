@@ -12,7 +12,7 @@ public enum AssistantType implements Codable {
 
     AUTO_MODIFY("auto modify"),
     FEEDBACK("feedback"),
-    RESEARCH("research"),
+    CHAT("chat"),
     USER_MODIFY("user modify");
 
     private final String code;

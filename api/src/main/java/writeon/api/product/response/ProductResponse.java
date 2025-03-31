@@ -1,12 +1,12 @@
 package writeon.api.product.response;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import writely.tables.records.ProductRecord;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
+import writeon.tables.records.ProductRecord;
 
 @Getter
 @Setter
