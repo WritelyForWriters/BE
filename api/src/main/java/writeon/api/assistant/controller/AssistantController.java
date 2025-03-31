@@ -1,19 +1,40 @@
 package writeon.api.assistant.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.*;
+import writeon.api.assistant.request.AssistantAutoModifyMessageRequest;
+import writeon.api.assistant.request.AssistantChatMessageRequest;
+import writeon.api.assistant.request.AssistantCompletedRequest;
+import writeon.api.assistant.request.AssistantEvaluationRequest;
+import writeon.api.assistant.request.AssistantFeedbackMessageRequest;
+import writeon.api.assistant.request.AssistantResearchRequest;
+import writeon.api.assistant.request.AssistantUserModifyMessageRequest;
+import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
-import writeon.api.assistant.service.*;
-
-import java.util.UUID;
+import writeon.api.assistant.service.AssistantEvaluationService;
+import writeon.api.assistant.service.AssistantService;
+import writeon.api.assistant.service.AutoModifyService;
+import writeon.api.assistant.service.ChatService;
+import writeon.api.assistant.service.FeedbackService;
+import writeon.api.assistant.service.UserModifyService;
 
 @RestController
 @RequiredArgsConstructor
@@ -97,6 +118,12 @@ public class AssistantController {
         SseEmitter emitter = userModifyService.streamUserModify(assistantId);
         setResponseHeaderForSSE();
         return emitter;
+    }
+
+    @Operation(summary = "어시스턴트 사용 내역 조회")
+    @GetMapping("/histories")
+    public List<AssistantHistoryResponse> getHistories(@RequestParam UUID productId) {
+        return assistantService.getHistories(productId);
     }
 
     @Operation(summary = "AI 어시 기능 완료 처리")

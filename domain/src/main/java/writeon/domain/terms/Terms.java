@@ -1,14 +1,18 @@
 package writeon.domain.terms;
 
-import jakarta.persistence.*;
+import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import writely.tables.records.TermsRecord;
 import writeon.domain.common.BaseTimeEntity;
 import writeon.domain.terms.enums.TermsCode;
-
-import java.util.UUID;
+import writeon.tables.records.TermsRecord;
 
 @Getter
 @Setter

@@ -1,20 +1,19 @@
 package writeon.api.assistant.response;
 
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-
-import java.util.UUID;
 
 @Getter
 public class AssistantResponse {
 
-    @Schema(title = "어시스턴트 ID")
-    private final UUID assistantId;
+    private final UUID id;
     @Schema(title = "답변 내용")
     private final String answer;
 
-    public AssistantResponse(UUID assistantId, String answer) {
-        this.assistantId = assistantId;
+    public AssistantResponse(UUID id, String answer) {
+        this.id = id;
         this.answer = answer;
     }
 }
