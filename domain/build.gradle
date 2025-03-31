@@ -48,9 +48,9 @@ jooq {
                 logging = org.jooq.meta.jaxb.Logging.DEBUG
                 jdbc {
                     driver = 'org.postgresql.Driver'
-                    url = 'jdbc:postgresql://db-instance-postgres.cv2280c0874d.ap-northeast-2.rds.amazonaws.com:5432/service'
+                    url = 'jdbc:postgresql://localhost:5432/service'
                     user = 'postgres'
-                    password = 'Writely0101%'
+                    password = '1234'
                 }
                 generator {
                     name = 'org.jooq.codegen.DefaultGenerator'
@@ -65,7 +65,7 @@ jooq {
                         fluentSetters = true
                     }
                     target {
-                        packageName = 'writely'
+                        packageName = 'writeon'
                         directory = 'src/main/generated'
                     }
                     strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
