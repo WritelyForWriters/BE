@@ -4,12 +4,17 @@
 package writeon;
 
 
+import org.jooq.Configuration;
+import org.jooq.Field;
+import org.jooq.Result;
+
 import writeon.tables.Assistant;
 import writeon.tables.AssistantEvaluation;
 import writeon.tables.AssistantMessage;
 import writeon.tables.LoginAttempt;
 import writeon.tables.Member;
 import writeon.tables.MemberPassword;
+import writeon.tables.PgpArmorHeaders;
 import writeon.tables.Product;
 import writeon.tables.ProductCharacter;
 import writeon.tables.ProductCustomField;
@@ -21,6 +26,7 @@ import writeon.tables.ProductSynopsis;
 import writeon.tables.ProductWorldview;
 import writeon.tables.Terms;
 import writeon.tables.TermsAgreement;
+import writeon.tables.records.PgpArmorHeadersRecord;
 
 
 /**
@@ -58,6 +64,45 @@ public class Tables {
      * 회원_비밀번호
      */
     public static final MemberPassword MEMBER_PASSWORD = MemberPassword.MEMBER_PASSWORD;
+
+    /**
+     * The table <code>public.pgp_armor_headers</code>.
+     */
+    public static final PgpArmorHeaders PGP_ARMOR_HEADERS = PgpArmorHeaders.PGP_ARMOR_HEADERS;
+
+    /**
+     * Call <code>public.pgp_armor_headers</code>.
+     */
+    public static Result<PgpArmorHeadersRecord> PGP_ARMOR_HEADERS(
+          Configuration configuration
+        , String __1
+    ) {
+        return configuration.dsl().selectFrom(writeon.tables.PgpArmorHeaders.PGP_ARMOR_HEADERS.call(
+              __1
+        )).fetch();
+    }
+
+    /**
+     * Get <code>public.pgp_armor_headers</code> as a table.
+     */
+    public static PgpArmorHeaders PGP_ARMOR_HEADERS(
+          String __1
+    ) {
+        return writeon.tables.PgpArmorHeaders.PGP_ARMOR_HEADERS.call(
+            __1
+        );
+    }
+
+    /**
+     * Get <code>public.pgp_armor_headers</code> as a table.
+     */
+    public static PgpArmorHeaders PGP_ARMOR_HEADERS(
+          Field<String> __1
+    ) {
+        return writeon.tables.PgpArmorHeaders.PGP_ARMOR_HEADERS.call(
+            __1
+        );
+    }
 
     /**
      * 작품

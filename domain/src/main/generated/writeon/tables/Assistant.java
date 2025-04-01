@@ -86,6 +86,11 @@ public class Assistant extends TableImpl<AssistantRecord> {
      */
     public final TableField<AssistantRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
+    /**
+     * The column <code>public.assistant.updated_by</code>.
+     */
+    public final TableField<AssistantRecord, UUID> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.UUID.nullable(false), this, "");
+
     private Assistant(Name alias, Table<AssistantRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

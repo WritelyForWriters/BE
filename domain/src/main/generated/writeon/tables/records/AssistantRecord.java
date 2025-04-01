@@ -126,6 +126,21 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
         return (LocalDateTime) get(6);
     }
 
+    /**
+     * Setter for <code>public.assistant.updated_by</code>.
+     */
+    public AssistantRecord setUpdatedBy(UUID value) {
+        set(7, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.assistant.updated_by</code>.
+     */
+    public UUID getUpdatedBy() {
+        return (UUID) get(7);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -149,7 +164,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
     /**
      * Create a detached, initialised AssistantRecord
      */
-    public AssistantRecord(UUID id, UUID productId, String type, String status, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt) {
+    public AssistantRecord(UUID id, UUID productId, String type, String status, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
         super(Assistant.ASSISTANT);
 
         setId(id);
@@ -159,6 +174,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
         setUpdatedAt(updatedAt);
+        setUpdatedBy(updatedBy);
         resetChangedOnNotNull();
     }
 
@@ -176,6 +192,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
             setUpdatedAt(value.getUpdatedAt());
+            setUpdatedBy(value.getUpdatedBy());
             resetChangedOnNotNull();
         }
     }

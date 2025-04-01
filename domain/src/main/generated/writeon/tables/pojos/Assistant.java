@@ -24,6 +24,7 @@ public class Assistant implements Serializable {
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
+    private final UUID updatedBy;
 
     public Assistant(Assistant value) {
         this.id = value.id;
@@ -33,6 +34,7 @@ public class Assistant implements Serializable {
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
+        this.updatedBy = value.updatedBy;
     }
 
     public Assistant(
@@ -42,7 +44,8 @@ public class Assistant implements Serializable {
         String status,
         LocalDateTime createdAt,
         UUID createdBy,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        UUID updatedBy
     ) {
         this.id = id;
         this.productId = productId;
@@ -51,6 +54,7 @@ public class Assistant implements Serializable {
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
     }
 
     /**
@@ -100,6 +104,13 @@ public class Assistant implements Serializable {
      */
     public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
+    }
+
+    /**
+     * Getter for <code>public.assistant.updated_by</code>.
+     */
+    public UUID getUpdatedBy() {
+        return this.updatedBy;
     }
 
     @Override
@@ -153,6 +164,12 @@ public class Assistant implements Serializable {
         }
         else if (!this.updatedAt.equals(other.updatedAt))
             return false;
+        if (this.updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        }
+        else if (!this.updatedBy.equals(other.updatedBy))
+            return false;
         return true;
     }
 
@@ -167,6 +184,7 @@ public class Assistant implements Serializable {
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
+        result = prime * result + ((this.updatedBy == null) ? 0 : this.updatedBy.hashCode());
         return result;
     }
 
@@ -181,6 +199,7 @@ public class Assistant implements Serializable {
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);
+        sb.append(", ").append(updatedBy);
 
         sb.append(")");
         return sb.toString();

@@ -14,7 +14,8 @@ import writeon.domain.common.enums.Codable;
 @Slf4j
 public enum TermsCode implements Codable {
     PRIVACY_POLICY("1001"),
-    MARKETING_AGREEMENT("1002");
+    MARKETING_AGREEMENT("1002"),
+    TERMS_OF_USE("1003");
 
     private final String code;
 
