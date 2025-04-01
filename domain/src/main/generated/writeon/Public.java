@@ -24,6 +24,7 @@ import writeon.tables.PgpArmorHeaders;
 import writeon.tables.Product;
 import writeon.tables.ProductCharacter;
 import writeon.tables.ProductCustomField;
+import writeon.tables.ProductFavoritePrompt;
 import writeon.tables.ProductIdeanote;
 import writeon.tables.ProductMemo;
 import writeon.tables.ProductPlot;
@@ -63,7 +64,7 @@ public class Public extends SchemaImpl {
     public final AssistantMessage ASSISTANT_MESSAGE = AssistantMessage.ASSISTANT_MESSAGE;
 
     /**
-     * 로그인_시도
+     * The table <code>public.login_attempt</code>.
      */
     public final LoginAttempt LOGIN_ATTEMPT = LoginAttempt.LOGIN_ATTEMPT;
 
@@ -132,6 +133,11 @@ public class Public extends SchemaImpl {
     public final ProductCustomField PRODUCT_CUSTOM_FIELD = ProductCustomField.PRODUCT_CUSTOM_FIELD;
 
     /**
+     * The table <code>public.product_favorite_prompt</code>.
+     */
+    public final ProductFavoritePrompt PRODUCT_FAVORITE_PROMPT = ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT;
+
+    /**
      * 작품 아이디어 노트
      */
     public final ProductIdeanote PRODUCT_IDEANOTE = ProductIdeanote.PRODUCT_IDEANOTE;
@@ -192,6 +198,7 @@ public class Public extends SchemaImpl {
             Product.PRODUCT,
             ProductCharacter.PRODUCT_CHARACTER,
             ProductCustomField.PRODUCT_CUSTOM_FIELD,
+            ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT,
             ProductIdeanote.PRODUCT_IDEANOTE,
             ProductMemo.PRODUCT_MEMO,
             ProductPlot.PRODUCT_PLOT,

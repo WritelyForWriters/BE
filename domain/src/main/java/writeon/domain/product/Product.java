@@ -53,6 +53,9 @@ public class Product extends BaseAuditTimeEntity {
     @JoinColumn(name = "id")
     private ProductWorldview worldview;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductFavoritePrompt> favoritePrompts = new ArrayList<>();
+
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
