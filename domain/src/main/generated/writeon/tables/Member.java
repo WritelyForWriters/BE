@@ -66,7 +66,7 @@ public class Member extends TableImpl<MemberRecord> {
     /**
      * The column <code>public.member.nickname</code>. 회원 닉네임
      */
-    public final TableField<MemberRecord, String> NICKNAME = createField(DSL.name("nickname"), SQLDataType.VARCHAR(20).nullable(false), this, "회원 닉네임");
+    public final TableField<MemberRecord, String> NICKNAME = createField(DSL.name("nickname"), SQLDataType.VARCHAR(10).nullable(false), this, "회원 닉네임");
 
     /**
      * The column <code>public.member.profile_image</code>. 회원 프로필 이미지 경로

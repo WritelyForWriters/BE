@@ -97,7 +97,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
     }
 
     /**
-     * Setter for <code>public.assistant.created_by</code>. 생성자 ID
+     * Setter for <code>public.assistant.created_by</code>. 수정자 ID
      */
     public AssistantRecord setCreatedBy(UUID value) {
         set(5, value);
@@ -105,7 +105,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
     }
 
     /**
-     * Getter for <code>public.assistant.created_by</code>. 생성자 ID
+     * Getter for <code>public.assistant.created_by</code>. 수정자 ID
      */
     public UUID getCreatedBy() {
         return (UUID) get(5);

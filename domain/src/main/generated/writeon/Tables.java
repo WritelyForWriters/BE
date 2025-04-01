@@ -13,6 +13,7 @@ import writeon.tables.MemberPassword;
 import writeon.tables.Product;
 import writeon.tables.ProductCharacter;
 import writeon.tables.ProductCustomField;
+import writeon.tables.ProductFavoritePrompt;
 import writeon.tables.ProductIdeanote;
 import writeon.tables.ProductMemo;
 import writeon.tables.ProductPlot;
@@ -44,7 +45,7 @@ public class Tables {
     public static final AssistantMessage ASSISTANT_MESSAGE = AssistantMessage.ASSISTANT_MESSAGE;
 
     /**
-     * 로그인_시도
+     * The table <code>public.login_attempt</code>.
      */
     public static final LoginAttempt LOGIN_ATTEMPT = LoginAttempt.LOGIN_ATTEMPT;
 
@@ -72,6 +73,11 @@ public class Tables {
      * The table <code>public.product_custom_field</code>.
      */
     public static final ProductCustomField PRODUCT_CUSTOM_FIELD = ProductCustomField.PRODUCT_CUSTOM_FIELD;
+
+    /**
+     * The table <code>public.product_favorite_prompt</code>.
+     */
+    public static final ProductFavoritePrompt PRODUCT_FAVORITE_PROMPT = ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT;
 
     /**
      * 작품 아이디어 노트

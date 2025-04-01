@@ -77,9 +77,9 @@ public class Assistant extends TableImpl<AssistantRecord> {
     public final TableField<AssistantRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "수정일시");
 
     /**
-     * The column <code>public.assistant.created_by</code>. 생성자 ID
+     * The column <code>public.assistant.created_by</code>. 수정자 ID
      */
-    public final TableField<AssistantRecord, UUID> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.UUID.nullable(false), this, "생성자 ID");
+    public final TableField<AssistantRecord, UUID> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.UUID.nullable(false), this, "수정자 ID");
 
     /**
      * The column <code>public.assistant.updated_at</code>.

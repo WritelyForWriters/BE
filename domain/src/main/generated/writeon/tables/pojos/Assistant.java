@@ -89,7 +89,7 @@ public class Assistant implements Serializable {
     }
 
     /**
-     * Getter for <code>public.assistant.created_by</code>. 생성자 ID
+     * Getter for <code>public.assistant.created_by</code>. 수정자 ID
      */
     public UUID getCreatedBy() {
         return this.createdBy;

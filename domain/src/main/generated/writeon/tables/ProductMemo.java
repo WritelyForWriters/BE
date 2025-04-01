@@ -62,11 +62,6 @@ public class ProductMemo extends TableImpl<ProductMemoRecord> {
     public final TableField<ProductMemoRecord, UUID> PRODUCT_ID = createField(DSL.name("product_id"), SQLDataType.UUID.nullable(false), this, "작품 ID");
 
     /**
-     * The column <code>public.product_memo.title</code>. 제목
-     */
-    public final TableField<ProductMemoRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.VARCHAR(100), this, "제목");
-
-    /**
      * The column <code>public.product_memo.content</code>. 내용
      */
     public final TableField<ProductMemoRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "내용");
@@ -87,9 +82,9 @@ public class ProductMemo extends TableImpl<ProductMemoRecord> {
     public final TableField<ProductMemoRecord, Integer> END_INDEX = createField(DSL.name("end_index"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.product_memo.is_completed</code>. 완료 여부
+     * The column <code>public.product_memo.is_completed</code>. 완료여부
      */
-    public final TableField<ProductMemoRecord, Boolean> IS_COMPLETED = createField(DSL.name("is_completed"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "완료 여부");
+    public final TableField<ProductMemoRecord, Boolean> IS_COMPLETED = createField(DSL.name("is_completed"), SQLDataType.BOOLEAN.nullable(false), this, "완료여부");
 
     /**
      * The column <code>public.product_memo.created_at</code>. 생성일시
