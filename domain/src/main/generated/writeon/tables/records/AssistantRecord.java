@@ -97,7 +97,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
     }
 
     /**
-     * Setter for <code>public.assistant.created_by</code>. 생성자 ID
+     * Setter for <code>public.assistant.created_by</code>. 수정자 ID
      */
     public AssistantRecord setCreatedBy(UUID value) {
         set(5, value);
@@ -105,7 +105,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
     }
 
     /**
-     * Getter for <code>public.assistant.created_by</code>. 생성자 ID
+     * Getter for <code>public.assistant.created_by</code>. 수정자 ID
      */
     public UUID getCreatedBy() {
         return (UUID) get(5);
@@ -124,6 +124,21 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
      */
     public LocalDateTime getUpdatedAt() {
         return (LocalDateTime) get(6);
+    }
+
+    /**
+     * Setter for <code>public.assistant.updated_by</code>.
+     */
+    public AssistantRecord setUpdatedBy(UUID value) {
+        set(7, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.assistant.updated_by</code>.
+     */
+    public UUID getUpdatedBy() {
+        return (UUID) get(7);
     }
 
     // -------------------------------------------------------------------------
@@ -149,7 +164,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
     /**
      * Create a detached, initialised AssistantRecord
      */
-    public AssistantRecord(UUID id, UUID productId, String type, String status, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt) {
+    public AssistantRecord(UUID id, UUID productId, String type, String status, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
         super(Assistant.ASSISTANT);
 
         setId(id);
@@ -159,6 +174,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
         setUpdatedAt(updatedAt);
+        setUpdatedBy(updatedBy);
         resetChangedOnNotNull();
     }
 
@@ -176,6 +192,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
             setUpdatedAt(value.getUpdatedAt());
+            setUpdatedBy(value.getUpdatedBy());
             resetChangedOnNotNull();
         }
     }
