@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import writeon.api.assistant.service.DocumentUploadService;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.MemberUtil;
+import writeon.api.product.request.ProductFavoritePromptCreateRequest;
 import writeon.api.product.request.ProductMemoSaveRequest;
 import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
@@ -45,6 +46,13 @@ public class ProductCommandService {
 
         productMemoRepository.save(new ProductMemo(productId, request.getTitle(), request.getContent(),
             request.getSelectedText(), request.getStartIndex(), request.getEndIndex()));
+    }
+
+    @Transactional
+    public void createFavoritePrompt(UUID productId, ProductFavoritePromptCreateRequest request) {
+        Product product = productQueryService.getById(productId);
+
+        product.getFavoritePrompts().add(new ProductFavoritePrompt(product, request.getPrompt()));
     }
 
     @Transactional
@@ -89,6 +97,13 @@ public class ProductCommandService {
         ProductMemo memo = getMemoById(memoId);
 
         productMemoRepository.delete(memo);
+    }
+
+    @Transactional
+    public void deleteFavoritePrompt(UUID productId, UUID promptId) {
+        Product product = productQueryService.getById(productId);
+
+        product.getFavoritePrompts().removeIf(prompt -> prompt.getId().equals(promptId));
     }
 
     private ProductMemo getMemoById(UUID memoId) {

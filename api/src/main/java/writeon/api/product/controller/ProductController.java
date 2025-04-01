@@ -4,10 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import writeon.api.product.request.ProductFavoritePromptCreateRequest;
 import writeon.api.product.request.ProductMemoSaveRequest;
 import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
 import writeon.api.product.response.ProductDetailResponse;
+import writeon.api.product.response.ProductFavoritePromptResponse;
 import writeon.api.product.response.ProductMemoResponse;
 import writeon.api.product.response.ProductResponse;
 import writeon.api.product.response.ProductTemplateResponse;
@@ -40,6 +43,14 @@ public class ProductController {
         return productCommandService.save(productId, request);
     }
 
+    @Operation(summary = "프롬프트 즐겨찾기 설정")
+    @PostMapping("/{productId}/favorite-prompts")
+    public void createFavoritePrompt(
+        @PathVariable UUID productId,
+        @RequestBody ProductFavoritePromptCreateRequest request) {
+        productCommandService.createFavoritePrompt(productId, request);
+    }
+
     @Operation(summary = "템플릿 저장")
     @PostMapping("/{productId}/templates")
     public void createTemplate(
@@ -66,6 +77,12 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ProductDetailResponse getDetail(@PathVariable UUID productId) {
         return productQueryService.getDetail(productId);
+    }
+
+    @Operation(summary = "즐겨찾는 프롬프트 목록 조회")
+    @GetMapping("/{productId}/favorite-prompts")
+    public List<ProductFavoritePromptResponse> getFavoritePrompts(@PathVariable UUID productId) {
+        return productQueryService.getFavoritePrompts(productId);
     }
 
     @Operation(summary = "템플릿 조회")
@@ -95,5 +112,13 @@ public class ProductController {
         @PathVariable UUID productId,
         @PathVariable UUID memoId) {
         productCommandService.deleteMemo(productId, memoId);
+    }
+
+    @Operation(summary = "프롬프트 즐겨찾기 해제")
+    @DeleteMapping("/{productId}/favorite-prompts/{promptId}")
+    public void deleteFavoritePrompt(
+        @PathVariable UUID productId,
+        @PathVariable UUID promptId) {
+        productCommandService.deleteFavoritePrompt(productId, promptId);
     }
 }

@@ -337,6 +337,19 @@ comment on column product_worldview.updated_by is '수정자 ID';
 alter table product_worldview
     owner to postgres;
 
+create table product_favorite_prompt
+(
+    id         uuid default gen_random_uuid() not null
+        constraint product_favorite_prompt_pk
+        primary key,
+    product_id uuid                           not null,
+    prompt     text                           not null,
+    created_at timestamp                      not null
+);
+
+alter table product_favorite_prompt
+    owner to postgres;
+
 create table assistant
 (
     id uuid      not null
