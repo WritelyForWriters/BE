@@ -3,7 +3,6 @@ package writeon.api.assistant.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import writeon.api.assistant.repository.AssistantDao;
 import writeon.api.assistant.request.AssistantCompletedRequest;
 import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.common.exception.BaseException;
+import writeon.api.common.response.OffsetResponse;
 import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.domain.assistant.Assistant;
@@ -72,10 +72,16 @@ public class AssistantService {
     }
 
     @Transactional(readOnly = true)
-    public List<AssistantHistoryResponse> getHistories(UUID productId) {
+    public OffsetResponse<AssistantHistoryResponse> getHistories(UUID productId, int page, int size) {
         productQueryService.verifyExist(productId);
 
-        return assistantDao.selectHistories(productId);
+        long count = assistantDao.countHistories(productId);
+        return OffsetResponse.of(
+            assistantDao.selectHistories(productId, page, size),
+            page,
+            size,
+            count
+        );
     }
 
     @Transactional(readOnly = true)

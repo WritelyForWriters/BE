@@ -1,5 +1,6 @@
 package writeon.api.assistant.controller;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.List;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +35,8 @@ import writeon.api.assistant.service.AutoModifyService;
 import writeon.api.assistant.service.ChatService;
 import writeon.api.assistant.service.FeedbackService;
 import writeon.api.assistant.service.UserModifyService;
+import writeon.api.common.request.OffsetRequest;
+import writeon.api.common.response.OffsetResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -122,13 +124,17 @@ public class AssistantController {
 
     @Operation(summary = "어시스턴트 사용 내역 조회")
     @GetMapping("/histories")
-    public List<AssistantHistoryResponse> getHistories(@RequestParam UUID productId) {
-        return assistantService.getHistories(productId);
+    public OffsetResponse<AssistantHistoryResponse> getHistories(
+        @RequestParam UUID productId,
+        @ParameterObject OffsetRequest request) {
+        return assistantService.getHistories(productId, request.getPage(), request.getSize());
     }
 
     @Operation(summary = "AI 어시 기능 완료 처리")
     @PutMapping("/{assistantId}/completed")
-    public void completed(@PathVariable UUID assistantId, @RequestBody AssistantCompletedRequest request) {
+    public void completed(
+        @PathVariable UUID assistantId,
+        @RequestBody AssistantCompletedRequest request) {
         assistantService.completed(assistantId, request);
     }
 
