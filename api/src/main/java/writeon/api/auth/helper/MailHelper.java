@@ -36,8 +36,8 @@ public class MailHelper {
     @Getter
     @RequiredArgsConstructor
     public enum MailType {
-        JOIN("[라이틀리] 계정을 인증해주세요!", "mail/join"),
-        CHANGE_PASSWORD("[라이틀리] 비밀번호 재설정 안내", "mail/change-password");
+        JOIN("[라이트온] 계정을 인증해주세요!", "mail/join"),
+        CHANGE_PASSWORD("[라이트온] 비밀번호 재설정 안내", "mail/change-password");
 
         private final String subject;
         private final String templatePath;
