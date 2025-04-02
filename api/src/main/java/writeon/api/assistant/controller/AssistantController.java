@@ -21,8 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.request.AssistantAutoModifyMessageRequest;
 import writeon.api.assistant.request.AssistantChatMessageRequest;
-import writeon.api.assistant.request.AssistantCompletedRequest;
-import writeon.api.assistant.request.AssistantEvaluationRequest;
+import writeon.api.assistant.request.AssistantEvaluateRequest;
 import writeon.api.assistant.request.AssistantFeedbackMessageRequest;
 import writeon.api.assistant.request.AssistantResearchRequest;
 import writeon.api.assistant.request.AssistantUserModifyMessageRequest;
@@ -51,6 +50,12 @@ public class AssistantController {
     private final FeedbackService feedbackService;
     private final UserModifyService userModifyService;
 
+    @Operation(summary = "어시스턴트 답변 적용")
+    @PostMapping("/{assistantId}/apply")
+    public void apply(@PathVariable UUID assistantId) {
+        assistantService.apply(assistantId);
+    }
+
     @Operation(summary = "자동 수정 메세지 저장")
     @PostMapping("/auto-modify/messages")
     public MessageCreateResponse createAutoModifyMessage(@RequestBody AssistantAutoModifyMessageRequest request) {
@@ -63,10 +68,12 @@ public class AssistantController {
         return chatService.createMessage(request);
     }
 
-    @Operation(summary = "평가")
-    @PostMapping("/evaluations")
-    public void evaluate(@RequestBody AssistantEvaluationRequest request) {
-        assistantEvaluationService.evaluate(request);
+    @Operation(summary = "어시스턴트 답변 평가")
+    @PostMapping("/{assistantId}/evaluate")
+    public void evaluate(
+        @PathVariable UUID assistantId,
+        @RequestBody AssistantEvaluateRequest request) {
+        assistantEvaluationService.evaluate(assistantId, request);
     }
 
     @Operation(summary = "구간 피드백 메세지 저장")
@@ -130,12 +137,10 @@ public class AssistantController {
         return assistantService.getHistories(productId, request.getPage(), request.getSize());
     }
 
-    @Operation(summary = "AI 어시 기능 완료 처리")
+    @Operation(summary = "어시스턴트 기능 완료 처리")
     @PutMapping("/{assistantId}/completed")
-    public void completed(
-        @PathVariable UUID assistantId,
-        @RequestBody AssistantCompletedRequest request) {
-        assistantService.completed(assistantId, request);
+    public void completed(@PathVariable UUID assistantId) {
+        assistantService.completed(assistantId);
     }
 
     private void setResponseHeaderForSSE() {

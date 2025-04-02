@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.repository.AssistantDao;
-import writeon.api.assistant.request.AssistantCompletedRequest;
 import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.response.OffsetResponse;
@@ -33,6 +32,16 @@ public class AssistantService {
     private final ProductQueryService productQueryService;
 
     @Transactional
+    public void apply(UUID assistantId) {
+        Assistant assistant = getById(assistantId, MemberUtil.getMemberId());
+        if (assistant.getStatus() == AssistantStatus.DRAFT || assistant.getIsApplied()) {
+            throw new BaseException(AssistantException.CANNOT_BE_APPLIED);
+        }
+
+        assistant.apply();
+    }
+
+    @Transactional
     public UUID create(UUID productId, AssistantType type) {
         Assistant assistant = new Assistant(productId, type, MemberUtil.getMemberId());
         return assistantRepository.save(assistant).getId();
@@ -44,9 +53,8 @@ public class AssistantService {
     }
 
     @Transactional
-    public void completed(UUID assistantId, AssistantCompletedRequest request) {
-        Assistant assistant = getById(assistantId);
-
+    public void completed(UUID assistantId) {
+        Assistant assistant = getById(assistantId, MemberUtil.getMemberId());
         if (assistant.getStatus() != AssistantStatus.IN_PROGRESS) {
             throw new BaseException(AssistantException.CANNOT_BE_COMPLETED);
         }
