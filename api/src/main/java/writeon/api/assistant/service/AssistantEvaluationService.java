@@ -1,16 +1,17 @@
 package writeon.api.assistant.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import writeon.api.assistant.request.AssistantEvaluationRequest;
+
+import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
+import writeon.api.assistant.request.AssistantEvaluateRequest;
 import writeon.api.common.exception.BaseException;
 import writeon.domain.assistant.AssistantEvaluation;
 import writeon.domain.assistant.AssistantEvaluationJpaRepository;
 import writeon.domain.assistant.enums.AssistantException;
 import writeon.domain.assistant.enums.FeedbackType;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +21,9 @@ public class AssistantEvaluationService {
     private final AssistantService assistantService;
 
     @Transactional
-    public void evaluate(AssistantEvaluationRequest request) {
-        assistantService.verifyExist(request.getAssistantId());
-        verifyEvaluated(request.getAssistantId());
+    public void evaluate(UUID assistantId, AssistantEvaluateRequest request) {
+        assistantService.verifyExist(assistantId);
+        verifyEvaluated(assistantId);
 
         String feedback = null;
 
@@ -32,7 +33,7 @@ public class AssistantEvaluationService {
         }
 
         AssistantEvaluation assistantEvaluation = AssistantEvaluation.builder()
-            .assistantId(request.getAssistantId())
+            .assistantId(assistantId)
             .isGood(request.getIsGood())
             .feedback(feedback)
             .build();

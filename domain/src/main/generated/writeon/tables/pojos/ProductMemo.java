@@ -19,6 +19,7 @@ public class ProductMemo implements Serializable {
 
     private final UUID id;
     private final UUID productId;
+    private final String title;
     private final String content;
     private final String selectedText;
     private final Integer startIndex;
@@ -32,6 +33,7 @@ public class ProductMemo implements Serializable {
     public ProductMemo(ProductMemo value) {
         this.id = value.id;
         this.productId = value.productId;
+        this.title = value.title;
         this.content = value.content;
         this.selectedText = value.selectedText;
         this.startIndex = value.startIndex;
@@ -46,6 +48,7 @@ public class ProductMemo implements Serializable {
     public ProductMemo(
         UUID id,
         UUID productId,
+        String title,
         String content,
         String selectedText,
         Integer startIndex,
@@ -58,6 +61,7 @@ public class ProductMemo implements Serializable {
     ) {
         this.id = id;
         this.productId = productId;
+        this.title = title;
         this.content = content;
         this.selectedText = selectedText;
         this.startIndex = startIndex;
@@ -81,6 +85,13 @@ public class ProductMemo implements Serializable {
      */
     public UUID getProductId() {
         return this.productId;
+    }
+
+    /**
+     * Getter for <code>public.product_memo.title</code>. 제목
+     */
+    public String getTitle() {
+        return this.title;
     }
 
     /**
@@ -112,7 +123,7 @@ public class ProductMemo implements Serializable {
     }
 
     /**
-     * Getter for <code>public.product_memo.is_completed</code>. 완료여부
+     * Getter for <code>public.product_memo.is_completed</code>. 완료 여부
      */
     public Boolean getIsCompleted() {
         return this.isCompleted;
@@ -166,6 +177,12 @@ public class ProductMemo implements Serializable {
                 return false;
         }
         else if (!this.productId.equals(other.productId))
+            return false;
+        if (this.title == null) {
+            if (other.title != null)
+                return false;
+        }
+        else if (!this.title.equals(other.title))
             return false;
         if (this.content == null) {
             if (other.content != null)
@@ -230,6 +247,7 @@ public class ProductMemo implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
+        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
         result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
         result = prime * result + ((this.selectedText == null) ? 0 : this.selectedText.hashCode());
         result = prime * result + ((this.startIndex == null) ? 0 : this.startIndex.hashCode());
@@ -248,6 +266,7 @@ public class ProductMemo implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(productId);
+        sb.append(", ").append(title);
         sb.append(", ").append(content);
         sb.append(", ").append(selectedText);
         sb.append(", ").append(startIndex);

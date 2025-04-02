@@ -8,9 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Catalog;
-import org.jooq.Configuration;
-import org.jooq.Field;
-import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
@@ -20,7 +17,6 @@ import writeon.tables.AssistantMessage;
 import writeon.tables.LoginAttempt;
 import writeon.tables.Member;
 import writeon.tables.MemberPassword;
-import writeon.tables.PgpArmorHeaders;
 import writeon.tables.Product;
 import writeon.tables.ProductCharacter;
 import writeon.tables.ProductCustomField;
@@ -32,7 +28,6 @@ import writeon.tables.ProductSynopsis;
 import writeon.tables.ProductWorldview;
 import writeon.tables.Terms;
 import writeon.tables.TermsAgreement;
-import writeon.tables.records.PgpArmorHeadersRecord;
 
 
 /**
@@ -49,7 +44,7 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
-     * 어시스턴트
+     * The table <code>public.assistant</code>.
      */
     public final Assistant ASSISTANT = Assistant.ASSISTANT;
 
@@ -64,7 +59,7 @@ public class Public extends SchemaImpl {
     public final AssistantMessage ASSISTANT_MESSAGE = AssistantMessage.ASSISTANT_MESSAGE;
 
     /**
-     * The table <code>public.login_attempt</code>.
+     * 로그인_시도
      */
     public final LoginAttempt LOGIN_ATTEMPT = LoginAttempt.LOGIN_ATTEMPT;
 
@@ -77,45 +72,6 @@ public class Public extends SchemaImpl {
      * 회원_비밀번호
      */
     public final MemberPassword MEMBER_PASSWORD = MemberPassword.MEMBER_PASSWORD;
-
-    /**
-     * The table <code>public.pgp_armor_headers</code>.
-     */
-    public final PgpArmorHeaders PGP_ARMOR_HEADERS = PgpArmorHeaders.PGP_ARMOR_HEADERS;
-
-    /**
-     * Call <code>public.pgp_armor_headers</code>.
-     */
-    public static Result<PgpArmorHeadersRecord> PGP_ARMOR_HEADERS(
-          Configuration configuration
-        , String __1
-    ) {
-        return configuration.dsl().selectFrom(writeon.tables.PgpArmorHeaders.PGP_ARMOR_HEADERS.call(
-              __1
-        )).fetch();
-    }
-
-    /**
-     * Get <code>public.pgp_armor_headers</code> as a table.
-     */
-    public static PgpArmorHeaders PGP_ARMOR_HEADERS(
-          String __1
-    ) {
-        return writeon.tables.PgpArmorHeaders.PGP_ARMOR_HEADERS.call(
-            __1
-        );
-    }
-
-    /**
-     * Get <code>public.pgp_armor_headers</code> as a table.
-     */
-    public static PgpArmorHeaders PGP_ARMOR_HEADERS(
-          Field<String> __1
-    ) {
-        return writeon.tables.PgpArmorHeaders.PGP_ARMOR_HEADERS.call(
-            __1
-        );
-    }
 
     /**
      * 작품
@@ -194,7 +150,6 @@ public class Public extends SchemaImpl {
             LoginAttempt.LOGIN_ATTEMPT,
             Member.MEMBER,
             MemberPassword.MEMBER_PASSWORD,
-            PgpArmorHeaders.PGP_ARMOR_HEADERS,
             Product.PRODUCT,
             ProductCharacter.PRODUCT_CHARACTER,
             ProductCustomField.PRODUCT_CUSTOM_FIELD,

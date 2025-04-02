@@ -1,22 +1,20 @@
 package writeon.api.assistant.repository;
 
-import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
 import org.springframework.stereotype.Repository;
-import writeon.api.assistant.response.AssistantHistoryResponse;
-import writeon.domain.assistant.enums.AssistantStatus;
-import writeon.tables.records.AssistantMessageRecord;
-import writeon.tables.records.AssistantRecord;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import static writeon.tables.Assistant.ASSISTANT;
-import static writeon.tables.AssistantMessage.ASSISTANT_MESSAGE;
+import lombok.RequiredArgsConstructor;
+import writeon.api.assistant.response.AssistantHistoryResponse;
+import writeon.domain.assistant.enums.AssistantStatus;
+import writeon.domain.assistant.enums.MessageSenderRole;
+import writeon.tables.AssistantMessage;
+
+import static writeon.Tables.ASSISTANT;
+import static writeon.Tables.ASSISTANT_MESSAGE;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,25 +22,34 @@ public class AssistantDao {
 
     private final DSLContext dsl;
 
-    public List<AssistantHistoryResponse> selectHistories(UUID productId) {
-        Map<UUID, Result<Record>> groupedResults = dsl
-            .select(ASSISTANT.asterisk(), ASSISTANT_MESSAGE.asterisk())
+    public List<AssistantHistoryResponse> selectHistories(UUID productId, int page, int size) {
+        AssistantMessage memberMessage = ASSISTANT_MESSAGE.as("member_message");
+        AssistantMessage assistantMessage = ASSISTANT_MESSAGE.as("assistant_message");
+
+        return dsl.select(ASSISTANT.ID, ASSISTANT.TYPE, ASSISTANT.IS_APPLIED, ASSISTANT.CREATED_AT,
+                  memberMessage.CONTENT, memberMessage.PROMPT, assistantMessage.CONTENT)
             .from(ASSISTANT)
-            .join(ASSISTANT_MESSAGE)
-            .on(ASSISTANT.ID.eq(ASSISTANT_MESSAGE.ASSISTANT_ID))
+            .join(memberMessage)
+            .on(ASSISTANT.ID.eq(memberMessage.ASSISTANT_ID)
+                .and(memberMessage.ROLE.eq(MessageSenderRole.MEMBER.getCode())))
+            .join(assistantMessage)
+            .on(ASSISTANT.ID.eq(assistantMessage.ASSISTANT_ID)
+                .and(assistantMessage.ROLE.eq(MessageSenderRole.ASSISTANT.getCode())))
             .where(ASSISTANT.PRODUCT_ID.eq(productId))
             .and(ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()))
             .and(ASSISTANT.CREATED_AT.between(LocalDateTime.now().minusMonths(6), LocalDateTime.now()))
             .orderBy(ASSISTANT.CREATED_AT.desc())
-            .fetchGroups(ASSISTANT.ID);
+            .offset((long) (page - 1) * size)
+            .limit(size)
+            .fetchInto(AssistantHistoryResponse.class);
+    }
 
-    return groupedResults.values().stream()
-        .map(records -> {
-            AssistantRecord assistant = records.getFirst().into(AssistantRecord.class);
-            AssistantMessageRecord memberMessage = records.get(0).into(AssistantMessageRecord.class);
-            AssistantMessageRecord assistantMessage = records.get(1).into(AssistantMessageRecord.class);
-             return new AssistantHistoryResponse(assistant, memberMessage, assistantMessage);
-        })
-        .toList();
+    public Long countHistories(UUID productId) {
+        return dsl.selectCount()
+            .from(ASSISTANT)
+            .where(ASSISTANT.PRODUCT_ID.eq(productId))
+            .and(ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()))
+            .and(ASSISTANT.CREATED_AT.between(LocalDateTime.now().minusMonths(6), LocalDateTime.now()))
+            .fetchOneInto(Long.class);
     }
 }

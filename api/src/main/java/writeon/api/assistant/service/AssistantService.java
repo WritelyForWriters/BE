@@ -3,14 +3,13 @@ package writeon.api.assistant.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.repository.AssistantDao;
-import writeon.api.assistant.request.AssistantCompletedRequest;
 import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.common.exception.BaseException;
+import writeon.api.common.response.OffsetResponse;
 import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.domain.assistant.Assistant;
@@ -33,6 +32,16 @@ public class AssistantService {
     private final ProductQueryService productQueryService;
 
     @Transactional
+    public void apply(UUID assistantId) {
+        Assistant assistant = getById(assistantId, MemberUtil.getMemberId());
+        if (assistant.getStatus() == AssistantStatus.DRAFT || assistant.getIsApplied()) {
+            throw new BaseException(AssistantException.CANNOT_BE_APPLIED);
+        }
+
+        assistant.apply();
+    }
+
+    @Transactional
     public UUID create(UUID productId, AssistantType type) {
         Assistant assistant = new Assistant(productId, type, MemberUtil.getMemberId());
         return assistantRepository.save(assistant).getId();
@@ -44,9 +53,8 @@ public class AssistantService {
     }
 
     @Transactional
-    public void completed(UUID assistantId, AssistantCompletedRequest request) {
-        Assistant assistant = getById(assistantId);
-
+    public void completed(UUID assistantId) {
+        Assistant assistant = getById(assistantId, MemberUtil.getMemberId());
         if (assistant.getStatus() != AssistantStatus.IN_PROGRESS) {
             throw new BaseException(AssistantException.CANNOT_BE_COMPLETED);
         }
@@ -72,10 +80,16 @@ public class AssistantService {
     }
 
     @Transactional(readOnly = true)
-    public List<AssistantHistoryResponse> getHistories(UUID productId) {
+    public OffsetResponse<AssistantHistoryResponse> getHistories(UUID productId, int page, int size) {
         productQueryService.verifyExist(productId);
 
-        return assistantDao.selectHistories(productId);
+        long count = assistantDao.countHistories(productId);
+        return OffsetResponse.of(
+            assistantDao.selectHistories(productId, page, size),
+            page,
+            size,
+            count
+        );
     }
 
     @Transactional(readOnly = true)
