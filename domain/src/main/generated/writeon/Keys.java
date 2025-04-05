@@ -9,6 +9,7 @@ import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
+import writeon.tables.Assistant;
 import writeon.tables.AssistantEvaluation;
 import writeon.tables.AssistantMessage;
 import writeon.tables.LoginAttempt;
@@ -27,6 +28,7 @@ import writeon.tables.Terms;
 import writeon.tables.TermsAgreement;
 import writeon.tables.records.AssistantEvaluationRecord;
 import writeon.tables.records.AssistantMessageRecord;
+import writeon.tables.records.AssistantRecord;
 import writeon.tables.records.LoginAttemptRecord;
 import writeon.tables.records.MemberPasswordRecord;
 import writeon.tables.records.MemberRecord;
@@ -54,6 +56,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AssistantRecord> ASSISTANT_PK = Internal.createUniqueKey(Assistant.ASSISTANT, DSL.name("assistant_pk"), new TableField[] { Assistant.ASSISTANT.ID }, true);
     public static final UniqueKey<AssistantEvaluationRecord> ASSISTANT_EVALUATION_PK = Internal.createUniqueKey(AssistantEvaluation.ASSISTANT_EVALUATION, DSL.name("assistant_evaluation_pk"), new TableField[] { AssistantEvaluation.ASSISTANT_EVALUATION.ASSISTANT_ID }, true);
     public static final UniqueKey<AssistantMessageRecord> ASSISTANT_MESSAGE_PK = Internal.createUniqueKey(AssistantMessage.ASSISTANT_MESSAGE, DSL.name("assistant_message_pk"), new TableField[] { AssistantMessage.ASSISTANT_MESSAGE.ID }, true);
     public static final UniqueKey<LoginAttemptRecord> LOGIN_ATTEMPT_PK = Internal.createUniqueKey(LoginAttempt.LOGIN_ATTEMPT, DSL.name("login_attempt_pk"), new TableField[] { LoginAttempt.LOGIN_ATTEMPT.ID }, true);

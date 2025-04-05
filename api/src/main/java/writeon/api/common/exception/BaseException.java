@@ -8,6 +8,7 @@ public class BaseException extends RuntimeException {
 
   private CodeInfo codeInfo;
   private Object extraParams;
+  private String customMessage;
 
   public BaseException() {
   }
@@ -19,6 +20,12 @@ public class BaseException extends RuntimeException {
   public BaseException(CodeInfo codeInfo, Object extraParams) {
     this.codeInfo = codeInfo;
     this.extraParams = extraParams;
+  }
+
+  public BaseException(CodeInfo codeInfo, Object extraParams, String customMessage) {
+    this.codeInfo = codeInfo;
+    this.extraParams = extraParams;
+    this.customMessage = customMessage;
   }
 
   @Override

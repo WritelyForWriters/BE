@@ -20,6 +20,7 @@ public class DateTimeUtil {
   public final String DATE_DOT_PATTERN = "yyyy.MM.dd";
 
   public final String DATETIME_DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+  public final String DATETIME_HOUR_ONLY_KR_PATTERN = "yyyy년 MM월 dd일 HH시";
 
   public final TimeZone KOREA_TIME_ZONE = TimeZone.getTimeZone(ZoneId.of("Asia/Seoul"));
 

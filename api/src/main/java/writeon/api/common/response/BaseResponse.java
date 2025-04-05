@@ -55,4 +55,12 @@ public class BaseResponse<T> {
         return res;
     }
 
+    public static <T> BaseResponse<T> failure(CodeInfo codeInfo, T extraParams, String customMessage) {
+        BaseResponse<T> res = new BaseResponse<>();
+        res.code = codeInfo.getCode();
+        res.message = customMessage;
+        res.result = extraParams;
+        return res;
+    }
+
 }
