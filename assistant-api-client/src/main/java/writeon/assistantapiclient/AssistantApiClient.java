@@ -94,6 +94,22 @@ public class AssistantApiClient extends WebApiClient{
             .bodyToFlux(String.class);
     }
 
+    public Flux<String> streamPlannerGenerate(PlannerGenerateRequest request) {
+        return webClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .path("/v1/planner/generate/stream")
+                .build()
+            )
+            .bodyValue(request)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class)
+                    .doOnNext(errorBody -> System.out.println("Error response: " + errorBody))
+                    .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
+            )
+            .bodyToFlux(String.class);
+    }
+
     public Flux<String> streamUserModify(UserModifyRequest request) {
         return webClient.post()
             .uri(uriBuilder -> uriBuilder
