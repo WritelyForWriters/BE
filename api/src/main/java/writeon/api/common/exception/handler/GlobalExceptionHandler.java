@@ -23,30 +23,33 @@ public class GlobalExceptionHandler {
     HttpStatus status = null;
     BaseResponse<?> response = null;
 
-    if (e instanceof BaseException ex) {
-      status = ex.getCodeInfo().getStatus();
-      response = BaseResponse.failure(ex.getCodeInfo(), ex.getExtraParams());
-    }
-    else if (e instanceof MethodArgumentNotValidException ex) {
-      CodeInfo codeInfo = ResultCodeInfo.BAD_REQUEST;
+    switch (e) {
+      case BaseException ex -> {
+        status = ex.getCodeInfo().getStatus();
+        response = BaseResponse.failure(ex.getCodeInfo(), ex.getExtraParams());
+        if (ex.getCustomMessage() != null) {
+          response.setMessage(ex.getCustomMessage());
+        }
+      }
 
-      status = codeInfo.getStatus();
-      response = BaseResponse.failure(codeInfo);
-      String responseMessage = codeInfo.getMessage()
-              + " "
-              + ex.getBindingResult()
-              .getFieldErrors()
-              .stream()
-              .map(error -> error.getField() + " 이(가)" + error.getDefaultMessage())
-              .collect(Collectors.joining(" "));
-      response.setMessage(responseMessage);
-    }
+      case MethodArgumentNotValidException ex -> {
+        CodeInfo codeInfo = ResultCodeInfo.BAD_REQUEST;
+        status = codeInfo.getStatus();
+        response = BaseResponse.failure(codeInfo);
+        String responseMessage = codeInfo.getMessage()
+                + " "
+                + ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + " 이(가)" + error.getDefaultMessage())
+                .collect(Collectors.joining(" "));
+        response.setMessage(responseMessage);
+      }
 
-    if (status == null) {
-      status = ResultCodeInfo.FAILURE.getStatus();
-    }
-    if (response == null) {
-      response = BaseResponse.failure(ResultCodeInfo.FAILURE);
+      default -> {
+        status = ResultCodeInfo.FAILURE.getStatus();
+        response = BaseResponse.failure(ResultCodeInfo.FAILURE);
+      }
     }
 
     return new ResponseEntity<>(response, status);
