@@ -13,7 +13,7 @@ public enum AuthException implements CodeInfo {
     JOIN_TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED, "AUTH-101", "가입 토큰이 유효하지 않습니다."),
     JOIN_ALREADY_EXIST_MEMBER(HttpStatus.CONFLICT, "AUTH-102", "이미 있는 회원입니다."),
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "AUTH-201", "이메일 또는 비밀번호가 잘못되었거나 존재하지 않습니다."),
-    LOGIN_FAILED_WITH_WARNING(HttpStatus.UNAUTHORIZED, "AUTH-202", "이메일 또는 비밀번호가 잘못되었거나 존재하지 않습니다. 5회 이상 실패하면 1시간 동안 로그인이 제한됩니다"),
+    LOGIN_FAILED_WITH_WARNING(HttpStatus.UNAUTHORIZED, "AUTH-202", "5회 이상 실패하면 1시간 동안 로그인이 제한됩니다"),
     LOGIN_BLOCKED(HttpStatus.UNAUTHORIZED, "AUTH-203", "로그인 실패 가능 횟수를 초과하였습니다."),
     MAIL_SEND_FAILED(HttpStatus.UNAUTHORIZED, "AUTH-301", "이메일 발송에 실패했습니다."),
     CHANGE_PASSWORD_TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED, "AUTH-401", "비밀번호 변경 토큰이 유효하지 않습니다."),
