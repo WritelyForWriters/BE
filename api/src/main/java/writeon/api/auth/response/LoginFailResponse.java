@@ -15,5 +15,5 @@ public class LoginFailResponse {
     private int remainingAttempts;
 
     @Schema(title = "로그인 가능 시각", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "2025-04-05T14:41:10.626943")
-    private LocalDateTime availableLoginAt;
+    private LocalDateTime loginAvailableAt;
 }
