@@ -82,20 +82,20 @@ public class AuthCommandService {
                 .orElseThrow(() -> new BaseException(AuthException.AUTH_FAILED_BY_UNKNOWN_ERROR));
 
         List<LoginAttempt> lastFiveAttempts = loginAttemptJpaRepository.findTop5ByEmailOrderByCreatedAtDesc(request.getEmail());
-        LoginAttempt lastAttempt = lastFiveAttempts.getFirst();
-        // 로그인 시도가 블락 상태이고, 블락 시간으로부터 1시간이 지나지 않은 경우
-        if (
-                !lastFiveAttempts.isEmpty()
-                && lastAttempt.getResult() == LoginAttemptResultType.BLOCKED
-                && lastAttempt.getCreatedAt().isAfter(LocalDateTime.now().minusHours(1))
-        ) {
-            LocalDateTime loginAvailableAt = lastAttempt.getCreatedAt().plusHours(1);
-            throw new BaseException(
-                    AuthException.LOGIN_BLOCKED,
-                    new LoginFailResponse(0, loginAvailableAt),
-                    String.format("로그인 5회 실패로 [%s]까지 접속이 제한됩니다.", loginAvailableAt.format(DateTimeFormatter.ofPattern(DateTimeUtil.DATETIME_HOUR_ONLY_KR_PATTERN)))
-            );
+        if (!lastFiveAttempts.isEmpty()) {
+            LoginAttempt lastAttempt = lastFiveAttempts.getFirst();
+            // 로그인 시도가 블락 상태이고, 블락 시간으로부터 1시간이 지나지 않은 경우
+            if (lastAttempt.getResult() == LoginAttemptResultType.BLOCKED && lastAttempt.getCreatedAt().isAfter(LocalDateTime.now().minusHours(1))
+            ) {
+                LocalDateTime loginAvailableAt = lastAttempt.getCreatedAt().plusHours(1);
+                throw new BaseException(
+                        AuthException.LOGIN_BLOCKED,
+                        new LoginFailResponse(0, loginAvailableAt),
+                        String.format("로그인 5회 실패로 [%s]까지 접속이 제한됩니다.", loginAvailableAt.format(DateTimeFormatter.ofPattern(DateTimeUtil.DATETIME_HOUR_ONLY_KR_PATTERN)))
+                );
+            }
         }
+
 
         LoginAttempt newLoginAttempt = new LoginAttempt();
         newLoginAttempt.setEmail(request.getEmail());
