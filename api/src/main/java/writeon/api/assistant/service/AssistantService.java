@@ -7,9 +7,10 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.repository.AssistantDao;
+import writeon.api.assistant.request.AssistantHistoryListRequest;
 import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.common.exception.BaseException;
-import writeon.api.common.response.OffsetResponse;
+import writeon.api.common.response.CursorResponse;
 import writeon.api.common.util.MemberUtil;
 import writeon.api.product.service.ProductQueryService;
 import writeon.domain.assistant.Assistant;
@@ -80,14 +81,12 @@ public class AssistantService {
     }
 
     @Transactional(readOnly = true)
-    public OffsetResponse<AssistantHistoryResponse> getHistories(UUID productId, int page, int size) {
-        productQueryService.verifyExist(productId);
+    public CursorResponse<AssistantHistoryResponse> getHistories(AssistantHistoryListRequest request) {
+        productQueryService.verifyExist(request.getProductId());
 
-        long count = assistantDao.countHistories(productId);
-        return OffsetResponse.of(
-            assistantDao.selectHistories(productId, page, size),
-            page,
-            size,
+        long count = assistantDao.countHistories(request.getProductId());
+        return CursorResponse.of(
+            assistantDao.selectHistories(request.getProductId(), request.getAssistantId(), request.getSize()),
             count
         );
     }

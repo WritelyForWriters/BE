@@ -1,5 +1,7 @@
 package writeon.domain.product;
 
+import com.fasterxml.uuid.Generators;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +26,7 @@ public class ProductFavoritePrompt {
 
     @Id
     @Column(updatable = false, nullable = false)
-    private UUID id = UUID.randomUUID();
+    private UUID id = Generators.timeBasedEpochGenerator().generate();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)

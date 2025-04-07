@@ -1,5 +1,9 @@
 package writeon.domain.product;
 
+import com.fasterxml.uuid.Generators;
+
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -8,8 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import writeon.domain.common.BaseAuditTimeEntity;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,7 +22,7 @@ public class ProductMemo extends BaseAuditTimeEntity {
 
     @Id
     @Column(updatable = false, nullable = false)
-    private UUID id = UUID.randomUUID();
+    private UUID id = Generators.timeBasedEpochGenerator().generate();
 
     @Column(name = "product_id", nullable = false)
     private UUID productId;
