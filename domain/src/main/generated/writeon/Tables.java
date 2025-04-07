@@ -11,6 +11,7 @@ import org.jooq.Result;
 import writeon.tables.Assistant;
 import writeon.tables.AssistantEvaluation;
 import writeon.tables.AssistantMessage;
+import writeon.tables.AssistantPlannerMessage;
 import writeon.tables.LoginAttempt;
 import writeon.tables.Member;
 import writeon.tables.MemberPassword;
@@ -49,6 +50,11 @@ public class Tables {
      * The table <code>public.assistant_message</code>.
      */
     public static final AssistantMessage ASSISTANT_MESSAGE = AssistantMessage.ASSISTANT_MESSAGE;
+
+    /**
+     * The table <code>public.assistant_planner_message</code>.
+     */
+    public static final AssistantPlannerMessage ASSISTANT_PLANNER_MESSAGE = AssistantPlannerMessage.ASSISTANT_PLANNER_MESSAGE;
 
     /**
      * 로그인_시도
