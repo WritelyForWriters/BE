@@ -1,5 +1,7 @@
 package writeon.domain.assistant;
 
+import com.fasterxml.uuid.Generators;
+
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -22,7 +24,7 @@ public class Assistant extends BaseTimeEntity {
 
     @Id
     @Column(name = "id", updatable = false)
-    private final UUID id = UUID.randomUUID();
+    private final UUID id = Generators.timeBasedEpochGenerator().generate();
 
     @Column(name = "product_id", updatable = false, nullable = false)
     private UUID productId;

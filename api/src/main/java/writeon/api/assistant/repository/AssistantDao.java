@@ -1,9 +1,11 @@
 package writeon.api.assistant.repository;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,12 +24,22 @@ public class AssistantDao {
 
     private final DSLContext dsl;
 
-    public List<AssistantHistoryResponse> selectHistories(UUID productId, int page, int size) {
+    public List<AssistantHistoryResponse> selectHistories(UUID productId, UUID assistantId, int size) {
         AssistantMessage memberMessage = ASSISTANT_MESSAGE.as("member_message");
         AssistantMessage assistantMessage = ASSISTANT_MESSAGE.as("assistant_message");
 
-        return dsl.select(ASSISTANT.ID, ASSISTANT.TYPE, ASSISTANT.IS_APPLIED, ASSISTANT.CREATED_AT,
-                  memberMessage.CONTENT, memberMessage.PROMPT, assistantMessage.CONTENT)
+        List<Condition> conditions = new ArrayList<>(List.of(
+            ASSISTANT.PRODUCT_ID.eq(productId),
+            ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()),
+            ASSISTANT.CREATED_AT.between(LocalDateTime.now().minusMonths(6), LocalDateTime.now())
+        ));
+        if (assistantId != null) {
+            conditions.add(ASSISTANT.ID.lt(assistantId));
+        }
+
+        return dsl
+            .select(ASSISTANT.ID, ASSISTANT.TYPE, ASSISTANT.IS_APPLIED, ASSISTANT.CREATED_AT,
+                memberMessage.CONTENT, memberMessage.PROMPT, assistantMessage.CONTENT)
             .from(ASSISTANT)
             .join(memberMessage)
             .on(ASSISTANT.ID.eq(memberMessage.ASSISTANT_ID)
@@ -35,17 +47,15 @@ public class AssistantDao {
             .join(assistantMessage)
             .on(ASSISTANT.ID.eq(assistantMessage.ASSISTANT_ID)
                 .and(assistantMessage.ROLE.eq(MessageSenderRole.ASSISTANT.getCode())))
-            .where(ASSISTANT.PRODUCT_ID.eq(productId))
-            .and(ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()))
-            .and(ASSISTANT.CREATED_AT.between(LocalDateTime.now().minusMonths(6), LocalDateTime.now()))
-            .orderBy(ASSISTANT.CREATED_AT.desc())
-            .offset((long) (page - 1) * size)
+            .where(conditions)
+            .orderBy(ASSISTANT.ID.desc())
             .limit(size)
             .fetchInto(AssistantHistoryResponse.class);
     }
 
     public Long countHistories(UUID productId) {
-        return dsl.selectCount()
+        return dsl
+            .selectCount()
             .from(ASSISTANT)
             .where(ASSISTANT.PRODUCT_ID.eq(productId))
             .and(ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()))

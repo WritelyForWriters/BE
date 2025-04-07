@@ -352,24 +352,25 @@ alter table product_favorite_prompt
 
 create table assistant
 (
-    id uuid      not null
+    id         uuid                  not null
         constraint assistant_pk
             primary key,
-    product_id      uuid     not null,
-    type         varchar(20) not null ,
-    status       varchar(20) not null ,
-    created_at   timestamp   not null,
-    created_by   uuid        not null,
-    updated_at   timestamp   not null
+    product_id uuid                  not null,
+    type       varchar(20)           not null,
+    status     varchar(20)           not null,
+    is_applied boolean default false not null,
+    created_at timestamp             not null,
+    created_by uuid                  not null,
+    updated_at timestamp             not null
 );
 
 comment on table assistant is '어시스턴트';
 comment on column assistant.product_id is '작품 ID';
 comment on column assistant.type is '기능 종류';
 comment on column assistant.status is '진행 상태';
-comment on column assistant.created_at is '생성일시';
-comment on column assistant.created_by is '생성자 ID';
+comment on column assistant.is_applied is '답변 적용 여부';
 comment on column assistant.created_at is '수정일시';
+comment on column assistant.created_by is '생성자 ID';
 
 alter table assistant
     owner to postgres;

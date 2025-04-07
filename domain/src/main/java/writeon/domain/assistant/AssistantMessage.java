@@ -1,13 +1,19 @@
 package writeon.domain.assistant;
 
-import jakarta.persistence.*;
+import com.fasterxml.uuid.Generators;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import writeon.domain.assistant.enums.MessageSenderRole;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Entity
@@ -17,7 +23,7 @@ public class AssistantMessage {
 
     @Id
     @Column(updatable = false, nullable = false)
-    private final UUID id = UUID.randomUUID();
+    private final UUID id = Generators.timeBasedEpochGenerator().generate();
 
     @Column(name = "assistant_id", nullable = false)
     private UUID assistantId;

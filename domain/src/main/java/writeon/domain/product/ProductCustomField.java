@@ -1,5 +1,7 @@
 package writeon.domain.product;
 
+import com.fasterxml.uuid.Generators;
+
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +21,7 @@ public class ProductCustomField extends BaseAuditTimeEntity {
 
     @Id
     @Column(updatable = false, nullable = false)
-    private UUID id = UUID.randomUUID();
+    private UUID id = Generators.timeBasedEpochGenerator().generate();
 
     @Column(name = "product_id", nullable = false)
     private UUID productId;

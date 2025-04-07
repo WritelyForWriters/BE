@@ -1,5 +1,7 @@
 package writeon.domain.product;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,8 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import writeon.domain.common.BaseAuditTimeEntity;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,6 +22,7 @@ public class ProductPlot extends BaseAuditTimeEntity {
     @Id
     @Column(updatable = false, nullable = false)
     private UUID id;
+
     @Column
     private String content;
 

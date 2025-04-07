@@ -12,6 +12,8 @@ dependencies {
     /* jooq */
     api 'org.springframework.boot:spring-boot-starter-jooq'
     jooqGenerator 'org.postgresql:postgresql'
+
+    api 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
 }
 
 bootJar {
