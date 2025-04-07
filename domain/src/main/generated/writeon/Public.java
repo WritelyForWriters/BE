@@ -17,6 +17,7 @@ import org.jooq.impl.SchemaImpl;
 import writeon.tables.Assistant;
 import writeon.tables.AssistantEvaluation;
 import writeon.tables.AssistantMessage;
+import writeon.tables.AssistantPlannerMessage;
 import writeon.tables.LoginAttempt;
 import writeon.tables.Member;
 import writeon.tables.MemberPassword;
@@ -62,6 +63,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.assistant_message</code>.
      */
     public final AssistantMessage ASSISTANT_MESSAGE = AssistantMessage.ASSISTANT_MESSAGE;
+
+    /**
+     * The table <code>public.assistant_planner_message</code>.
+     */
+    public final AssistantPlannerMessage ASSISTANT_PLANNER_MESSAGE = AssistantPlannerMessage.ASSISTANT_PLANNER_MESSAGE;
 
     /**
      * 로그인_시도
@@ -191,6 +197,7 @@ public class Public extends SchemaImpl {
             Assistant.ASSISTANT,
             AssistantEvaluation.ASSISTANT_EVALUATION,
             AssistantMessage.ASSISTANT_MESSAGE,
+            AssistantPlannerMessage.ASSISTANT_PLANNER_MESSAGE,
             LoginAttempt.LOGIN_ATTEMPT,
             Member.MEMBER,
             MemberPassword.MEMBER_PASSWORD,

@@ -405,8 +405,21 @@ create table assistant_message
     content      text,
     prompt       text,
     created_at   timestamp                      not null,
-    created_by   uuid                           not null
+    created_by   uuid
 );
 
 alter table assistant_message
+    owner to postgres;
+
+create table assistant_planner_message
+(
+    assistant_id uuid        not null
+        constraint assistant_planner_message_pk
+            primary key,
+    genre        varchar(30) not null,
+    logline      text        not null,
+    section      varchar(30) not null
+);
+
+alter table assistant_planner_message
     owner to postgres;
