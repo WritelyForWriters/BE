@@ -1,19 +1,19 @@
 package writeon.api.assistant.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
+import writeon.api.assistant.response.AssistantHistoryResponse;
+import writeon.domain.assistant.enums.AssistantStatus;
+import writeon.domain.assistant.enums.AssistantType;
+import writeon.domain.assistant.enums.MessageSenderRole;
+import writeon.tables.AssistantMessage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import lombok.RequiredArgsConstructor;
-import writeon.api.assistant.response.AssistantHistoryResponse;
-import writeon.domain.assistant.enums.AssistantStatus;
-import writeon.domain.assistant.enums.MessageSenderRole;
-import writeon.tables.AssistantMessage;
 
 import static writeon.Tables.ASSISTANT;
 import static writeon.Tables.ASSISTANT_MESSAGE;
@@ -28,11 +28,7 @@ public class AssistantDao {
         AssistantMessage memberMessage = ASSISTANT_MESSAGE.as("member_message");
         AssistantMessage assistantMessage = ASSISTANT_MESSAGE.as("assistant_message");
 
-        List<Condition> conditions = new ArrayList<>(List.of(
-            ASSISTANT.PRODUCT_ID.eq(productId),
-            ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()),
-            ASSISTANT.CREATED_AT.between(LocalDateTime.now().minusMonths(6), LocalDateTime.now())
-        ));
+        List<Condition> conditions = getConditions(productId);
         if (assistantId != null) {
             conditions.add(ASSISTANT.ID.lt(assistantId));
         }
@@ -57,9 +53,25 @@ public class AssistantDao {
         return dsl
             .selectCount()
             .from(ASSISTANT)
-            .where(ASSISTANT.PRODUCT_ID.eq(productId))
-            .and(ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()))
-            .and(ASSISTANT.CREATED_AT.between(LocalDateTime.now().minusMonths(6), LocalDateTime.now()))
+            .where(getConditions(productId))
             .fetchOneInto(Long.class);
+    }
+
+    private List<Condition> getConditions(UUID productId) {
+        LocalDateTime now = LocalDateTime.now();
+
+        return new ArrayList<>(List.of(
+            ASSISTANT.PRODUCT_ID.eq(productId),
+            ASSISTANT.STATUS.ne(AssistantStatus.DRAFT.getCode()),
+            ASSISTANT.CREATED_AT.between(now.minusMonths(6), now),
+            ASSISTANT.TYPE.in(
+                List.of(
+                    AssistantType.AUTO_MODIFY.getCode(),
+                    AssistantType.USER_MODIFY.getCode(),
+                    AssistantType.FEEDBACK.getCode(),
+                    AssistantType.CHAT.getCode()
+                )
+            )
+        ));
     }
 }
