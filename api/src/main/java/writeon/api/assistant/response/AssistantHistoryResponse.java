@@ -1,15 +1,16 @@
 package writeon.api.assistant.response;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 public class AssistantHistoryResponse {
 
     private final UUID id;
+    @Schema(title = "어시스턴트 타입", description = "auto modify, feedback, chat, user modify")
     private final String type;
     private final MemberMessage memberMessage;
     private final AssistantMessage assistantMessage;
