@@ -34,4 +34,8 @@ public class ProductFavoritePrompt {
         this.product = product;
         this.messageId = messageId;
     }
+
+    public void delete() {
+        this.product = null;
+    }
 }
