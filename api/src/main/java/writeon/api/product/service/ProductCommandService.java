@@ -127,6 +127,7 @@ public class ProductCommandService {
             .findFirst()
             .orElseThrow(() -> new BaseException(ProductException.NOT_EXIST_FAVORITE_PROMPT));
 
+        product.deleteFavoritePrompt(favoritePrompt);
         productFavoritePromptRepository.delete(favoritePrompt);
     }
 
