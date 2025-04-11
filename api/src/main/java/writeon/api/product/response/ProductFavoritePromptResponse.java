@@ -1,22 +1,22 @@
 package writeon.api.product.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import lombok.Getter;
-import writeon.domain.product.ProductFavoritePrompt;
-import writeon.domain.product.ProductMemo;
 
 @Getter
 public class ProductFavoritePromptResponse {
 
-    private final UUID id;
+    @Schema(title = "메세지 ID")
+    private final UUID messageId;
     private final String prompt;
     private final LocalDateTime createdAt;
 
-    public ProductFavoritePromptResponse(ProductFavoritePrompt prompt) {
-        this.id = prompt.getId();
-        this.prompt = prompt.getPrompt();
-        this.createdAt = prompt.getCreatedAt();
+    public ProductFavoritePromptResponse(UUID messageId, String prompt, LocalDateTime createdAt) {
+        this.messageId = messageId;
+        this.prompt = prompt;
+        this.createdAt = createdAt;
     }
 }

@@ -1,21 +1,13 @@
 package writeon.domain.product;
 
 import com.fasterxml.uuid.Generators;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import writeon.domain.common.BaseAuditTimeEntity;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -32,14 +24,14 @@ public class ProductFavoritePrompt {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "prompt", nullable = false)
-    private String prompt;
+    @Column(name = "messageId", nullable = false)
+    private UUID messageId;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     protected final LocalDateTime createdAt = LocalDateTime.now();
 
-    public ProductFavoritePrompt(Product product, String prompt) {
+    public ProductFavoritePrompt(Product product, UUID messageId) {
         this.product = product;
-        this.prompt = prompt;
+        this.messageId = messageId;
     }
 }

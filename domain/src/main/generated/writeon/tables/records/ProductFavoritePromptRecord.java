@@ -52,18 +52,18 @@ public class ProductFavoritePromptRecord extends UpdatableRecordImpl<ProductFavo
     }
 
     /**
-     * Setter for <code>public.product_favorite_prompt.prompt</code>.
+     * Setter for <code>public.product_favorite_prompt.message_id</code>.
      */
-    public ProductFavoritePromptRecord setPrompt(String value) {
+    public ProductFavoritePromptRecord setMessageId(UUID value) {
         set(2, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.product_favorite_prompt.prompt</code>.
+     * Getter for <code>public.product_favorite_prompt.message_id</code>.
      */
-    public String getPrompt() {
-        return (String) get(2);
+    public UUID getMessageId() {
+        return (UUID) get(2);
     }
 
     /**
@@ -104,12 +104,12 @@ public class ProductFavoritePromptRecord extends UpdatableRecordImpl<ProductFavo
     /**
      * Create a detached, initialised ProductFavoritePromptRecord
      */
-    public ProductFavoritePromptRecord(UUID id, UUID productId, String prompt, LocalDateTime createdAt) {
+    public ProductFavoritePromptRecord(UUID id, UUID productId, UUID messageId, LocalDateTime createdAt) {
         super(ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT);
 
         setId(id);
         setProductId(productId);
-        setPrompt(prompt);
+        setMessageId(messageId);
         setCreatedAt(createdAt);
         resetChangedOnNotNull();
     }
@@ -123,7 +123,7 @@ public class ProductFavoritePromptRecord extends UpdatableRecordImpl<ProductFavo
         if (value != null) {
             setId(value.getId());
             setProductId(value.getProductId());
-            setPrompt(value.getPrompt());
+            setMessageId(value.getMessageId());
             setCreatedAt(value.getCreatedAt());
             resetChangedOnNotNull();
         }
