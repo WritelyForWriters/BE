@@ -19,25 +19,25 @@ public class ProductFavoritePrompt implements Serializable {
 
     private final UUID id;
     private final UUID productId;
-    private final String prompt;
+    private final UUID messageId;
     private final LocalDateTime createdAt;
 
     public ProductFavoritePrompt(ProductFavoritePrompt value) {
         this.id = value.id;
         this.productId = value.productId;
-        this.prompt = value.prompt;
+        this.messageId = value.messageId;
         this.createdAt = value.createdAt;
     }
 
     public ProductFavoritePrompt(
         UUID id,
         UUID productId,
-        String prompt,
+        UUID messageId,
         LocalDateTime createdAt
     ) {
         this.id = id;
         this.productId = productId;
-        this.prompt = prompt;
+        this.messageId = messageId;
         this.createdAt = createdAt;
     }
 
@@ -56,10 +56,10 @@ public class ProductFavoritePrompt implements Serializable {
     }
 
     /**
-     * Getter for <code>public.product_favorite_prompt.prompt</code>.
+     * Getter for <code>public.product_favorite_prompt.message_id</code>.
      */
-    public String getPrompt() {
-        return this.prompt;
+    public UUID getMessageId() {
+        return this.messageId;
     }
 
     /**
@@ -90,11 +90,11 @@ public class ProductFavoritePrompt implements Serializable {
         }
         else if (!this.productId.equals(other.productId))
             return false;
-        if (this.prompt == null) {
-            if (other.prompt != null)
+        if (this.messageId == null) {
+            if (other.messageId != null)
                 return false;
         }
-        else if (!this.prompt.equals(other.prompt))
+        else if (!this.messageId.equals(other.messageId))
             return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
@@ -111,7 +111,7 @@ public class ProductFavoritePrompt implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
-        result = prime * result + ((this.prompt == null) ? 0 : this.prompt.hashCode());
+        result = prime * result + ((this.messageId == null) ? 0 : this.messageId.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         return result;
     }
@@ -122,7 +122,7 @@ public class ProductFavoritePrompt implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(productId);
-        sb.append(", ").append(prompt);
+        sb.append(", ").append(messageId);
         sb.append(", ").append(createdAt);
 
         sb.append(")");

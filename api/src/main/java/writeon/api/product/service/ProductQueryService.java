@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import writeon.api.common.exception.BaseException;
-import writeon.api.common.util.LogUtil;
 import writeon.api.common.util.MemberUtil;
 import writeon.api.product.repository.ProductDao;
 import writeon.api.product.response.*;
 import writeon.domain.product.Product;
-import writeon.domain.product.ProductFavoritePrompt;
 import writeon.domain.product.ProductMemo;
 import writeon.domain.product.enums.ProductException;
 import writeon.domain.product.repository.ProductJpaRepository;
@@ -40,13 +38,9 @@ public class ProductQueryService {
     }
 
     public List<ProductFavoritePromptResponse> getFavoritePrompts(UUID productId) {
-        Product product = getById(productId);
+        verifyExist(productId);
 
-        return product.getFavoritePrompts()
-            .stream()
-            .sorted(Comparator.comparing(ProductFavoritePrompt::getCreatedAt).reversed())
-            .map(ProductFavoritePromptResponse::new)
-            .toList();
+        return productDao.selectFavoritePrompts(productId);
     }
 
     public ProductTemplateResponse getTemplate(UUID productId) {
@@ -64,7 +58,6 @@ public class ProductQueryService {
     }
 
     public void verifyExist(UUID productId) {
-        LogUtil.info("MemberUtil.getMemberId(): " + MemberUtil.getMemberId());
         if (!productRepository.existsByIdAndCreatedBy(productId, MemberUtil.getMemberId())) {
             throw new BaseException(ProductException.NOT_EXIST);
         }

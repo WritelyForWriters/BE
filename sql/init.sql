@@ -341,14 +341,17 @@ create table product_favorite_prompt
 (
     id         uuid default gen_random_uuid() not null
         constraint product_favorite_prompt_pk
-        primary key,
+            primary key,
     product_id uuid                           not null,
-    prompt     text                           not null,
+    message_id uuid                           not null,
     created_at timestamp                      not null
 );
 
 alter table product_favorite_prompt
     owner to postgres;
+
+create index idx_prompt_product_id
+    on product_favorite_prompt (product_id);
 
 create table assistant
 (

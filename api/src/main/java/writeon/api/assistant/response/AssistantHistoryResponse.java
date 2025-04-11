@@ -1,7 +1,10 @@
 package writeon.api.assistant.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import writeon.tables.records.AssistantMessageRecord;
+import writeon.tables.records.AssistantRecord;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,39 +19,48 @@ public class AssistantHistoryResponse {
     private final AssistantMessage assistantMessage;
     private final LocalDateTime createdAt;
 
-    public AssistantHistoryResponse(UUID id, String type, Boolean isApplied, LocalDateTime createdAt,
-            String memberMessageContent, String memberMessagePrompt, String assistantMessageContent) {
-        this.id = id;
-        this.type = type;
-        this.memberMessage = new MemberMessage(memberMessageContent, memberMessagePrompt);
-        this.assistantMessage = new AssistantMessage(assistantMessageContent, isApplied);
-        this.createdAt = createdAt;
+    public AssistantHistoryResponse(AssistantRecord assistant, AssistantMessageRecord memberMessage, Boolean isFavoritedPrompt, AssistantMessageRecord assistantMessage) {
+        this.id = assistant.getId();
+        this.type = assistant.getType();
+        this.memberMessage = new MemberMessage(memberMessage, isFavoritedPrompt);
+        this.assistantMessage = new AssistantMessage(assistantMessage, assistant.getIsApplied());
+        this.createdAt = assistant.getCreatedAt();
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class MemberMessage {
 
+        @Schema(title = "메세지 ID")
+        private final UUID id;
         @Schema(title = "사용자가 선택한 구간")
         private final String content;
         @Schema(title = "사용자가 입력한 프롬프트")
         private final String prompt;
+        @Schema(title = "즐겨찾기 적용 여부")
+        private final Boolean isFavoritedPrompt;
 
-        public MemberMessage(String content, String prompt) {
-            this.content = content;
-            this.prompt = prompt;
+        public MemberMessage(AssistantMessageRecord message, Boolean isFavoritedPrompt) {
+            this.id = message.getId();
+            this.content = message.getContent();
+            this.prompt = message.getPrompt();
+            this.isFavoritedPrompt = isFavoritedPrompt;
         }
     }
 
     @Getter
     public static class AssistantMessage {
 
+        @Schema(title = "메세지 ID")
+        private final UUID id;
         @Schema(title = "Assistant 답변")
         private final String content;
         @Schema(title = "답변 적용 여부")
         private final Boolean isApplied;
 
-        public AssistantMessage(String content, Boolean isApplied) {
-            this.content = content;
+        public AssistantMessage(AssistantMessageRecord message, Boolean isApplied) {
+            this.id = message.getId();
+            this.content = message.getContent();
             this.isApplied = isApplied;
         }
     }

@@ -115,10 +115,10 @@ public class ProductController {
     }
 
     @Operation(summary = "프롬프트 즐겨찾기 해제")
-    @DeleteMapping("/{productId}/favorite-prompts/{promptId}")
+    @DeleteMapping("/{productId}/favorite-prompts")
     public void deleteFavoritePrompt(
         @PathVariable UUID productId,
-        @PathVariable UUID promptId) {
-        productCommandService.deleteFavoritePrompt(productId, promptId);
+        @RequestParam UUID messageId) {
+        productCommandService.deleteFavoritePrompt(productId, messageId);
     }
 }

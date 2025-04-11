@@ -1,11 +1,8 @@
 package writeon.api.assistant.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
-
-import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.repository.AssistantDao;
 import writeon.api.assistant.request.AssistantHistoryListRequest;
 import writeon.api.assistant.response.AssistantHistoryResponse;
@@ -21,6 +18,8 @@ import writeon.domain.assistant.enums.AssistantException;
 import writeon.domain.assistant.enums.AssistantStatus;
 import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.assistant.enums.MessageSenderRole;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -92,7 +91,7 @@ public class AssistantService {
     }
 
     @Transactional(readOnly = true)
-    public AssistantMessage getMessage(UUID assistantId, MessageSenderRole role) {
+    public AssistantMessage getMessageByAssistantId(UUID assistantId, MessageSenderRole role) {
         return assistantMessageRepository.findByAssistantIdAndMessageContent_Role(assistantId, role)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
     }

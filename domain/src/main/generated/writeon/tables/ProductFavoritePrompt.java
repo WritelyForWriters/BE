@@ -62,9 +62,9 @@ public class ProductFavoritePrompt extends TableImpl<ProductFavoritePromptRecord
     public final TableField<ProductFavoritePromptRecord, UUID> PRODUCT_ID = createField(DSL.name("product_id"), SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>public.product_favorite_prompt.prompt</code>.
+     * The column <code>public.product_favorite_prompt.message_id</code>.
      */
-    public final TableField<ProductFavoritePromptRecord, String> PROMPT = createField(DSL.name("prompt"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ProductFavoritePromptRecord, UUID> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.UUID.nullable(false), this, "");
 
     /**
      * The column <code>public.product_favorite_prompt.created_at</code>.

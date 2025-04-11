@@ -68,7 +68,7 @@ public class PlannerService {
         }
         productQueryService.verifyExist(assistant.getProductId());
 
-        AssistantMessage memberMessage = assistantService.getMessage(assistantId, MessageSenderRole.MEMBER);
+        AssistantMessage memberMessage = assistantService.getMessageByAssistantId(assistantId, MessageSenderRole.MEMBER);
 
         AssistantPlannerMessage plannerMessage = assistantPlannerMessageRepository.findById(assistantId)
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
@@ -96,9 +96,7 @@ public class PlannerService {
                 },
                 error -> {
                     LogUtil.error(error);
-                    BaseException exception = new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR);
-                    emitter.completeWithError(exception);
-                    throw exception;
+                    emitter.completeWithError(new BaseException(AssistantException.WEBCLIENT_REQUEST_ERROR));
                 },
                 () -> {
                     String answer = responseBuilder.toString().replace("[DONE]", "").trim();

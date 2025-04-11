@@ -3,6 +3,7 @@ package writeon.api.product.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import writeon.api.assistant.service.AssistantService;
 import writeon.api.assistant.service.DocumentUploadService;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.MemberUtil;
@@ -10,6 +11,10 @@ import writeon.api.product.request.ProductFavoritePromptCreateRequest;
 import writeon.api.product.request.ProductMemoSaveRequest;
 import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
+import writeon.domain.assistant.Assistant;
+import writeon.domain.assistant.AssistantMessage;
+import writeon.domain.assistant.enums.AssistantType;
+import writeon.domain.assistant.enums.MessageSenderRole;
 import writeon.domain.product.*;
 import writeon.domain.product.enums.ProductException;
 import writeon.domain.product.enums.ProductSectionType;
@@ -32,7 +37,9 @@ public class ProductCommandService {
     private final ProductPlotJpaRepository productPlotRepository;
     private final ProductSynopsisJpaRepository productSynopsisRepository;
     private final ProductWorldviewJpaRepository productWorldviewRepository;
+    private final ProductFavoritePromptJpaRepository productFavoritePromptRepository;
 
+    private final AssistantService assistantService;
     private final DocumentUploadService documentUploadService;
 
     @Transactional
@@ -51,8 +58,20 @@ public class ProductCommandService {
     @Transactional
     public void createFavoritePrompt(UUID productId, ProductFavoritePromptCreateRequest request) {
         Product product = productQueryService.getById(productId);
+        Assistant assistant = assistantService.getById(request.getAssistantId());
 
-        product.getFavoritePrompts().add(new ProductFavoritePrompt(product, request.getPrompt()));
+        // 자유 대화 기능에서만 프롬프트 즐겨찾기 등록 가능
+        if (!assistant.getType().equals(AssistantType.CHAT)) {
+            throw new BaseException(ProductException.INVALID_FAVORITE_PROMPT_TYPE);
+        }
+        AssistantMessage message = assistantService.getMessageByAssistantId(request.getAssistantId(), MessageSenderRole.MEMBER);
+
+        // 이미 즐겨찾기 등록된 프롬프트인지 검증
+        if (productFavoritePromptRepository.existsByProduct_IdAndMessageId(productId, message.getId())) {
+            throw new BaseException(ProductException.ALREADY_EXIST_FAVORITE_PROMPT);
+        }
+
+        product.getFavoritePrompts().add(new ProductFavoritePrompt(product, message.getId()));
     }
 
     @Transactional
@@ -100,10 +119,15 @@ public class ProductCommandService {
     }
 
     @Transactional
-    public void deleteFavoritePrompt(UUID productId, UUID promptId) {
+    public void deleteFavoritePrompt(UUID productId, UUID messageId) {
         Product product = productQueryService.getById(productId);
 
-        product.getFavoritePrompts().removeIf(prompt -> prompt.getId().equals(promptId));
+        ProductFavoritePrompt favoritePrompt = product.getFavoritePrompts().stream()
+            .filter(prompt -> prompt.getMessageId().equals(messageId))
+            .findFirst()
+            .orElseThrow(() -> new BaseException(ProductException.NOT_EXIST_FAVORITE_PROMPT));
+
+        productFavoritePromptRepository.delete(favoritePrompt);
     }
 
     private ProductMemo getMemoById(UUID memoId) {

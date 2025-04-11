@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static writeon.Tables.ASSISTANT;
-import static writeon.Tables.ASSISTANT_MESSAGE;
+import static writeon.Tables.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -34,12 +33,13 @@ public class AssistantDao {
         }
 
         return dsl
-            .select(ASSISTANT.ID, ASSISTANT.TYPE, ASSISTANT.IS_APPLIED, ASSISTANT.CREATED_AT,
-                memberMessage.CONTENT, memberMessage.PROMPT, assistantMessage.CONTENT)
+            .select(ASSISTANT, memberMessage, PRODUCT_FAVORITE_PROMPT.MESSAGE_ID.isNotNull(), assistantMessage)
             .from(ASSISTANT)
             .join(memberMessage)
             .on(ASSISTANT.ID.eq(memberMessage.ASSISTANT_ID)
                 .and(memberMessage.ROLE.eq(MessageSenderRole.MEMBER.getCode())))
+            .leftJoin(PRODUCT_FAVORITE_PROMPT)
+            .on(memberMessage.ID.eq(PRODUCT_FAVORITE_PROMPT.MESSAGE_ID))
             .join(assistantMessage)
             .on(ASSISTANT.ID.eq(assistantMessage.ASSISTANT_ID)
                 .and(assistantMessage.ROLE.eq(MessageSenderRole.ASSISTANT.getCode())))
