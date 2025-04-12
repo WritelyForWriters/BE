@@ -63,7 +63,10 @@ public class ChatService {
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         ChatRequest request = new ChatRequest(
-            userSetting, memberMessage.getContent(), memberMessage.getPrompt(), sessionId
+            userSetting,
+            memberMessage.getContent(),
+            memberMessage.getPrompt(),
+            sessionId
         );
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);
