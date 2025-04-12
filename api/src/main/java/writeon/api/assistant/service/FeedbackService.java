@@ -60,7 +60,9 @@ public class FeedbackService {
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         FeedbackRequest request = new FeedbackRequest(
-            assistant.getProductId().toString().replaceAll("-", ""), userSetting, memberMessage.getContent()
+            "t" + assistant.getProductId().toString().replaceAll("-", ""),
+            userSetting,
+            memberMessage.getContent()
         );
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);

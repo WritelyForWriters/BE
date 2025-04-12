@@ -60,7 +60,9 @@ public class AutoModifyService {
 
         UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
         AutoModifyRequest request = new AutoModifyRequest(
-            assistant.getProductId().toString().replaceAll("-", ""), userSetting, memberMessage.getContent()
+            "t" + assistant.getProductId().toString().replaceAll("-", ""),
+            userSetting,
+            memberMessage.getContent()
         );
 
         SseEmitter emitter = new SseEmitter(TIMEOUT);

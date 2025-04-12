@@ -74,7 +74,7 @@ public class PlannerService {
             .orElseThrow(() -> new BaseException(AssistantException.NOT_EXIST_MESSAGE));
 
         PlannerGenerateRequest request = PlannerGenerateRequest.builder()
-            .tenantId(assistant.getProductId().toString())
+            .tenantId("t" + assistant.getProductId().toString().replaceAll("-", ""))
             .genre(plannerMessage.getGenre())
             .logline(plannerMessage.getLogline())
             .section(plannerMessage.getSection())

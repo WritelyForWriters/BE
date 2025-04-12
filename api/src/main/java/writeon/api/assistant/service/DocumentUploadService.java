@@ -14,8 +14,10 @@ public class DocumentUploadService {
     private final AssistantApiClient assistantApiClient;
 
     public void documentUpload(UUID productId, String content) {
-        DocumentUploadRequest request =
-            new DocumentUploadRequest(productId.toString().replaceAll("-", ""), content);
+        DocumentUploadRequest request = new DocumentUploadRequest(
+            "t" + productId.toString().replaceAll("-", ""),
+            content
+        );
         assistantApiClient.documentUpload(request)
             .subscribe();
     }

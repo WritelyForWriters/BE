@@ -26,11 +26,6 @@ public class AssistantPlannerMessage {
     @Column(name = "section", nullable = false)
     private String section;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "assistant_id")
-    private AssistantMessage assistantMessage;
-
     @Builder
     public AssistantPlannerMessage(UUID assistantId, String genre, String logline, String section) {
         this.assistantId = assistantId;
