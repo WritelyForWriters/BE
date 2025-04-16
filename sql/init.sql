@@ -353,6 +353,19 @@ alter table product_favorite_prompt
 create index idx_prompt_product_id
     on product_favorite_prompt (product_id);
 
+create table product_fixed_message
+(
+    product_id uuid not null
+        primary key
+        constraint fk_product
+        references product
+        on delete cascade,
+    message_id uuid not null
+);
+
+alter table product_fixed_message
+    owner to postgres;
+
 create table assistant
 (
     id         uuid                  not null

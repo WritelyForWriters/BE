@@ -4,6 +4,7 @@
 package writeon;
 
 
+import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
@@ -20,6 +21,7 @@ import writeon.tables.Product;
 import writeon.tables.ProductCharacter;
 import writeon.tables.ProductCustomField;
 import writeon.tables.ProductFavoritePrompt;
+import writeon.tables.ProductFixedMessage;
 import writeon.tables.ProductIdeanote;
 import writeon.tables.ProductMemo;
 import writeon.tables.ProductPlot;
@@ -37,6 +39,7 @@ import writeon.tables.records.MemberRecord;
 import writeon.tables.records.ProductCharacterRecord;
 import writeon.tables.records.ProductCustomFieldRecord;
 import writeon.tables.records.ProductFavoritePromptRecord;
+import writeon.tables.records.ProductFixedMessageRecord;
 import writeon.tables.records.ProductIdeanoteRecord;
 import writeon.tables.records.ProductMemoRecord;
 import writeon.tables.records.ProductPlotRecord;
@@ -71,6 +74,7 @@ public class Keys {
     public static final UniqueKey<ProductCharacterRecord> PRODUCT_CHARACTER_PK = Internal.createUniqueKey(ProductCharacter.PRODUCT_CHARACTER, DSL.name("product_character_pk"), new TableField[] { ProductCharacter.PRODUCT_CHARACTER.ID }, true);
     public static final UniqueKey<ProductCustomFieldRecord> PRODUCT_CUSTOM_FIELD_PK = Internal.createUniqueKey(ProductCustomField.PRODUCT_CUSTOM_FIELD, DSL.name("product_custom_field_pk"), new TableField[] { ProductCustomField.PRODUCT_CUSTOM_FIELD.ID }, true);
     public static final UniqueKey<ProductFavoritePromptRecord> PRODUCT_FAVORITE_PROMPT_PK = Internal.createUniqueKey(ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT, DSL.name("product_favorite_prompt_pk"), new TableField[] { ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT.ID }, true);
+    public static final UniqueKey<ProductFixedMessageRecord> PRODUCT_FIXED_MESSAGE_PKEY = Internal.createUniqueKey(ProductFixedMessage.PRODUCT_FIXED_MESSAGE, DSL.name("product_fixed_message_pkey"), new TableField[] { ProductFixedMessage.PRODUCT_FIXED_MESSAGE.PRODUCT_ID }, true);
     public static final UniqueKey<ProductIdeanoteRecord> PRODUCT_IDEANOTE_PK = Internal.createUniqueKey(ProductIdeanote.PRODUCT_IDEANOTE, DSL.name("product_ideanote_pk"), new TableField[] { ProductIdeanote.PRODUCT_IDEANOTE.ID }, true);
     public static final UniqueKey<ProductMemoRecord> PRODUCT_MEMO_PK = Internal.createUniqueKey(ProductMemo.PRODUCT_MEMO, DSL.name("product_memo_pk"), new TableField[] { ProductMemo.PRODUCT_MEMO.ID }, true);
     public static final UniqueKey<ProductPlotRecord> PRODUCT_PLOT_PK = Internal.createUniqueKey(ProductPlot.PRODUCT_PLOT, DSL.name("product_plot_pk"), new TableField[] { ProductPlot.PRODUCT_PLOT.ID }, true);
@@ -78,4 +82,10 @@ public class Keys {
     public static final UniqueKey<ProductWorldviewRecord> PRODUCT_WORLDVIEW_PK = Internal.createUniqueKey(ProductWorldview.PRODUCT_WORLDVIEW, DSL.name("product_worldview_pk"), new TableField[] { ProductWorldview.PRODUCT_WORLDVIEW.ID }, true);
     public static final UniqueKey<TermsRecord> TERMS_PK = Internal.createUniqueKey(Terms.TERMS, DSL.name("terms_pk"), new TableField[] { Terms.TERMS.ID }, true);
     public static final UniqueKey<TermsAgreementRecord> TERMS_AGREEMENT_PK = Internal.createUniqueKey(TermsAgreement.TERMS_AGREEMENT, DSL.name("terms_agreement_pk"), new TableField[] { TermsAgreement.TERMS_AGREEMENT.TERMS_CD, TermsAgreement.TERMS_AGREEMENT.MEMBER_ID }, true);
+
+    // -------------------------------------------------------------------------
+    // FOREIGN KEY definitions
+    // -------------------------------------------------------------------------
+
+    public static final ForeignKey<ProductFixedMessageRecord, ProductRecord> PRODUCT_FIXED_MESSAGE__FK_PRODUCT = Internal.createForeignKey(ProductFixedMessage.PRODUCT_FIXED_MESSAGE, DSL.name("fk_product"), new TableField[] { ProductFixedMessage.PRODUCT_FIXED_MESSAGE.PRODUCT_ID }, Keys.PRODUCT_PK, new TableField[] { Product.PRODUCT.ID }, true);
 }

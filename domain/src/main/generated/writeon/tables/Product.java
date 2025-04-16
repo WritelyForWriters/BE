@@ -10,9 +10,13 @@ import java.util.UUID;
 
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
+import org.jooq.Record;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -27,6 +31,7 @@ import org.jooq.impl.TableImpl;
 
 import writeon.Keys;
 import writeon.Public;
+import writeon.tables.ProductFixedMessage.ProductFixedMessagePath;
 import writeon.tables.records.ProductRecord;
 
 
@@ -115,6 +120,39 @@ public class Product extends TableImpl<ProductRecord> {
         this(DSL.name("product"), null);
     }
 
+    public <O extends Record> Product(Table<O> path, ForeignKey<O, ProductRecord> childPath, InverseForeignKey<O, ProductRecord> parentPath) {
+        super(path, childPath, parentPath, PRODUCT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class ProductPath extends Product implements Path<ProductRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> ProductPath(Table<O> path, ForeignKey<O, ProductRecord> childPath, InverseForeignKey<O, ProductRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private ProductPath(Name alias, Table<ProductRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public ProductPath as(String alias) {
+            return new ProductPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public ProductPath as(Name alias) {
+            return new ProductPath(alias, this);
+        }
+
+        @Override
+        public ProductPath as(Table<?> alias) {
+            return new ProductPath(alias.getQualifiedName(), this);
+        }
+    }
+
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
@@ -123,6 +161,19 @@ public class Product extends TableImpl<ProductRecord> {
     @Override
     public UniqueKey<ProductRecord> getPrimaryKey() {
         return Keys.PRODUCT_PK;
+    }
+
+    private transient ProductFixedMessagePath _productFixedMessage;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.product_fixed_message</code> table
+     */
+    public ProductFixedMessagePath productFixedMessage() {
+        if (_productFixedMessage == null)
+            _productFixedMessage = new ProductFixedMessagePath(this, null, Keys.PRODUCT_FIXED_MESSAGE__FK_PRODUCT.getInverseKey());
+
+        return _productFixedMessage;
     }
 
     @Override

@@ -1,28 +1,51 @@
 package writeon.api.product.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.service.AssistantService;
 import writeon.api.assistant.service.DocumentUploadService;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.MemberUtil;
-import writeon.api.product.request.ProductFavoritePromptCreateRequest;
 import writeon.api.product.request.ProductMemoSaveRequest;
 import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
 import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.AssistantMessage;
+import writeon.domain.assistant.enums.AssistantException;
 import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.assistant.enums.MessageSenderRole;
-import writeon.domain.product.*;
+import writeon.domain.product.Product;
+import writeon.domain.product.ProductCharacter;
+import writeon.domain.product.ProductCustomField;
+import writeon.domain.product.ProductFavoritePrompt;
+import writeon.domain.product.ProductFixedMessage;
+import writeon.domain.product.ProductIdeaNote;
+import writeon.domain.product.ProductMemo;
+import writeon.domain.product.ProductPlot;
+import writeon.domain.product.ProductSynopsis;
+import writeon.domain.product.ProductWorldview;
 import writeon.domain.product.enums.ProductException;
 import writeon.domain.product.enums.ProductSectionType;
-import writeon.domain.product.repository.*;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import writeon.domain.product.repository.ProductCharacterJpaRepository;
+import writeon.domain.product.repository.ProductCustomFieldJpaRepository;
+import writeon.domain.product.repository.ProductFavoritePromptJpaRepository;
+import writeon.domain.product.repository.ProductIdeaNoteJpaRepository;
+import writeon.domain.product.repository.ProductJpaRepository;
+import writeon.domain.product.repository.ProductMemoJpaRepository;
+import writeon.domain.product.repository.ProductPlotJpaRepository;
+import writeon.domain.product.repository.ProductSynopsisJpaRepository;
+import writeon.domain.product.repository.ProductWorldviewJpaRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -56,15 +79,19 @@ public class ProductCommandService {
     }
 
     @Transactional
-    public void createFavoritePrompt(UUID productId, ProductFavoritePromptCreateRequest request) {
+    public void createFavoritePrompt(UUID productId, UUID assistantId) {
         Product product = productQueryService.getById(productId);
-        Assistant assistant = assistantService.getById(request.getAssistantId());
+        Assistant assistant = assistantService.getById(assistantId);
+
+        if (!assistant.getProductId().equals(productId)) {
+            throw new BaseException(AssistantException.NOT_EXIST);
+        }
 
         // 자유 대화 기능에서만 프롬프트 즐겨찾기 등록 가능
         if (!assistant.getType().equals(AssistantType.CHAT)) {
             throw new BaseException(ProductException.INVALID_FAVORITE_PROMPT_TYPE);
         }
-        AssistantMessage message = assistantService.getMessageByAssistantId(request.getAssistantId(), MessageSenderRole.MEMBER);
+        AssistantMessage message = assistantService.getMessageByAssistantId(assistantId, MessageSenderRole.MEMBER);
 
         // 이미 즐겨찾기 등록된 프롬프트인지 검증
         if (productFavoritePromptRepository.existsByProduct_IdAndMessageId(productId, message.getId())) {
@@ -72,6 +99,20 @@ public class ProductCommandService {
         }
 
         product.getFavoritePrompts().add(new ProductFavoritePrompt(product, message.getId()));
+    }
+
+    @Transactional
+    public void createFixedMessage(UUID productId, UUID assistantId) {
+        Product product = productQueryService.getById(productId);
+        Assistant assistant = assistantService.getById(assistantId);
+
+        if (!assistant.getProductId().equals(productId)) {
+            throw new BaseException(AssistantException.NOT_EXIST);
+        }
+
+        AssistantMessage message = assistantService.getMessageByAssistantId(assistantId, MessageSenderRole.ASSISTANT);
+
+        product.setFixedMessage(new ProductFixedMessage(message));
     }
 
     @Transactional
@@ -129,6 +170,12 @@ public class ProductCommandService {
 
         product.deleteFavoritePrompt(favoritePrompt);
         productFavoritePromptRepository.delete(favoritePrompt);
+    }
+
+    @Transactional
+    public void deleteFixedMessage(UUID productId) {
+        Product product = productQueryService.getById(productId);
+        product.deleteFixedMessage();
     }
 
     private ProductMemo getMemoById(UUID memoId) {
