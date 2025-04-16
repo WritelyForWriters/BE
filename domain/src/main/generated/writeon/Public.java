@@ -26,6 +26,7 @@ import writeon.tables.Product;
 import writeon.tables.ProductCharacter;
 import writeon.tables.ProductCustomField;
 import writeon.tables.ProductFavoritePrompt;
+import writeon.tables.ProductFixedMessage;
 import writeon.tables.ProductIdeanote;
 import writeon.tables.ProductMemo;
 import writeon.tables.ProductPlot;
@@ -144,6 +145,11 @@ public class Public extends SchemaImpl {
     public final ProductFavoritePrompt PRODUCT_FAVORITE_PROMPT = ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT;
 
     /**
+     * The table <code>public.product_fixed_message</code>.
+     */
+    public final ProductFixedMessage PRODUCT_FIXED_MESSAGE = ProductFixedMessage.PRODUCT_FIXED_MESSAGE;
+
+    /**
      * 작품 아이디어 노트
      */
     public final ProductIdeanote PRODUCT_IDEANOTE = ProductIdeanote.PRODUCT_IDEANOTE;
@@ -206,6 +212,7 @@ public class Public extends SchemaImpl {
             ProductCharacter.PRODUCT_CHARACTER,
             ProductCustomField.PRODUCT_CUSTOM_FIELD,
             ProductFavoritePrompt.PRODUCT_FAVORITE_PROMPT,
+            ProductFixedMessage.PRODUCT_FIXED_MESSAGE,
             ProductIdeanote.PRODUCT_IDEANOTE,
             ProductMemo.PRODUCT_MEMO,
             ProductPlot.PRODUCT_PLOT,

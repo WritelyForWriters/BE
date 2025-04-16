@@ -5,11 +5,14 @@ package writeon.tables;
 
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
@@ -25,6 +28,7 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
+import writeon.Indexes;
 import writeon.Keys;
 import writeon.Public;
 import writeon.tables.records.ProductFavoritePromptRecord;
@@ -105,6 +109,11 @@ public class ProductFavoritePrompt extends TableImpl<ProductFavoritePromptRecord
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.IDX_PROMPT_PRODUCT_ID);
     }
 
     @Override
