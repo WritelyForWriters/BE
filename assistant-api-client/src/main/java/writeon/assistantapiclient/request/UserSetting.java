@@ -49,7 +49,7 @@ public class UserSetting {
             this.character_occupation = character.getOccupation();
             this.appearance = character.getAppearance();
             this.personality = character.getPersonality();
-            this.characteristic = character.getCharacteristic();
+            this.characteristic = "";
             this.relationship = character.getRelationship();
             this.custom_fields = character.getCustomFields().stream()
                 .map(CustomField::new)

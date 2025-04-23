@@ -112,8 +112,8 @@ create table product_character
     occupation     text,
     appearance     text,
     personality    text,
-    characteristic text,
     relationship   text,
+    seq            integer                        not null,
     created_at     timestamp                      not null,
     created_by     uuid                           not null,
     updated_at     timestamp                      not null,
@@ -129,8 +129,7 @@ comment on column product_character.age is '나이';
 comment on column product_character.gender is '성별';
 comment on column product_character.occupation is '직업';
 comment on column product_character.appearance is '외모';
-comment on column product_character.personality is '성격';
-comment on column product_character.characteristic is '특징';
+comment on column product_character.personality is '성격/특징';
 comment on column product_character.relationship is '주요 관계';
 comment on column product_character.created_at is '생성일시';
 comment on column product_character.created_by is '생성자 ID';
@@ -433,7 +432,7 @@ create table assistant_planner_message
     assistant_id uuid        not null
         constraint assistant_planner_message_pk
             primary key,
-    genre        varchar(30) not null,
+    genre        varchar(100) not null,
     logline      text        not null,
     section      varchar(30) not null
 );
