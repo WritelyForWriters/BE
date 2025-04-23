@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import writeon.domain.product.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public class ProductTemplateResponse {
     public ProductTemplateResponse(Product product) {
         this.id = product.getId();
         this.characters = product.getCharacters().stream()
+            .sorted(Comparator.comparing(ProductCharacter::getSeq))
             .map(Character::new)
             .toList();
         this.ideaNote = product.getIdeaNote() != null ? new IdeaNote(product.getIdeaNote()) : null;
@@ -46,10 +48,8 @@ public class ProductTemplateResponse {
         private final String occupation;
         @Schema(name = "외모", nullable = true)
         private final String appearance;
-        @Schema(name = "성격", nullable = true)
+        @Schema(name = "성격/특징", nullable = true)
         private final String personality;
-        @Schema(name = "특징", nullable = true)
-        private final String characteristic;
         @Schema(name = "주요관계", nullable = true)
         private final String relationship;
         @Schema(name = "커스텀 필드 목록", nullable = true)
@@ -64,7 +64,6 @@ public class ProductTemplateResponse {
             this.occupation = character.getOccupation();
             this.appearance = character.getAppearance();
             this.personality = character.getPersonality();
-            this.characteristic = character.getCharacteristic();
             this.relationship = character.getRelationship();
             this.customFields = character.getCustomFields().stream()
                 .map(CustomField::new)

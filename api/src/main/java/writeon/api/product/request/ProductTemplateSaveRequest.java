@@ -56,7 +56,6 @@ public class ProductTemplateSaveRequest {
                 .occupation(occupation)
                 .appearance(appearance)
                 .personality(personality)
-                .characteristic(characteristic)
                 .relationship(relationship)
                 .build();
         }

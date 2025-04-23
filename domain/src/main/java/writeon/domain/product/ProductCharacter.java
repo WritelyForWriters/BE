@@ -49,11 +49,11 @@ public class ProductCharacter extends BaseAuditTimeEntity {
     @Column(name = "personality")
     private String personality;
 
-    @Column(name = "characteristic")
-    private String characteristic;
-
     @Column(name = "relationship")
     private String relationship;
+
+    @Column(name = "seq", nullable = false)
+    private Integer seq;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id")
@@ -61,7 +61,7 @@ public class ProductCharacter extends BaseAuditTimeEntity {
     private List<ProductCustomField> customFields = new ArrayList<>();
 
     @Builder
-    public ProductCharacter(UUID productId, String intro, String name, Short age, String gender, String occupation, String appearance, String personality, String characteristic, String relationship) {
+    public ProductCharacter(UUID productId, String intro, String name, Short age, String gender, String occupation, String appearance, String personality, String relationship, Integer seq) {
         this.productId = productId;
         this.intro = intro;
         this.name = name;
@@ -70,11 +70,11 @@ public class ProductCharacter extends BaseAuditTimeEntity {
         this.occupation = occupation;
         this.appearance = appearance;
         this.personality = personality;
-        this.characteristic = characteristic;
         this.relationship = relationship;
+        this.seq = seq;
     }
 
-    public void update(String intro, String name, Short age, String gender, String occupation, String appearance, String personality, String characteristic, String relationship) {
+    public void update(String intro, String name, Short age, String gender, String occupation, String appearance, String personality, String relationship, Integer seq) {
         this.intro = intro;
         this.name = name;
         this.age = age;
@@ -82,7 +82,7 @@ public class ProductCharacter extends BaseAuditTimeEntity {
         this.occupation = occupation;
         this.appearance = appearance;
         this.personality = personality;
-        this.characteristic = characteristic;
         this.relationship = relationship;
+        this.seq = seq;
     }
 }

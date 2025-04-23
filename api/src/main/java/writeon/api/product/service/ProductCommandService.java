@@ -204,9 +204,12 @@ public class ProductCommandService {
         productCharacterJpaRepository.deleteAll(deleteCharacters);
 
         List<ProductCharacter> addCharacters = new ArrayList<>();
-        requestInfos.forEach(request -> {
+        for (int i = 0; i < requestInfos.size(); i++) {
+            var request = requestInfos.get(i);
+
             if (request.getId() == null) {
                 ProductCharacter newCharacter = request.toEntity(product.getId());
+                newCharacter.setSeq(i);
                 addCharacters.add(newCharacter);
 
                 modifyCustomFields(product.getId(), newCharacter.getId(), ProductSectionType.CHARACTER,
@@ -218,12 +221,12 @@ public class ProductCommandService {
                 }
 
                 savedCharacter.update(request.getIntro(), request.getName(), request.getAge(), request.getGender(), request.getOccupation(),
-                    request.getAppearance(), request.getPersonality(), request.getCharacteristic(), request.getRelationship());
+                    request.getAppearance(), request.getPersonality(), request.getRelationship(), i);
 
                 modifyCustomFields(product.getId(), savedCharacter.getId(), ProductSectionType.CHARACTER,
                     request.getCustomFields(), savedCharacter.getCustomFields());
             }
-        });
+        }
 
         productCharacterJpaRepository.saveAll(addCharacters);
     }
