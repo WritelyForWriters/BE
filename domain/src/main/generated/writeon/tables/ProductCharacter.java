@@ -97,11 +97,6 @@ public class ProductCharacter extends TableImpl<ProductCharacterRecord> {
     public final TableField<ProductCharacterRecord, String> PERSONALITY = createField(DSL.name("personality"), SQLDataType.CLOB, this, "성격");
 
     /**
-     * The column <code>public.product_character.characteristic</code>. 특징
-     */
-    public final TableField<ProductCharacterRecord, String> CHARACTERISTIC = createField(DSL.name("characteristic"), SQLDataType.CLOB, this, "특징");
-
-    /**
      * The column <code>public.product_character.relationship</code>. 주요 관계
      */
     public final TableField<ProductCharacterRecord, String> RELATIONSHIP = createField(DSL.name("relationship"), SQLDataType.CLOB, this, "주요 관계");
@@ -125,6 +120,11 @@ public class ProductCharacter extends TableImpl<ProductCharacterRecord> {
      * The column <code>public.product_character.updated_by</code>. 수정자 ID
      */
     public final TableField<ProductCharacterRecord, UUID> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.UUID.nullable(false), this, "수정자 ID");
+
+    /**
+     * The column <code>public.product_character.seq</code>.
+     */
+    public final TableField<ProductCharacterRecord, Integer> SEQ = createField(DSL.name("seq"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "");
 
     private ProductCharacter(Name alias, Table<ProductCharacterRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

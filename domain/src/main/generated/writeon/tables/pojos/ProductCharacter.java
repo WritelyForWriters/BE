@@ -26,12 +26,12 @@ public class ProductCharacter implements Serializable {
     private final String occupation;
     private final String appearance;
     private final String personality;
-    private final String characteristic;
     private final String relationship;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
     private final UUID updatedBy;
+    private final Integer seq;
 
     public ProductCharacter(ProductCharacter value) {
         this.id = value.id;
@@ -43,12 +43,12 @@ public class ProductCharacter implements Serializable {
         this.occupation = value.occupation;
         this.appearance = value.appearance;
         this.personality = value.personality;
-        this.characteristic = value.characteristic;
         this.relationship = value.relationship;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
         this.updatedBy = value.updatedBy;
+        this.seq = value.seq;
     }
 
     public ProductCharacter(
@@ -61,12 +61,12 @@ public class ProductCharacter implements Serializable {
         String occupation,
         String appearance,
         String personality,
-        String characteristic,
         String relationship,
         LocalDateTime createdAt,
         UUID createdBy,
         LocalDateTime updatedAt,
-        UUID updatedBy
+        UUID updatedBy,
+        Integer seq
     ) {
         this.id = id;
         this.productId = productId;
@@ -77,12 +77,12 @@ public class ProductCharacter implements Serializable {
         this.occupation = occupation;
         this.appearance = appearance;
         this.personality = personality;
-        this.characteristic = characteristic;
         this.relationship = relationship;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
         this.updatedBy = updatedBy;
+        this.seq = seq;
     }
 
     /**
@@ -149,13 +149,6 @@ public class ProductCharacter implements Serializable {
     }
 
     /**
-     * Getter for <code>public.product_character.characteristic</code>. 특징
-     */
-    public String getCharacteristic() {
-        return this.characteristic;
-    }
-
-    /**
      * Getter for <code>public.product_character.relationship</code>. 주요 관계
      */
     public String getRelationship() {
@@ -188,6 +181,13 @@ public class ProductCharacter implements Serializable {
      */
     public UUID getUpdatedBy() {
         return this.updatedBy;
+    }
+
+    /**
+     * Getter for <code>public.product_character.seq</code>.
+     */
+    public Integer getSeq() {
+        return this.seq;
     }
 
     @Override
@@ -253,12 +253,6 @@ public class ProductCharacter implements Serializable {
         }
         else if (!this.personality.equals(other.personality))
             return false;
-        if (this.characteristic == null) {
-            if (other.characteristic != null)
-                return false;
-        }
-        else if (!this.characteristic.equals(other.characteristic))
-            return false;
         if (this.relationship == null) {
             if (other.relationship != null)
                 return false;
@@ -289,6 +283,12 @@ public class ProductCharacter implements Serializable {
         }
         else if (!this.updatedBy.equals(other.updatedBy))
             return false;
+        if (this.seq == null) {
+            if (other.seq != null)
+                return false;
+        }
+        else if (!this.seq.equals(other.seq))
+            return false;
         return true;
     }
 
@@ -305,12 +305,12 @@ public class ProductCharacter implements Serializable {
         result = prime * result + ((this.occupation == null) ? 0 : this.occupation.hashCode());
         result = prime * result + ((this.appearance == null) ? 0 : this.appearance.hashCode());
         result = prime * result + ((this.personality == null) ? 0 : this.personality.hashCode());
-        result = prime * result + ((this.characteristic == null) ? 0 : this.characteristic.hashCode());
         result = prime * result + ((this.relationship == null) ? 0 : this.relationship.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
         result = prime * result + ((this.updatedBy == null) ? 0 : this.updatedBy.hashCode());
+        result = prime * result + ((this.seq == null) ? 0 : this.seq.hashCode());
         return result;
     }
 
@@ -327,12 +327,12 @@ public class ProductCharacter implements Serializable {
         sb.append(", ").append(occupation);
         sb.append(", ").append(appearance);
         sb.append(", ").append(personality);
-        sb.append(", ").append(characteristic);
         sb.append(", ").append(relationship);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);
         sb.append(", ").append(updatedBy);
+        sb.append(", ").append(seq);
 
         sb.append(")");
         return sb.toString();
