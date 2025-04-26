@@ -108,7 +108,6 @@ public class ChatService {
     public AssistantResponse research(AssistantResearchRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
-        // assistant 및 message 생성
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
 
         AssistantMessage memberMessage = AssistantMessage.builder()
@@ -126,7 +125,6 @@ public class ChatService {
         // 웹 검색 요청
         String answer = assistantApiClient.research(researchRequest).block();
 
-        // assistant 응답 저장
         AssistantMessage assistantMessage = AssistantMessage.builder()
             .assistantId(assistantId)
             .role(MessageSenderRole.ASSISTANT)
@@ -134,6 +132,8 @@ public class ChatService {
             .createdBy(MemberUtil.getMemberId())
             .build();
         assistantService.createMessage(assistantMessage);
+
+        assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
 
         return new AssistantResponse(assistantId, answer);
     }

@@ -59,7 +59,7 @@ public class ProductSynopsis extends TableImpl<ProductSynopsisRecord> {
     /**
      * The column <code>public.product_synopsis.genre</code>. 장르
      */
-    public final TableField<ProductSynopsisRecord, String> GENRE = createField(DSL.name("genre"), SQLDataType.VARCHAR(30).nullable(false), this, "장르");
+    public final TableField<ProductSynopsisRecord, String> GENRE = createField(DSL.name("genre"), SQLDataType.VARCHAR(100).nullable(false), this, "장르");
 
     /**
      * The column <code>public.product_synopsis.length</code>. 분량

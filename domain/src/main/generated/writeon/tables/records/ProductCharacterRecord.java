@@ -157,25 +157,10 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
     }
 
     /**
-     * Setter for <code>public.product_character.characteristic</code>. 특징
-     */
-    public ProductCharacterRecord setCharacteristic(String value) {
-        set(9, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>public.product_character.characteristic</code>. 특징
-     */
-    public String getCharacteristic() {
-        return (String) get(9);
-    }
-
-    /**
      * Setter for <code>public.product_character.relationship</code>. 주요 관계
      */
     public ProductCharacterRecord setRelationship(String value) {
-        set(10, value);
+        set(9, value);
         return this;
     }
 
@@ -183,14 +168,14 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
      * Getter for <code>public.product_character.relationship</code>. 주요 관계
      */
     public String getRelationship() {
-        return (String) get(10);
+        return (String) get(9);
     }
 
     /**
      * Setter for <code>public.product_character.created_at</code>. 생성일시
      */
     public ProductCharacterRecord setCreatedAt(LocalDateTime value) {
-        set(11, value);
+        set(10, value);
         return this;
     }
 
@@ -198,14 +183,14 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
      * Getter for <code>public.product_character.created_at</code>. 생성일시
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(11);
+        return (LocalDateTime) get(10);
     }
 
     /**
      * Setter for <code>public.product_character.created_by</code>. 생성자 ID
      */
     public ProductCharacterRecord setCreatedBy(UUID value) {
-        set(12, value);
+        set(11, value);
         return this;
     }
 
@@ -213,14 +198,14 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
      * Getter for <code>public.product_character.created_by</code>. 생성자 ID
      */
     public UUID getCreatedBy() {
-        return (UUID) get(12);
+        return (UUID) get(11);
     }
 
     /**
      * Setter for <code>public.product_character.updated_at</code>. 수정일시
      */
     public ProductCharacterRecord setUpdatedAt(LocalDateTime value) {
-        set(13, value);
+        set(12, value);
         return this;
     }
 
@@ -228,14 +213,14 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
      * Getter for <code>public.product_character.updated_at</code>. 수정일시
      */
     public LocalDateTime getUpdatedAt() {
-        return (LocalDateTime) get(13);
+        return (LocalDateTime) get(12);
     }
 
     /**
      * Setter for <code>public.product_character.updated_by</code>. 수정자 ID
      */
     public ProductCharacterRecord setUpdatedBy(UUID value) {
-        set(14, value);
+        set(13, value);
         return this;
     }
 
@@ -243,7 +228,22 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
      * Getter for <code>public.product_character.updated_by</code>. 수정자 ID
      */
     public UUID getUpdatedBy() {
-        return (UUID) get(14);
+        return (UUID) get(13);
+    }
+
+    /**
+     * Setter for <code>public.product_character.seq</code>.
+     */
+    public ProductCharacterRecord setSeq(Integer value) {
+        set(14, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.product_character.seq</code>.
+     */
+    public Integer getSeq() {
+        return (Integer) get(14);
     }
 
     // -------------------------------------------------------------------------
@@ -269,7 +269,7 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
     /**
      * Create a detached, initialised ProductCharacterRecord
      */
-    public ProductCharacterRecord(UUID id, UUID productId, String intro, String name, Integer age, String gender, String occupation, String appearance, String personality, String characteristic, String relationship, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
+    public ProductCharacterRecord(UUID id, UUID productId, String intro, String name, Integer age, String gender, String occupation, String appearance, String personality, String relationship, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy, Integer seq) {
         super(ProductCharacter.PRODUCT_CHARACTER);
 
         setId(id);
@@ -281,12 +281,12 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
         setOccupation(occupation);
         setAppearance(appearance);
         setPersonality(personality);
-        setCharacteristic(characteristic);
         setRelationship(relationship);
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
         setUpdatedAt(updatedAt);
         setUpdatedBy(updatedBy);
+        setSeq(seq);
         resetChangedOnNotNull();
     }
 
@@ -306,12 +306,12 @@ public class ProductCharacterRecord extends UpdatableRecordImpl<ProductCharacter
             setOccupation(value.getOccupation());
             setAppearance(value.getAppearance());
             setPersonality(value.getPersonality());
-            setCharacteristic(value.getCharacteristic());
             setRelationship(value.getRelationship());
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
             setUpdatedAt(value.getUpdatedAt());
             setUpdatedBy(value.getUpdatedBy());
+            setSeq(value.getSeq());
             resetChangedOnNotNull();
         }
     }
