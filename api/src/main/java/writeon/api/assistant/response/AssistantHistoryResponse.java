@@ -1,13 +1,14 @@
 package writeon.api.assistant.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import writeon.tables.records.AssistantMessageRecord;
 import writeon.tables.records.AssistantRecord;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 public class AssistantHistoryResponse {
@@ -19,11 +20,12 @@ public class AssistantHistoryResponse {
     private final AssistantMessage assistantMessage;
     private final LocalDateTime createdAt;
 
-    public AssistantHistoryResponse(AssistantRecord assistant, AssistantMessageRecord memberMessage, Boolean isFavoritedPrompt, AssistantMessageRecord assistantMessage) {
+    public AssistantHistoryResponse(AssistantRecord assistant, AssistantMessageRecord memberMessage,
+        Boolean isFavoritedPrompt, AssistantMessageRecord assistantMessage, Boolean isGood) {
         this.id = assistant.getId();
         this.type = assistant.getType();
         this.memberMessage = new MemberMessage(memberMessage, isFavoritedPrompt);
-        this.assistantMessage = new AssistantMessage(assistantMessage, assistant.getIsApplied());
+        this.assistantMessage = new AssistantMessage(assistantMessage, assistant.getIsApplied(), isGood);
         this.createdAt = assistant.getCreatedAt();
     }
 
@@ -57,11 +59,14 @@ public class AssistantHistoryResponse {
         private final String content;
         @Schema(title = "답변 적용 여부")
         private final Boolean isApplied;
+        @Schema(title = "답변 평가")
+        private final Boolean isGood;
 
-        public AssistantMessage(AssistantMessageRecord message, Boolean isApplied) {
+        public AssistantMessage(AssistantMessageRecord message, Boolean isApplied, Boolean isGood) {
             this.id = message.getId();
             this.content = message.getContent();
             this.isApplied = isApplied;
+            this.isGood = isGood;
         }
     }
 }
