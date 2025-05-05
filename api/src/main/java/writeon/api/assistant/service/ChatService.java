@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.AssistantChatMessageRequest;
+import writeon.api.assistant.request.AssistantChatRequest;
 import writeon.api.assistant.request.AssistantResearchRequest;
 import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
@@ -37,10 +37,49 @@ public class ChatService {
     private final ProductQueryService productQueryService;
 
     @Transactional
-    public MessageCreateResponse createMessage(AssistantChatMessageRequest request) {
+    public AssistantResponse chat(AssistantChatRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
+
+        AssistantMessage memberMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .prompt(request.getPrompt())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(memberMessage);
+
+        UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        ChatRequest chatRequest = new ChatRequest(
+            userSetting,
+            memberMessage.getContent(),
+            memberMessage.getPrompt(),
+            request.getSessionId()
+        );
+
+        String answer = assistantApiClient.chat(chatRequest).block();
+
+        AssistantMessage assistantMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.ASSISTANT)
+            .content(answer)
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(assistantMessage);
+
+        assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
+
+        return new AssistantResponse(assistantId, answer);
+    }
+
+    @Transactional
+    public MessageCreateResponse createMessage(AssistantChatRequest request) {
+        productQueryService.verifyExist(request.getProductId());
+
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
+
         AssistantMessage memberMessage = AssistantMessage.builder()
             .assistantId(assistantId)
             .role(MessageSenderRole.MEMBER)

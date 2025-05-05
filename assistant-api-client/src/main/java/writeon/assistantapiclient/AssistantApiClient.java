@@ -46,6 +46,23 @@ public class AssistantApiClient extends WebApiClient{
             .map(responseBody -> JsonPath.read(responseBody, "$.result.content"));
     }
 
+    public Mono<String> autoModify(AutoModifyRequest request) {
+        return webClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .path("/v1/assistant/auto-modify")
+                .build()
+            )
+            .bodyValue(request)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class)
+                    .doOnNext(errorBody -> System.out.println("Error response: " + errorBody))
+                    .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
+            )
+            .bodyToMono(String.class)
+            .map(responseBody -> JsonPath.read(responseBody, "$.result.content"));
+    }
+
     public Flux<String> streamAutoModify(AutoModifyRequest request) {
         return webClient.post()
             .uri(uriBuilder -> uriBuilder
@@ -60,6 +77,23 @@ public class AssistantApiClient extends WebApiClient{
                     .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
             )
             .bodyToFlux(String.class);
+    }
+
+    public Mono<String> chat(ChatRequest request) {
+        return webClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .path("/v1/assistant/chat")
+                .build()
+            )
+            .bodyValue(request)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class)
+                    .doOnNext(errorBody -> System.out.println("Error response: " + errorBody))
+                    .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
+            )
+            .bodyToMono(String.class)
+            .map(responseBody -> JsonPath.read(responseBody, "$.result.content"));
     }
 
     public Flux<String> streamChat(ChatRequest request) {
@@ -78,6 +112,23 @@ public class AssistantApiClient extends WebApiClient{
             .bodyToFlux(String.class);
     }
 
+    public Mono<String> feedback(FeedbackRequest request) {
+        return webClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .path("/v1/assistant/feedback")
+                .build()
+            )
+            .bodyValue(request)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class)
+                    .doOnNext(errorBody -> System.out.println("Error response: " + errorBody))
+                    .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
+            )
+            .bodyToMono(String.class)
+            .map(responseBody -> JsonPath.read(responseBody, "$.result.content"));
+    }
+
     public Flux<String> streamFeedback(FeedbackRequest request) {
         return webClient.post()
             .uri(uriBuilder -> uriBuilder
@@ -94,6 +145,23 @@ public class AssistantApiClient extends WebApiClient{
             .bodyToFlux(String.class);
     }
 
+    public Mono<String> plannerGenerate(PlannerGenerateRequest request) {
+        return webClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .path("/v1/planner/generate")
+                .build()
+            )
+            .bodyValue(request)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class)
+                    .doOnNext(errorBody -> System.out.println("Error response: " + errorBody))
+                    .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
+            )
+            .bodyToMono(String.class)
+            .map(responseBody -> JsonPath.read(responseBody, "$.result.content"));
+    }
+
     public Flux<String> streamPlannerGenerate(PlannerGenerateRequest request) {
         return webClient.post()
             .uri(uriBuilder -> uriBuilder
@@ -108,6 +176,23 @@ public class AssistantApiClient extends WebApiClient{
                     .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
             )
             .bodyToFlux(String.class);
+    }
+
+    public Mono<String> userModify(UserModifyRequest request) {
+        return webClient.post()
+            .uri(uriBuilder -> uriBuilder
+                .path("/v1/assistant/user-modify")
+                .build()
+            )
+            .bodyValue(request)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, response ->
+                response.bodyToMono(String.class)
+                    .doOnNext(errorBody -> System.out.println("Error response: " + errorBody))
+                    .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
+            )
+            .bodyToMono(String.class)
+            .map(responseBody -> JsonPath.read(responseBody, "$.result.content"));
     }
 
     public Flux<String> streamUserModify(UserModifyRequest request) {

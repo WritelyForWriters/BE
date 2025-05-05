@@ -1,43 +1,22 @@
 package writeon.api.assistant.controller;
 
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.UUID;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import writeon.api.assistant.request.AssistantAutoModifyMessageRequest;
-import writeon.api.assistant.request.AssistantChatMessageRequest;
-import writeon.api.assistant.request.AssistantEvaluateRequest;
-import writeon.api.assistant.request.AssistantFeedbackMessageRequest;
-import writeon.api.assistant.request.AssistantHistoryListRequest;
-import writeon.api.assistant.request.AssistantPlannerMessageRequest;
-import writeon.api.assistant.request.AssistantResearchRequest;
-import writeon.api.assistant.request.AssistantUserModifyMessageRequest;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import writeon.api.assistant.request.*;
 import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
-import writeon.api.assistant.service.AssistantEvaluationService;
-import writeon.api.assistant.service.AssistantService;
-import writeon.api.assistant.service.AutoModifyService;
-import writeon.api.assistant.service.ChatService;
-import writeon.api.assistant.service.FeedbackService;
-import writeon.api.assistant.service.PlannerService;
-import writeon.api.assistant.service.UserModifyService;
+import writeon.api.assistant.service.*;
 import writeon.api.common.response.CursorResponse;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,15 +38,27 @@ public class AssistantController {
         assistantService.apply(assistantId);
     }
 
+    @Operation(summary = "자동 수정")
+    @PostMapping("/auto-modify")
+    public AssistantResponse autoModify(@RequestBody AssistantAutoModifyRequest request) {
+        return autoModifyService.autoModify(request);
+    }
+
     @Operation(summary = "자동 수정 메세지 저장")
     @PostMapping("/auto-modify/messages")
-    public MessageCreateResponse createAutoModifyMessage(@RequestBody AssistantAutoModifyMessageRequest request) {
+    public MessageCreateResponse createAutoModifyMessage(@RequestBody AssistantAutoModifyRequest request) {
         return autoModifyService.createMessage(request);
+    }
+
+    @Operation(summary = "자유 대화")
+    @PostMapping("/chat")
+    public AssistantResponse chat(@RequestBody AssistantChatRequest request) {
+        return chatService.chat(request);
     }
 
     @Operation(summary = "자유 대화 메세지 저장")
     @PostMapping("/chat/messages")
-    public MessageCreateResponse createChatMessage(@RequestBody AssistantChatMessageRequest request) {
+    public MessageCreateResponse createChatMessage(@RequestBody AssistantChatRequest request) {
         return chatService.createMessage(request);
     }
 
@@ -79,21 +70,39 @@ public class AssistantController {
         assistantEvaluationService.evaluate(assistantId, request);
     }
 
+    @Operation(summary = "구간 피드백")
+    @PostMapping("/feedback")
+    public AssistantResponse feedback(@RequestBody AssistantFeedbackRequest request) {
+        return feedbackService.feedback(request);
+    }
+
     @Operation(summary = "구간 피드백 메세지 저장")
     @PostMapping("/feedback/messages")
-    public MessageCreateResponse createFeedbackMessage(@RequestBody AssistantFeedbackMessageRequest request) {
+    public MessageCreateResponse createFeedbackMessage(@RequestBody AssistantFeedbackRequest request) {
         return feedbackService.createMessage(request);
+    }
+
+    @Operation(summary = "플래너 AI 완성")
+    @PostMapping("/planner")
+    public AssistantResponse planner(@RequestBody AssistantPlannerRequest request) {
+        return plannerService.planner(request);
     }
 
     @Operation(summary = "플래너 AI 완성 메세지 저장")
     @PostMapping("/planner/messages")
-    public MessageCreateResponse createPlannerMessage(@RequestBody AssistantPlannerMessageRequest request) {
+    public MessageCreateResponse createPlannerMessage(@RequestBody AssistantPlannerRequest request) {
         return plannerService.createMessage(request);
+    }
+
+    @Operation(summary = "수동 수정")
+    @PostMapping("/user-modify")
+    public AssistantResponse userModify(@RequestBody AssistantUserModifyRequest request) {
+        return userModifyService.userModify(request);
     }
 
     @Operation(summary = "수동 수정 메세지 저장")
     @PostMapping("/user-modify/messages")
-    public MessageCreateResponse createUserModifyMessage(@RequestBody AssistantUserModifyMessageRequest request) {
+    public MessageCreateResponse createUserModifyMessage(@RequestBody AssistantUserModifyRequest request) {
         return userModifyService.createMessage(request);
     }
 
