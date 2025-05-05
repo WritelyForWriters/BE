@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.AssistantUserModifyMessageRequest;
+import writeon.api.assistant.request.AssistantUserModifyRequest;
+import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
@@ -34,7 +35,44 @@ public class UserModifyService {
     private final ProductQueryService productQueryService;
 
     @Transactional
-    public MessageCreateResponse createMessage(AssistantUserModifyMessageRequest request) {
+    public AssistantResponse userModify(AssistantUserModifyRequest request) {
+        productQueryService.verifyExist(request.getProductId());
+
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);
+
+        AssistantMessage memberMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.MEMBER)
+            .content(request.getContent())
+            .prompt(request.getPrompt())
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(memberMessage);
+
+        UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        UserModifyRequest userModifyRequest = new UserModifyRequest(
+            "t" + request.getProductId().toString().replaceAll("-", ""),
+            userSetting, memberMessage.getContent(),
+            memberMessage.getPrompt()
+        );
+
+        String answer = assistantApiClient.userModify(userModifyRequest).block();
+
+        AssistantMessage assistantMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.ASSISTANT)
+            .content(answer)
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(assistantMessage);
+
+        assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
+
+        return new AssistantResponse(assistantId, answer);
+    }
+
+    @Transactional
+    public MessageCreateResponse createMessage(AssistantUserModifyRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.USER_MODIFY);

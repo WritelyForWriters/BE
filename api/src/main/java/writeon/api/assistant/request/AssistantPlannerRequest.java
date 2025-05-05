@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class AssistantPlannerMessageRequest {
+public class AssistantPlannerRequest {
 
     @Schema(title = "작품 ID")
     private UUID productId;

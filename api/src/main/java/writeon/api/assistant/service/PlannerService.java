@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import writeon.api.assistant.request.AssistantPlannerMessageRequest;
+import writeon.api.assistant.request.AssistantPlannerRequest;
+import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.LogUtil;
@@ -36,7 +37,52 @@ public class PlannerService {
     private final AssistantPlannerMessageJpaRepository assistantPlannerMessageRepository;
 
     @Transactional
-    public MessageCreateResponse createMessage(AssistantPlannerMessageRequest request) {
+    public AssistantResponse planner(AssistantPlannerRequest request) {
+        productQueryService.verifyExist(request.getProductId());
+
+        UUID assistantId = assistantService.create(request.getProductId(), AssistantType.PLANNER);
+
+        AssistantMessage memberMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .prompt(request.getPrompt())
+            .role(MessageSenderRole.MEMBER)
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(memberMessage);
+
+        AssistantPlannerMessage plannerMessage = AssistantPlannerMessage.builder()
+            .assistantId(assistantId)
+            .genre(request.getGenre())
+            .logline(request.getLogline())
+            .section(request.getSection())
+            .build();
+        assistantPlannerMessageRepository.save(plannerMessage);
+
+        PlannerGenerateRequest plannerGenerateRequest = PlannerGenerateRequest.builder()
+            .tenantId("t" + request.getProductId().toString().replaceAll("-", ""))
+            .genre(plannerMessage.getGenre())
+            .logline(plannerMessage.getLogline())
+            .section(plannerMessage.getSection())
+            .prompt(memberMessage.getPrompt())
+            .build();
+
+        String answer = assistantApiClient.plannerGenerate(plannerGenerateRequest).block();
+
+        AssistantMessage assistantMessage = AssistantMessage.builder()
+            .assistantId(assistantId)
+            .role(MessageSenderRole.ASSISTANT)
+            .content(answer)
+            .createdBy(MemberUtil.getMemberId())
+            .build();
+        assistantService.createMessage(assistantMessage);
+
+        assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
+
+        return new AssistantResponse(assistantId, answer);
+    }
+
+    @Transactional
+    public MessageCreateResponse createMessage(AssistantPlannerRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.PLANNER);
