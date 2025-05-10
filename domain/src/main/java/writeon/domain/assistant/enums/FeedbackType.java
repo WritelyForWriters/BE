@@ -10,12 +10,16 @@ import writeon.domain.common.enums.Codable;
 @RequiredArgsConstructor
 public enum FeedbackType implements Codable {
 
-    AWKWARD_SENTENCE("Awkward sentence"),
-    INACCURATE_INFO("Inaccurate information"),
-    UNAPPLIED_SETTING("Unapplied settings"),
+    AWKWARD_SENTENCE("AWKWARD_SENTENCE"),
+    INACCURATE_INFO("INACCURATE_INFO"),
+    UNAPPLIED_SETTING("UNAPPLIED_SETTING"),
     ETC("ETC");
 
     private final String code;
+
+    public static FeedbackType fromCode(final String code) {
+        return Codable.fromCode(FeedbackType.class, code);
+    }
 
     @Converter
     public static class TypeCodeConverter extends AbstractEnumCodeConverter<FeedbackType> {

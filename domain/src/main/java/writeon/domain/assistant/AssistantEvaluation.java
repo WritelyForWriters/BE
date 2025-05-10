@@ -1,13 +1,11 @@
 package writeon.domain.assistant;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
+import writeon.domain.assistant.enums.FeedbackType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -25,6 +23,10 @@ public class AssistantEvaluation {
     @Column(name = "is_good", nullable = false)
     private Boolean isGood;
 
+    @Convert(converter = FeedbackType.TypeCodeConverter.class)
+    @Column(name = "feedback_type")
+    private FeedbackType feedbackType;
+
     @Column(name = "feedback")
     private String feedback;
 
@@ -36,9 +38,10 @@ public class AssistantEvaluation {
     protected UUID createdBy = UUID.randomUUID();
 
     @Builder
-    public AssistantEvaluation(UUID assistantId, Boolean isGood, String feedback) {
+    public AssistantEvaluation(UUID assistantId, Boolean isGood, FeedbackType feedbackType, String feedback) {
         this.assistantId = assistantId;
         this.isGood = isGood;
+        this.feedbackType = feedbackType;
         this.feedback = feedback;
     }
 }
