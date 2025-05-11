@@ -1,20 +1,15 @@
 package writeon.domain.assistant;
 
 import com.fasterxml.uuid.Generators;
-
-import java.util.UUID;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import writeon.domain.assistant.enums.AssistantStatus;
 import writeon.domain.assistant.enums.AssistantType;
 import writeon.domain.common.BaseTimeEntity;
+
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -40,6 +35,9 @@ public class Assistant extends BaseTimeEntity {
     @Column(name = "is_applied", nullable = false)
     private Boolean isApplied = Boolean.FALSE;
 
+    @Column(name = "is_archived", nullable = false)
+    private Boolean isArchived = Boolean.FALSE;
+
     @Column(name = "created_by", updatable = false, nullable = false)
     private UUID createdBy;
 
@@ -52,6 +50,10 @@ public class Assistant extends BaseTimeEntity {
 
     public void apply() {
         this.isApplied = Boolean.TRUE;
+    }
+
+    public void archive() {
+        this.isArchived = Boolean.TRUE;
     }
 
     public void updateStatus(AssistantStatus status) {

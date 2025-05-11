@@ -161,6 +161,12 @@ public class AssistantController {
         return assistantService.getHistories(request);
     }
 
+    @Operation(summary = "어시스턴트 답변 영구 보관")
+    @PutMapping("/{assistantId}/archive")
+    public void archive(@PathVariable UUID assistantId) {
+        assistantService.archive(assistantId);
+    }
+
     @Operation(summary = "어시스턴트 기능 완료 처리")
     @PutMapping("/{assistantId}/completed")
     public void completed(@PathVariable UUID assistantId) {
