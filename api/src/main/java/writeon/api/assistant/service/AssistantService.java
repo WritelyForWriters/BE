@@ -32,6 +32,16 @@ public class AssistantService {
     private final ProductQueryService productQueryService;
 
     @Transactional
+    public void archive(UUID assistantId) {
+        Assistant assistant = getById(assistantId, MemberUtil.getMemberId());
+        if (assistant.getStatus() == AssistantStatus.DRAFT) {
+            throw new BaseException(AssistantException.CANNOT_BE_COMPLETED);
+        }
+
+        assistant.archive();
+    }
+
+    @Transactional
     public void apply(UUID assistantId) {
         Assistant assistant = getById(assistantId, MemberUtil.getMemberId());
         if (assistant.getStatus() == AssistantStatus.DRAFT || assistant.getIsApplied()) {
