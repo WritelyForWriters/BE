@@ -34,7 +34,7 @@ public class AssistantDao {
 
         List<Condition> conditions = getConditions(productId);
         if (assistantId != null) {
-            conditions.add(ASSISTANT.ID.lt(assistantId));
+            conditions.add(ASSISTANT.ID.lessOrEqual(assistantId));
         }
 
         return dsl
