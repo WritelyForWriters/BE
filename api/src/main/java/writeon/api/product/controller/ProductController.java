@@ -15,6 +15,7 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import writeon.api.product.request.ProductMemoCompletedRequest;
 import writeon.api.product.request.ProductMemoSaveRequest;
 import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
@@ -125,6 +126,15 @@ public class ProductController {
         @PathVariable UUID memoId,
         @RequestBody ProductMemoSaveRequest request) {
         productCommandService.modifyMemo(productId, memoId, request);
+    }
+
+    @Operation(summary = "메모 완료 여부 수정")
+    @PutMapping("/{productId}/memos/{memoId}/completed")
+    public void modifyMemoCompleted(
+        @PathVariable UUID productId,
+        @PathVariable UUID memoId,
+        @RequestBody ProductMemoCompletedRequest request) {
+        productCommandService.modifyMemoCompleted(productId, memoId, request.getIsCompleted());
     }
 
     @Operation(summary = "메모 삭제")

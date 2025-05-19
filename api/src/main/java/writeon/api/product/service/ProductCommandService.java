@@ -147,7 +147,16 @@ public class ProductCommandService {
         ProductMemo memo = getMemoById(memoId);
 
         memo.update(request.getTitle(), request.getContent(), request.getSelectedText(),
-            request.getStartIndex(), request.getEndIndex(), request.getIsCompleted());
+            request.getStartIndex(), request.getEndIndex());
+    }
+
+    @Transactional
+    public void modifyMemoCompleted(UUID productId, UUID memoId, Boolean isCompleted) {
+        productQueryService.verifyExist(productId);
+
+        ProductMemo memo = getMemoById(memoId);
+
+        memo.setIsCompleted(isCompleted);
     }
 
     @Transactional

@@ -55,12 +55,11 @@ public class ProductMemo extends BaseAuditTimeEntity {
         this.endIndex = endIndex;
     }
 
-    public void update(String title, String content, String selectedText, Integer startIndex, Integer endIndex, Boolean isCompleted) {
+    public void update(String title, String content, String selectedText, Integer startIndex, Integer endIndex) {
         this.title = title;
         this.content = content;
         this.selectedText = selectedText;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
-        this.isCompleted = isCompleted;
     }
 }
