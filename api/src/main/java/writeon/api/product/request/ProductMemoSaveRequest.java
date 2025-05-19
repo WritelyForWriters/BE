@@ -15,6 +15,4 @@ public class ProductMemoSaveRequest {
     private String selectedText;
     private Integer startIndex;
     private Integer endIndex;
-    @Schema(title = "완료 여부", description = "메모 생성 시, false로 저장됩니다.", nullable = true)
-    private Boolean isCompleted;
 }

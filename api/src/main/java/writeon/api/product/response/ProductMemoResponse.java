@@ -1,9 +1,10 @@
 package writeon.api.product.response;
 
-import writeon.domain.product.ProductMemo;
-import lombok.Getter;
-
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import lombok.Getter;
+import writeon.domain.product.ProductMemo;
 
 @Getter
 public class ProductMemoResponse {
@@ -15,6 +16,7 @@ public class ProductMemoResponse {
     private final Integer startIndex;
     private final Integer endIndex;
     private final Boolean isCompleted;
+    private final LocalDateTime updatedAt;
 
     public ProductMemoResponse(ProductMemo memo) {
         this.id = memo.getId();
@@ -24,5 +26,6 @@ public class ProductMemoResponse {
         this.startIndex = memo.getStartIndex();
         this.endIndex = memo.getEndIndex();
         this.isCompleted = memo.getIsCompleted();
+        this.updatedAt = memo.getUpdatedAt();
     }
 }
