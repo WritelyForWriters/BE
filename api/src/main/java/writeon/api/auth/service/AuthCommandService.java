@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import writeon.api.auth.helper.JwtHelper;
@@ -52,6 +53,9 @@ public class AuthCommandService {
     private final LoginAttemptJpaRepository loginAttemptJpaRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
+
+    @Value("${service.web.url}")
+    private String WEB_URL;
 
     /**
      * 토큰 재발급
@@ -202,7 +206,7 @@ public class AuthCommandService {
                     request.getEmail(),
                     MailHelper.MailData.builder()
                             .nickname(request.getNickname())
-                            .token(joinToken.getTokenString())
+                            .linkUrl( WEB_URL + "/join/complete?joinToken=" + joinToken.getTokenString() )
                             .build()
             );
         } catch (MessagingException e) {
@@ -258,7 +262,7 @@ public class AuthCommandService {
                     member.getEmail(),
                     MailHelper.MailData.builder()
                             .nickname(member.getNickname())
-                            .token(changePasswordToken.getTokenString())
+                            .linkUrl( WEB_URL + "/change-password/complete?changePasswordToken=" + changePasswordToken.getTokenString() )
                             .build()
             );
         } catch (MessagingException e) {

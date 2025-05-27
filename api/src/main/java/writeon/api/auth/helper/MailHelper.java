@@ -49,7 +49,7 @@ public class MailHelper {
     @AllArgsConstructor
     @Builder
     public static class MailData {
-        private String token;
+        private String linkUrl;
         private String nickname;
     }
 }
