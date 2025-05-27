@@ -1,9 +1,12 @@
 package writeon.api.auth.service;
 
+import com.amplitude.Amplitude;
+import com.amplitude.Event;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import writeon.api.auth.helper.JwtHelper;
@@ -32,6 +35,7 @@ import writeon.domain.terms.TermsAgreement;
 import writeon.domain.terms.enums.TermsCode;
 import writeon.domain.terms.repository.TermsAgreeJpaRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -52,6 +56,7 @@ public class AuthCommandService {
     private final LoginAttemptJpaRepository loginAttemptJpaRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
+    private final Amplitude amplitude = Amplitude.getInstance();
 
     /**
      * 토큰 재발급
@@ -209,6 +214,10 @@ public class AuthCommandService {
             throw new BaseException(AuthException.MAIL_SEND_FAILED);
         }
 
+        // Amplitude 이벤트 전송
+        Event event = new Event("signup_date", joinToken.getMember().getId().toString());
+        event.eventProperties = new JSONObject().put("signup_date", DateTimeUtil.convertToString(LocalDate.now()));
+        amplitude.logEvent(event);
     }
 
     /**
@@ -231,6 +240,11 @@ public class AuthCommandService {
         memberJpaRepository.save(joinToken.getMember());
         memberPasswordJpaRepository.save(joinToken.getMemberPassword());
         joinToken.getTermsAgreementList().forEach(termsAgreeJpaRepository::save);
+
+        // Amplitude 이벤트 전송
+        Event event = new Event("account_activation", joinToken.getMember().getId().toString());
+        event.eventProperties = new JSONObject().put("account_activation", true);
+        amplitude.logEvent(event);
 
         // 토큰 무효화
         this.invalidateToken(joinToken);
