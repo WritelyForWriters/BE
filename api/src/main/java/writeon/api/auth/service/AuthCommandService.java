@@ -215,8 +215,10 @@ public class AuthCommandService {
         }
 
         // Amplitude 이벤트 전송
-        Event event = new Event("signup_date", joinToken.getMember().getId().toString());
-        event.eventProperties = new JSONObject().put("signup_date", DateTimeUtil.convertToString(LocalDate.now()));
+        Event event = new Event("$identify", joinToken.getMember().getId().toString());
+        event.userProperties = new JSONObject()
+                .put("signup_date", DateTimeUtil.convertToString(LocalDate.now()))
+                .put("account_activation", false);
         amplitude.logEvent(event);
     }
 
@@ -241,13 +243,14 @@ public class AuthCommandService {
         memberPasswordJpaRepository.save(joinToken.getMemberPassword());
         joinToken.getTermsAgreementList().forEach(termsAgreeJpaRepository::save);
 
-        // Amplitude 이벤트 전송
-        Event event = new Event("account_activation", joinToken.getMember().getId().toString());
-        event.eventProperties = new JSONObject().put("account_activation", true);
-        amplitude.logEvent(event);
-
         // 토큰 무효화
         this.invalidateToken(joinToken);
+
+        // Amplitude 이벤트 전송
+        Event event = new Event("$identify", joinToken.getMember().getId().toString());
+        event.userProperties = new JSONObject()
+                .put("account_activation", true);
+        amplitude.logEvent(event);
     }
 
     /**
