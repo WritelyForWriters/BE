@@ -251,10 +251,16 @@ public class AuthCommandService {
         this.invalidateToken(joinToken);
 
         // Amplitude 이벤트 전송
-        Event event = new Event("$identify", joinToken.getMember().getId().toString());
-        event.userProperties = new JSONObject()
+        final String userId = joinToken.getMember().getId().toString();
+        Event userPropEvent = new Event("$identify", userId);
+        userPropEvent.userProperties = new JSONObject()
                 .put("account_activation", true);
-        amplitude.logEvent(event);
+        Event signUpEvent = new Event("signup_complete", userId);
+        userPropEvent.eventProperties = new JSONObject()
+                .put("user_id", userId);
+
+        amplitude.logEvent(userPropEvent);
+        amplitude.logEvent(signUpEvent);
     }
 
     /**
