@@ -1,9 +1,12 @@
 package writeon.api.auth.service;
 
+import com.amplitude.Amplitude;
+import com.amplitude.Event;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,7 @@ import writeon.domain.terms.TermsAgreement;
 import writeon.domain.terms.enums.TermsCode;
 import writeon.domain.terms.repository.TermsAgreeJpaRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -53,6 +57,7 @@ public class AuthCommandService {
     private final LoginAttemptJpaRepository loginAttemptJpaRepository;
     private final JwtHelper jwtHelper;
     private final MailHelper mailHelper;
+    private final Amplitude amplitude = Amplitude.getInstance();
 
     @Value("${service.web.url}")
     private String WEB_URL;
@@ -213,6 +218,12 @@ public class AuthCommandService {
             throw new BaseException(AuthException.MAIL_SEND_FAILED);
         }
 
+        // Amplitude 이벤트 전송
+        Event event = new Event("$identify", joinToken.getMember().getId().toString());
+        event.userProperties = new JSONObject()
+                .put("signup_date", DateTimeUtil.convertToString(LocalDate.now()))
+                .put("account_activation", false);
+        amplitude.logEvent(event);
     }
 
     /**
@@ -238,6 +249,18 @@ public class AuthCommandService {
 
         // 토큰 무효화
         this.invalidateToken(joinToken);
+
+        // Amplitude 이벤트 전송
+        final String userId = joinToken.getMember().getId().toString();
+        Event userPropEvent = new Event("$identify", userId);
+        userPropEvent.userProperties = new JSONObject()
+                .put("account_activation", true);
+        Event signUpEvent = new Event("signup_complete", userId);
+        userPropEvent.eventProperties = new JSONObject()
+                .put("user_id", userId);
+
+        amplitude.logEvent(userPropEvent);
+        amplitude.logEvent(signUpEvent);
     }
 
     /**
@@ -262,7 +285,7 @@ public class AuthCommandService {
                     member.getEmail(),
                     MailHelper.MailData.builder()
                             .nickname(member.getNickname())
-                            .linkUrl( WEB_URL + "/change-password/complete?changePasswordToken=" + changePasswordToken.getTokenString() )
+                            .linkUrl(changePasswordToken.getTokenString())
                             .build()
             );
         } catch (MessagingException e) {

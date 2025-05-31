@@ -12,6 +12,10 @@ dependencies {
 	implementation 'software.amazon.awssdk:s3:2.30.31'
 	implementation("software.amazon.awssdk:netty-nio-client:2.30.31")
 
+	/* amplitude (tracking tool) */
+	implementation 'org.json:json:20201115'
+	implementation 'com.amplitude:java-sdk:1.+'
+
 	/* Swagger */
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
