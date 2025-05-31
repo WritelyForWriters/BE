@@ -1,5 +1,8 @@
 package writeon.api.product.service;
 
+import com.amplitude.Amplitude;
+import com.amplitude.Event;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +64,7 @@ public class ProductCommandService {
     private final ProductSynopsisJpaRepository productSynopsisRepository;
     private final ProductWorldviewJpaRepository productWorldviewRepository;
     private final ProductFavoritePromptJpaRepository productFavoritePromptRepository;
+    private final Amplitude amplitude = Amplitude.getInstance();
 
     private final AssistantService assistantService;
     private final DocumentUploadService documentUploadService;
@@ -292,6 +296,14 @@ public class ProductCommandService {
         if (savedIdeaNote == null) {
             ProductIdeaNote newIdeaNote = new ProductIdeaNote(product.getId(), requestInfo.getTitle(), requestInfo.getContent());
             productIdeaNoteRepository.save(newIdeaNote);
+            // amplitude 이벤트 전송
+            final String memberId = MemberUtil.getMemberId().toString();
+            Event event = new Event("$identify", memberId);
+            event.userProperties = new JSONObject()
+                    .put("$add", new JSONObject()
+                            .put("total_idea_notes_written", 1)
+                    );
+            amplitude.logEvent(event);
         } else {
             savedIdeaNote.update(requestInfo.getTitle(), requestInfo.getContent());
         }
@@ -326,6 +338,14 @@ public class ProductCommandService {
 
         if (savedSynopsis == null) {
             productSynopsisRepository.save(requestInfo.toEntity(product.getId()));
+            // amplitude 이벤트 전송
+            final String memberId = MemberUtil.getMemberId().toString();
+            Event event = new Event("$identify", memberId);
+            event.userProperties = new JSONObject()
+                    .put("$add", new JSONObject()
+                            .put("total_synopsis_written", 1)
+                    );
+            amplitude.logEvent(event);
         } else {
             savedSynopsis.update(requestInfo.getGenre(), requestInfo.getLength(), requestInfo.getPurpose(), requestInfo.getLogline(), requestInfo.getExample());
         }
