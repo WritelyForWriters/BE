@@ -114,8 +114,11 @@ public class AssistantController {
 
     @Operation(summary = "자동 수정 스트리밍")
     @GetMapping("/auto-modify/stream")
-    public SseEmitter streamAutoModify(@RequestParam UUID assistantId) {
-        SseEmitter emitter = autoModifyService.streamAutoModify(assistantId);
+    public SseEmitter streamAutoModify(
+        @RequestParam UUID assistantId,
+        @RequestParam(required = false, defaultValue = "true") Boolean shouldApplySetting
+    ) {
+        SseEmitter emitter = autoModifyService.streamAutoModify(assistantId, shouldApplySetting);
         setResponseHeaderForSSE();
         return emitter;
     }
@@ -124,17 +127,21 @@ public class AssistantController {
     @GetMapping("/chat/stream")
     public SseEmitter streamChat(
         @RequestParam UUID assistantId,
-        @RequestParam String sessionId
+        @RequestParam String sessionId,
+        @RequestParam(required = false, defaultValue = "true") Boolean shouldApplySetting
     ) {
-        SseEmitter emitter = chatService.streamChat(assistantId, sessionId);
+        SseEmitter emitter = chatService.streamChat(assistantId, sessionId, shouldApplySetting);
         setResponseHeaderForSSE();
         return emitter;
     }
 
     @Operation(summary = "구간 피드백 스트리밍")
     @GetMapping("/feedback/stream")
-    public SseEmitter streamFeedback(@RequestParam UUID assistantId) {
-        SseEmitter emitter = feedbackService.streamFeedback(assistantId);
+    public SseEmitter streamFeedback(
+        @RequestParam UUID assistantId,
+        @RequestParam(required = false, defaultValue = "true") Boolean shouldApplySetting
+    ) {
+        SseEmitter emitter = feedbackService.streamFeedback(assistantId, shouldApplySetting);
         setResponseHeaderForSSE();
         return emitter;
     }
@@ -149,8 +156,11 @@ public class AssistantController {
 
     @Operation(summary = "수동 수정 스트리밍")
     @GetMapping("/user-modify/stream")
-    public SseEmitter streamUserModify(@RequestParam UUID assistantId) {
-        SseEmitter emitter = userModifyService.streamUserModify(assistantId);
+    public SseEmitter streamUserModify(
+        @RequestParam UUID assistantId,
+        @RequestParam(required = false, defaultValue = "true") Boolean shouldApplySetting
+    ) {
+        SseEmitter emitter = userModifyService.streamUserModify(assistantId, shouldApplySetting);
         setResponseHeaderForSSE();
         return emitter;
     }

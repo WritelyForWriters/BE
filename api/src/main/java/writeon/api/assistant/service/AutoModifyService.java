@@ -48,7 +48,13 @@ public class AutoModifyService {
             .build();
         assistantService.createMessage(memberMessage);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        UserSetting userSetting;
+        if (request.getShouldApplySetting()) {
+            userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        } else {
+            userSetting = new UserSetting();
+        }
+
         AutoModifyRequest autoModifyRequest = new AutoModifyRequest(
             "t" + request.getProductId().toString().replaceAll("-", ""),
             userSetting,
@@ -87,7 +93,7 @@ public class AutoModifyService {
         return new MessageCreateResponse(assistantId);
     }
 
-    public SseEmitter streamAutoModify(UUID assistantId) {
+    public SseEmitter streamAutoModify(UUID assistantId, Boolean shouldApplySetting) {
         Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
         assistantService.verifyAnswered(assistantId);
@@ -95,7 +101,13 @@ public class AutoModifyService {
 
         AssistantMessage memberMessage = assistantService.getMessageByAssistantId(assistantId, MessageSenderRole.MEMBER);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
+        UserSetting userSetting;
+        if (shouldApplySetting) {
+            userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
+        } else {
+            userSetting = new UserSetting();
+        }
+
         AutoModifyRequest request = new AutoModifyRequest(
             "t" + assistant.getProductId().toString().replaceAll("-", ""),
             userSetting,

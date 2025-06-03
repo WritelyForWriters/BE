@@ -10,11 +10,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserSetting {
 
-    private final Synopsis synopsis;
-    private final Worldview worldview;
-    private final List<Character> characters;
-    private final Plot plot;
-    private final IdeaNote ideaNote;
+    private Synopsis synopsis;
+    private Worldview worldview;
+    private List<Character> characters;
+    private Plot plot;
+    private IdeaNote ideaNote;
+
+    public UserSetting() {
+    }
 
     public UserSetting(Product product) {
         this.characters = product.getCharacters().stream()
