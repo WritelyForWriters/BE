@@ -18,4 +18,6 @@ public class AssistantChatRequest {
     private String prompt;
     @Schema(title = "세션 ID", nullable = true)
     private String sessionId;
+    @Schema(title = "설정 반영 여부", nullable = true)
+    private Boolean shouldApplySetting = true;
 }

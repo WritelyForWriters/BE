@@ -48,7 +48,13 @@ public class FeedbackService {
             .build();
         assistantService.createMessage(memberMessage);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        UserSetting userSetting;
+        if (request.getShouldApplySetting()) {
+            userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        } else {
+            userSetting = new UserSetting();
+        }
+
         FeedbackRequest feedbackRequest = new FeedbackRequest(
             "t" + request.getProductId().toString().replaceAll("-", ""),
             userSetting,
@@ -87,7 +93,7 @@ public class FeedbackService {
         return new MessageCreateResponse(assistantId);
     }
 
-    public SseEmitter streamFeedback(UUID assistantId) {
+    public SseEmitter streamFeedback(UUID assistantId, Boolean shouldApplySetting) {
         Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
         assistantService.verifyAnswered(assistantId);
@@ -95,7 +101,13 @@ public class FeedbackService {
 
         AssistantMessage memberMessage = assistantService.getMessageByAssistantId(assistantId, MessageSenderRole.MEMBER);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
+        UserSetting userSetting;
+        if (shouldApplySetting) {
+            userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
+        } else {
+            userSetting = new UserSetting();
+        }
+
         FeedbackRequest request = new FeedbackRequest(
             "t" + assistant.getProductId().toString().replaceAll("-", ""),
             userSetting,

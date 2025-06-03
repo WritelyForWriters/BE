@@ -14,4 +14,6 @@ public class AssistantFeedbackRequest {
     private UUID productId;
     @Schema(title = "선택 구간")
     private String content;
+    @Schema(title = "설정 반영 여부", nullable = true)
+    private Boolean shouldApplySetting = true;
 }

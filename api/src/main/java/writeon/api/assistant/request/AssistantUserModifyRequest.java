@@ -16,4 +16,6 @@ public class AssistantUserModifyRequest {
     private String content;
     @Schema(title = "프롬프트", nullable = true)
     private String prompt;
+    @Schema(title = "설정 반영 여부", nullable = true)
+    private Boolean shouldApplySetting = true;
 }

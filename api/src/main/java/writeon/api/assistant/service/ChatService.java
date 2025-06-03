@@ -51,7 +51,13 @@ public class ChatService {
             .build();
         assistantService.createMessage(memberMessage);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        UserSetting userSetting;
+        if (request.getShouldApplySetting()) {
+            userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        } else {
+            userSetting = new UserSetting();
+        }
+
         ChatRequest chatRequest = new ChatRequest(
             userSetting,
             memberMessage.getContent(),
@@ -92,7 +98,7 @@ public class ChatService {
         return new MessageCreateResponse(assistantId);
     }
 
-    public SseEmitter streamChat(UUID assistantId, String sessionId) {
+    public SseEmitter streamChat(UUID assistantId, String sessionId, Boolean shouldApplySetting) {
         Assistant assistant = assistantService.getById(assistantId, MemberUtil.getMemberId());
 
         assistantService.verifyAnswered(assistantId);
@@ -100,7 +106,13 @@ public class ChatService {
 
         AssistantMessage memberMessage = assistantService.getMessageByAssistantId(assistantId, MessageSenderRole.MEMBER);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
+        UserSetting userSetting;
+        if (shouldApplySetting) {
+            userSetting = new UserSetting(productQueryService.getById(assistant.getProductId()));
+        } else {
+            userSetting = new UserSetting();
+        }
+
         ChatRequest request = new ChatRequest(
             userSetting,
             memberMessage.getContent(),
@@ -158,7 +170,13 @@ public class ChatService {
             .build();
         assistantService.createMessage(memberMessage);
 
-        UserSetting userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        UserSetting userSetting;
+        if (request.getShouldApplySetting()) {
+            userSetting = new UserSetting(productQueryService.getById(request.getProductId()));
+        } else {
+            userSetting = new UserSetting();
+        }
+
         ResearchRequest researchRequest = new ResearchRequest(userSetting, request.getContent(), request.getPrompt(), request.getSessionId());
 
         // 웹 검색 요청
