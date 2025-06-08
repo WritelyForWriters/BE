@@ -77,10 +77,10 @@ public class ProductController {
 
     @Operation(summary = "메모 생성")
     @PostMapping("/{productId}/memos")
-    public void createMemo(
+    public UUID createMemo(
         @PathVariable UUID productId,
         @RequestBody ProductMemoSaveRequest request) {
-        productCommandService.createMemo(productId, request);
+        return productCommandService.createMemo(productId, request);
     }
 
     @Operation(summary = "작품 목록 조회")

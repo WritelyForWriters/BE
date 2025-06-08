@@ -75,11 +75,14 @@ public class ProductCommandService {
     }
 
     @Transactional
-    public void createMemo(UUID productId, ProductMemoSaveRequest request) {
+    public UUID createMemo(UUID productId, ProductMemoSaveRequest request) {
         productQueryService.verifyExist(productId);
 
-        productMemoRepository.save(new ProductMemo(productId, request.getTitle(), request.getContent(),
-            request.getSelectedText(), request.getStartIndex(), request.getEndIndex()));
+        ProductMemo newMemo = new ProductMemo(productId, request.getTitle(), request.getContent(),
+                request.getSelectedText(), request.getStartIndex(), request.getEndIndex());
+        productMemoRepository.save(newMemo);
+
+        return newMemo.getId();
     }
 
     @Transactional
