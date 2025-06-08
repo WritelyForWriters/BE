@@ -285,7 +285,7 @@ public class AuthCommandService {
                     member.getEmail(),
                     MailHelper.MailData.builder()
                             .nickname(member.getNickname())
-                            .linkUrl(changePasswordToken.getTokenString())
+                            .linkUrl(WEB_URL + "/change-password/complete?changePasswordToken=" + changePasswordToken.getTokenString())
                             .build()
             );
         } catch (MessagingException e) {
