@@ -43,7 +43,7 @@ public class AssistantApiClient extends WebApiClient{
                     .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
             )
             .bodyToMono(String.class)
-            .map(responseBody -> JsonPath.read(responseBody, "$.result.content"));
+            .map(responseBody -> JsonPath.read(responseBody, "$.result"));
     }
 
     public Mono<String> autoModify(AutoModifyRequest request) {
