@@ -17,6 +17,7 @@ import writeon.api.auth.request.*;
 import writeon.api.auth.response.LoginFailResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.DateTimeUtil;
+import writeon.api.common.util.LogUtil;
 import writeon.api.terms.request.TermsAgreeRequest;
 import writeon.api.terms.service.TermsQueryService;
 import writeon.domain.auth.*;
@@ -75,6 +76,7 @@ public class AuthCommandService {
         // 레디스 검사
         RefreshToken oldRefreshToken = refreshTokenRedisRepository.findById(tokenString)
                 .orElseThrow(() -> new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID));
+        LogUtil.info("invalidate refresh token by reissue: " + tokenString);
         this.invalidateToken(oldRefreshToken);
 
         JwtPayload payload = jwtHelper.getPayload(tokenString);
@@ -150,8 +152,10 @@ public class AuthCommandService {
     public void logout() {
         MemberSession memberSession = MemberHelper.getMemberSession();
 
-        refreshTokenRedisRepository.findByMemberId(memberSession.getMemberId())
-                .ifPresent(this::invalidateToken);
+        refreshTokenRedisRepository.findByMemberId(memberSession.getMemberId()).ifPresent((refreshToken) -> {
+            LogUtil.info("invalidate refresh token by logout: " + refreshToken.getTokenString());
+            invalidateToken(refreshToken);
+        });
     }
 
     /**
@@ -335,7 +339,8 @@ public class AuthCommandService {
                 .build();
         String accessToken = jwtHelper.generateAccessToken(jwtPayload);
         String refreshToken = jwtHelper.generateRefreshToken(jwtPayload);
-        refreshTokenRedisRepository.save(new RefreshToken(refreshToken, memberId));;
+        refreshTokenRedisRepository.save(new RefreshToken(refreshToken, memberId));
+        LogUtil.info("issue refresh token: " + refreshToken);
 
         return new AuthTokenDto(accessToken, refreshToken);
     }
