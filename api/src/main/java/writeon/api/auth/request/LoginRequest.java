@@ -16,7 +16,6 @@ public class LoginRequest {
     private String email;
 
     @NotBlank
-    @IsPassword
     @Schema(title = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "Writely4Writers!@")
     private String password;
 }
