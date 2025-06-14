@@ -17,7 +17,6 @@ public class ChangePasswordCompletionRequest {
     private String changePasswordToken;
 
     @NotBlank
-    @IsPassword
     @Schema(title = "변경할 비밀번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "Writely4Writers!@")
     private String password;
 }
