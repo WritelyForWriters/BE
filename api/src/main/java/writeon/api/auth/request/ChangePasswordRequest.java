@@ -6,12 +6,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import writeon.api.common.validation.IsPassword;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ChangePasswordRequest {
     @NotBlank
+    @IsPassword
     @Schema(title = "이메일", requiredMode = Schema.RequiredMode.REQUIRED, example = "example@domain.com")
     private String email;
 }
