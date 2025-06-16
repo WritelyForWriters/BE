@@ -55,6 +55,7 @@ jobs:
         run: docker build -t ${{ secrets.ECR_REGISTRY_URI }}:prod -f Dockerfile-prod --push .
 
       - name: Server Deploy (develop)
+        if: github.ref == 'refs/heads/develop'
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
@@ -70,6 +71,7 @@ jobs:
             --comment "Deploying Docker container (develop)"
 
       - name: Server Deploy (production)
+        if: github.ref == 'refs/heads/main'
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
