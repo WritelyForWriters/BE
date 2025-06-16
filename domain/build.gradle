@@ -1,0 +1,78 @@
+plugins {
+    id 'nu.studer.jooq' version '9.0'
+}
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    /* DB */
+    runtimeOnly 'org.postgresql:postgresql'
+    api 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    /* jooq */
+    api 'org.springframework.boot:spring-boot-starter-jooq'
+    jooqGenerator 'org.postgresql:postgresql'
+
+    api 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
+}
+
+bootJar {
+    enabled = false
+}
+
+task copySecret(type: Copy) {
+    copy {
+        from '../BE-secret/domain'
+        include "*.yml"
+        into 'src/main/resources'
+    }
+}
+
+def jooqDir = "src/main/generated"
+
+sourceSets {
+    main.java.srcDirs += [ jooqDir ]
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(jooqDir))
+}
+
+jooq {
+    version = dependencyManagement.importedProperties['jooq.version']
+    edition = nu.studer.gradle.jooq.JooqEdition.OSS
+
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = false
+
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.DEBUG
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://db-instance-postgres.cv2280c0874d.ap-northeast-2.rds.amazonaws.com:5432/service'
+                    user = 'postgres'
+                    password = 'Writely0101%'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                    }
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'writeon'
+                        directory = 'src/main/generated'
+                    }
+                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                }
+            }
+        }
+    }
+}

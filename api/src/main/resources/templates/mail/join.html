@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+    <div style="line-height: 28px;">
+        <p style="padding-bottom: 20px;">
+            안녕하세요, <span th:text="${data.nickname}"></span>님!<br>
+            라이트온에 가입해 주셔서 감사합니다.
+        </p>
+        <p style="padding-bottom: 20px;">
+            계정을 활성화하려면 아래 링크를 클릭하여 이메일 주소를 인증해 주세요.<br>
+            <a th:href="@{${data.linkUrl}}">이메일 인증하기</a>
+        </p>
+        <p style="padding-bottom: 20px;">
+            위 버튼이 작동하지 않는다면 아래 링크를 복사하여 브라우저 주소창에 붙여넣어 주세요.<br>
+            <span th:text="${data.linkUrl}"></span>
+        </p>
+        <p style="padding-bottom: 20px;">
+            이메일 인증은 보안을 위해 필수 절차이며, 일정 시간 내에 완료되지 않으면 계정이 비활성화될 수 있습니다.<br>
+            궁금한 점이 있다면 언제든지 writeonforwriters@gmail.com을 통해 문의해 주세요.
+        </p>
+        <p style="padding-bottom: 20px;">
+            감사합니다!<br>
+            <b>라이트온 팀 드림</b>
+        </p>
+    </div>
+</body>
+</html>
