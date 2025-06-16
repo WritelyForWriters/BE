@@ -46,10 +46,15 @@ jobs:
       - name: Login to Amazon ECR
         run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY_URI }}
 
-      - name: Docker build & push to ECR
-        run: docker build -t ${{ secrets.ECR_REGISTRY_URI }}:latest -f Dockerfile --push .
+      - name: Docker build & push to ECR (develop)
+        if: github.ref == 'refs/heads/develop'
+        run: docker build -t ${{ secrets.ECR_REGISTRY_URI }}:dev -f Dockerfile-dev --push .
 
-      - name: Server Deploy
+      - name: Docker build & push to ECR (production)
+        if: github.ref == 'refs/heads/main'
+        run: docker build -t ${{ secrets.ECR_REGISTRY_URI }}:prod -f Dockerfile-prod --push .
+
+      - name: Server Deploy (develop)
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
@@ -58,8 +63,23 @@ jobs:
               "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY_URI }}",
               "cd /root",
               "[ $(docker ps --filter 'publish=443' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=443' -q)",
-              "[ $(docker images -q ${{ secrets.ECR_REGISTRY_URI }}:latest | wc -l) -gt 0 ] && docker rmi ${{ secrets.ECR_REGISTRY_URI }}:latest",
-              "docker pull ${{ secrets.ECR_REGISTRY_URI }}:latest",
-              "docker run --rm -d -p 443:443 --name writely-api -v /writely/logs:/writely/logs -v /etc/letsencrypt/live/dev-api.writeon.ai.kr:/writely/cert ${{ secrets.ECR_REGISTRY_URI }}:latest"
+              "[ $(docker images -q ${{ secrets.ECR_REGISTRY_URI }}:dev | wc -l) -gt 0 ] && docker rmi ${{ secrets.ECR_REGISTRY_URI }}:dev",
+              "docker pull ${{ secrets.ECR_REGISTRY_URI }}:dev",
+              "docker run --rm -d -p 443:443 --name writely-api -v /writely/logs:/writely/logs -v /etc/letsencrypt/live/dev-api.writeon.ai.kr:/writely/cert ${{ secrets.ECR_REGISTRY_URI }}:dev"
             ]' \
-            --comment "Deploying Docker container"
+            --comment "Deploying Docker container (develop)"
+
+      - name: Server Deploy (production)
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --instance-ids "${{ secrets.EC2_INSTANCE_ID_PROD }}" \
+            --parameters commands='[
+              "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY_URI }}",
+              "cd /root",
+              "[ $(docker ps --filter 'publish=443' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=443' -q)",
+              "[ $(docker images -q ${{ secrets.ECR_REGISTRY_URI }}:prod | wc -l) -gt 0 ] && docker rmi ${{ secrets.ECR_REGISTRY_URI }}:prod",
+              "docker pull ${{ secrets.ECR_REGISTRY_URI }}:prod",
+              "docker run --rm -d -p 443:443 --name writely-api -v /writely/logs:/writely/logs -v /etc/letsencrypt/live/api.writeon.ai.kr:/writely/cert ${{ secrets.ECR_REGISTRY_URI }}:prod"
+            ]' \
+            --comment "Deploying Docker container (production)"
