@@ -13,7 +13,6 @@ import writeon.api.common.validation.IsPassword;
 @AllArgsConstructor
 public class ChangePasswordRequest {
     @NotBlank
-    @IsPassword
     @Schema(title = "이메일", requiredMode = Schema.RequiredMode.REQUIRED, example = "example@domain.com")
     private String email;
 }
