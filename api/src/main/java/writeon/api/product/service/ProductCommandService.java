@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import writeon.api.assistant.service.AssistantService;
 import writeon.api.assistant.service.DocumentUploadService;
 import writeon.api.common.exception.BaseException;
+import writeon.api.common.util.DateTimeUtil;
 import writeon.api.common.util.MemberUtil;
+import writeon.api.product.repository.ProductDao;
 import writeon.api.product.request.ProductMemoSaveRequest;
 import writeon.api.product.request.ProductSaveRequest;
 import writeon.api.product.request.ProductTemplateSaveRequest;
@@ -64,6 +67,7 @@ public class ProductCommandService {
     private final ProductSynopsisJpaRepository productSynopsisRepository;
     private final ProductWorldviewJpaRepository productWorldviewRepository;
     private final ProductFavoritePromptJpaRepository productFavoritePromptRepository;
+    private final ProductDao productDao;
     private final Amplitude amplitude = Amplitude.getInstance();
 
     private final AssistantService assistantService;
@@ -143,6 +147,17 @@ public class ProductCommandService {
         if (!request.getIsAutoSave()) {
             documentUploadService.documentUpload(productId, product.getContent());
         }
+
+        // Amplitude 이벤트 전송
+        final UUID memberId = MemberUtil.getMemberId();
+        final boolean hasUpdatedToday = productDao.hasUpdatedToday(memberId);
+
+        Event event = new Event("$identify", memberId.toString());
+        event.userProperties = new JSONObject().put("last_writing_date", DateTimeUtil.convertToString(LocalDate.now()));
+        if (!hasUpdatedToday) {
+            event.userProperties.put("$add", new JSONObject().put("total_writing_days", 1));
+        }
+        amplitude.logEvent(event);
 
         return product.getId();
     }
