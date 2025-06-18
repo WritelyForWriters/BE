@@ -206,7 +206,7 @@ create table product_memo
         constraint product_memo_pk
         primary key,
     product_id    uuid                           not null,
-    title         varchar(100),
+    title         text,
     content       text                           not null,
     selected_text text                           not null,
     start_index   integer                        not null,
@@ -399,6 +399,7 @@ create table assistant_evaluation
             primary key,
     is_good      boolean   not null,
     feedback     varchar(255),
+    feedback_type varchar(20),
     created_at   timestamp not null,
     created_by   uuid      not null
 );
