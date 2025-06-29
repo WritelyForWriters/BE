@@ -1,14 +1,16 @@
 package writeon.api.assistant.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import writeon.tables.records.AssistantMessageRecord;
 import writeon.tables.records.AssistantRecord;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 public class AssistantHistoryResponse {
@@ -51,6 +53,7 @@ public class AssistantHistoryResponse {
     }
 
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AssistantMessage {
 
         @Schema(title = "메세지 ID")
@@ -61,12 +64,17 @@ public class AssistantHistoryResponse {
         private final Boolean isApplied;
         @Schema(title = "답변 평가")
         private final Boolean isGood;
+        @Schema(title = "답변 평가")
+        private final List<String> sources;
 
         public AssistantMessage(AssistantMessageRecord message, Boolean isApplied, Boolean isGood) {
             this.id = message.getId();
             this.content = message.getContent();
             this.isApplied = isApplied;
             this.isGood = isGood;
+            this.sources = StringUtils.isNotBlank(message.getSource())
+                ? Arrays.stream(message.getSource().split(",")).toList()
+                : null;
         }
     }
 }

@@ -21,6 +21,7 @@ import writeon.tables.ProductCharacter;
 import writeon.tables.ProductCustomField;
 import writeon.tables.ProductFavoritePrompt;
 import writeon.tables.ProductFixedMessage;
+import writeon.tables.ProductHistory;
 import writeon.tables.ProductIdeanote;
 import writeon.tables.ProductMemo;
 import writeon.tables.ProductPlot;
@@ -135,6 +136,11 @@ public class Tables {
      * The table <code>public.product_fixed_message</code>.
      */
     public static final ProductFixedMessage PRODUCT_FIXED_MESSAGE = ProductFixedMessage.PRODUCT_FIXED_MESSAGE;
+
+    /**
+     * 작품 변경 이력
+     */
+    public static final ProductHistory PRODUCT_HISTORY = ProductHistory.PRODUCT_HISTORY;
 
     /**
      * 작품 아이디어 노트

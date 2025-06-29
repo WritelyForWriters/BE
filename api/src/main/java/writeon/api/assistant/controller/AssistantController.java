@@ -13,6 +13,7 @@ import writeon.api.assistant.request.*;
 import writeon.api.assistant.response.AssistantHistoryResponse;
 import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
+import writeon.api.assistant.response.AssistantResearchResponse;
 import writeon.api.assistant.service.*;
 import writeon.api.common.response.CursorResponse;
 
@@ -108,7 +109,7 @@ public class AssistantController {
 
     @Operation(summary = "자유 대화 - 웹 검색 모드")
     @PostMapping("/chat/research")
-    public AssistantResponse research(@RequestBody AssistantResearchRequest request) {
+    public AssistantResearchResponse research(@RequestBody AssistantResearchRequest request) {
         return chatService.research(request);
     }
 

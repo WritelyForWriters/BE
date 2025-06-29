@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatusCode;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import writeon.assistantapiclient.request.*;
+import writeon.assistantapiclient.response.ResearchResponse;
+
+import java.util.List;
 
 public class AssistantApiClient extends WebApiClient{
 
@@ -29,7 +32,7 @@ public class AssistantApiClient extends WebApiClient{
             .then();
     }
 
-    public Mono<String> research(ResearchRequest request) {
+    public Mono<ResearchResponse> research(ResearchRequest request) {
         return webClient.post()
             .uri(uriBuilder -> uriBuilder
                 .path("/v1/assistant/research")
@@ -43,7 +46,11 @@ public class AssistantApiClient extends WebApiClient{
                     .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
             )
             .bodyToMono(String.class)
-            .map(responseBody -> JsonPath.read(responseBody, "$.result"));
+            .map(responseBody -> {
+                String result = JsonPath.read(responseBody, "$.result");
+                List<String> sources = JsonPath.read(responseBody, "$.sources");
+                return new ResearchResponse(result, sources);
+            });
     }
 
     public Mono<String> autoModify(AutoModifyRequest request) {

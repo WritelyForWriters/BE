@@ -1,19 +1,14 @@
 package writeon.domain.assistant;
 
 import com.fasterxml.uuid.Generators;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import writeon.domain.assistant.enums.MessageSenderRole;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -34,6 +29,9 @@ public class AssistantMessage {
     @Column(name = "prompt")
     private String prompt;
 
+    @Column
+    private String source;
+
     @Column(name = "created_at", updatable = false, nullable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
@@ -41,10 +39,11 @@ public class AssistantMessage {
     private UUID createdBy;
 
     @Builder
-    public AssistantMessage(UUID assistantId, MessageSenderRole role, String content, String prompt, UUID createdBy) {
+    public AssistantMessage(UUID assistantId, MessageSenderRole role, String content, String prompt, String source, UUID createdBy) {
         this.assistantId = assistantId;
         this.messageContent = new MessageContent(role, content);
         this.prompt = prompt;
+        this.source = source;
         this.createdBy = createdBy;
     }
 

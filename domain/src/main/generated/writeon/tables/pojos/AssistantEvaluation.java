@@ -22,6 +22,7 @@ public class AssistantEvaluation implements Serializable {
     private final String feedback;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
+    private final String feedbackType;
 
     public AssistantEvaluation(AssistantEvaluation value) {
         this.assistantId = value.assistantId;
@@ -29,6 +30,7 @@ public class AssistantEvaluation implements Serializable {
         this.feedback = value.feedback;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
+        this.feedbackType = value.feedbackType;
     }
 
     public AssistantEvaluation(
@@ -36,13 +38,15 @@ public class AssistantEvaluation implements Serializable {
         Boolean isGood,
         String feedback,
         LocalDateTime createdAt,
-        UUID createdBy
+        UUID createdBy,
+        String feedbackType
     ) {
         this.assistantId = assistantId;
         this.isGood = isGood;
         this.feedback = feedback;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
+        this.feedbackType = feedbackType;
     }
 
     /**
@@ -79,6 +83,13 @@ public class AssistantEvaluation implements Serializable {
      */
     public UUID getCreatedBy() {
         return this.createdBy;
+    }
+
+    /**
+     * Getter for <code>public.assistant_evaluation.feedback_type</code>.
+     */
+    public String getFeedbackType() {
+        return this.feedbackType;
     }
 
     @Override
@@ -120,6 +131,12 @@ public class AssistantEvaluation implements Serializable {
         }
         else if (!this.createdBy.equals(other.createdBy))
             return false;
+        if (this.feedbackType == null) {
+            if (other.feedbackType != null)
+                return false;
+        }
+        else if (!this.feedbackType.equals(other.feedbackType))
+            return false;
         return true;
     }
 
@@ -132,6 +149,7 @@ public class AssistantEvaluation implements Serializable {
         result = prime * result + ((this.feedback == null) ? 0 : this.feedback.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
+        result = prime * result + ((this.feedbackType == null) ? 0 : this.feedbackType.hashCode());
         return result;
     }
 
@@ -144,6 +162,7 @@ public class AssistantEvaluation implements Serializable {
         sb.append(", ").append(feedback);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
+        sb.append(", ").append(feedbackType);
 
         sb.append(")");
         return sb.toString();

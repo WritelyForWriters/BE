@@ -86,6 +86,11 @@ public class AssistantMessage extends TableImpl<AssistantMessageRecord> {
      */
     public final TableField<AssistantMessageRecord, UUID> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.UUID.nullable(false), this, "");
 
+    /**
+     * The column <code>public.assistant_message.source</code>.
+     */
+    public final TableField<AssistantMessageRecord, String> SOURCE = createField(DSL.name("source"), SQLDataType.CLOB, this, "");
+
     private AssistantMessage(Name alias, Table<AssistantMessageRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

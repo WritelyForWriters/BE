@@ -24,6 +24,7 @@ public class AssistantMessage implements Serializable {
     private final String prompt;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
+    private final String source;
 
     public AssistantMessage(AssistantMessage value) {
         this.id = value.id;
@@ -33,6 +34,7 @@ public class AssistantMessage implements Serializable {
         this.prompt = value.prompt;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
+        this.source = value.source;
     }
 
     public AssistantMessage(
@@ -42,7 +44,8 @@ public class AssistantMessage implements Serializable {
         String content,
         String prompt,
         LocalDateTime createdAt,
-        UUID createdBy
+        UUID createdBy,
+        String source
     ) {
         this.id = id;
         this.assistantId = assistantId;
@@ -51,6 +54,7 @@ public class AssistantMessage implements Serializable {
         this.prompt = prompt;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
+        this.source = source;
     }
 
     /**
@@ -100,6 +104,13 @@ public class AssistantMessage implements Serializable {
      */
     public UUID getCreatedBy() {
         return this.createdBy;
+    }
+
+    /**
+     * Getter for <code>public.assistant_message.source</code>.
+     */
+    public String getSource() {
+        return this.source;
     }
 
     @Override
@@ -153,6 +164,12 @@ public class AssistantMessage implements Serializable {
         }
         else if (!this.createdBy.equals(other.createdBy))
             return false;
+        if (this.source == null) {
+            if (other.source != null)
+                return false;
+        }
+        else if (!this.source.equals(other.source))
+            return false;
         return true;
     }
 
@@ -167,6 +184,7 @@ public class AssistantMessage implements Serializable {
         result = prime * result + ((this.prompt == null) ? 0 : this.prompt.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
+        result = prime * result + ((this.source == null) ? 0 : this.source.hashCode());
         return result;
     }
 
@@ -181,6 +199,7 @@ public class AssistantMessage implements Serializable {
         sb.append(", ").append(prompt);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
+        sb.append(", ").append(source);
 
         sb.append(")");
         return sb.toString();

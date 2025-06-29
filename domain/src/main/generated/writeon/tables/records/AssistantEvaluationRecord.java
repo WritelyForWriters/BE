@@ -98,6 +98,21 @@ public class AssistantEvaluationRecord extends UpdatableRecordImpl<AssistantEval
         return (UUID) get(4);
     }
 
+    /**
+     * Setter for <code>public.assistant_evaluation.feedback_type</code>.
+     */
+    public AssistantEvaluationRecord setFeedbackType(String value) {
+        set(5, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.assistant_evaluation.feedback_type</code>.
+     */
+    public String getFeedbackType() {
+        return (String) get(5);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -121,7 +136,7 @@ public class AssistantEvaluationRecord extends UpdatableRecordImpl<AssistantEval
     /**
      * Create a detached, initialised AssistantEvaluationRecord
      */
-    public AssistantEvaluationRecord(UUID assistantId, Boolean isGood, String feedback, LocalDateTime createdAt, UUID createdBy) {
+    public AssistantEvaluationRecord(UUID assistantId, Boolean isGood, String feedback, LocalDateTime createdAt, UUID createdBy, String feedbackType) {
         super(AssistantEvaluation.ASSISTANT_EVALUATION);
 
         setAssistantId(assistantId);
@@ -129,6 +144,7 @@ public class AssistantEvaluationRecord extends UpdatableRecordImpl<AssistantEval
         setFeedback(feedback);
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
+        setFeedbackType(feedbackType);
         resetChangedOnNotNull();
     }
 
@@ -144,6 +160,7 @@ public class AssistantEvaluationRecord extends UpdatableRecordImpl<AssistantEval
             setFeedback(value.getFeedback());
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
+            setFeedbackType(value.getFeedbackType());
             resetChangedOnNotNull();
         }
     }

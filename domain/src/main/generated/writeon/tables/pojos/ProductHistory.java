@@ -10,118 +10,118 @@ import java.util.UUID;
 
 
 /**
- * 어시스턴트
+ * 작품 변경 이력
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
-public class Assistant implements Serializable {
+public class ProductHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final UUID id;
     private final UUID productId;
-    private final String type;
-    private final String status;
-    private final Boolean isApplied;
+    private final String title;
+    private final String content;
     private final LocalDateTime createdAt;
     private final UUID createdBy;
     private final LocalDateTime updatedAt;
-    private final Boolean isArchived;
+    private final UUID updatedBy;
+    private final LocalDateTime historyAt;
 
-    public Assistant(Assistant value) {
+    public ProductHistory(ProductHistory value) {
         this.id = value.id;
         this.productId = value.productId;
-        this.type = value.type;
-        this.status = value.status;
-        this.isApplied = value.isApplied;
+        this.title = value.title;
+        this.content = value.content;
         this.createdAt = value.createdAt;
         this.createdBy = value.createdBy;
         this.updatedAt = value.updatedAt;
-        this.isArchived = value.isArchived;
+        this.updatedBy = value.updatedBy;
+        this.historyAt = value.historyAt;
     }
 
-    public Assistant(
+    public ProductHistory(
         UUID id,
         UUID productId,
-        String type,
-        String status,
-        Boolean isApplied,
+        String title,
+        String content,
         LocalDateTime createdAt,
         UUID createdBy,
         LocalDateTime updatedAt,
-        Boolean isArchived
+        UUID updatedBy,
+        LocalDateTime historyAt
     ) {
         this.id = id;
         this.productId = productId;
-        this.type = type;
-        this.status = status;
-        this.isApplied = isApplied;
+        this.title = title;
+        this.content = content;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
-        this.isArchived = isArchived;
+        this.updatedBy = updatedBy;
+        this.historyAt = historyAt;
     }
 
     /**
-     * Getter for <code>public.assistant.id</code>.
+     * Getter for <code>public.product_history.id</code>. 이력 ID
      */
     public UUID getId() {
         return this.id;
     }
 
     /**
-     * Getter for <code>public.assistant.product_id</code>. 작품 ID
+     * Getter for <code>public.product_history.product_id</code>. 작품 ID
      */
     public UUID getProductId() {
         return this.productId;
     }
 
     /**
-     * Getter for <code>public.assistant.type</code>. 기능 종류
+     * Getter for <code>public.product_history.title</code>. 제목
      */
-    public String getType() {
-        return this.type;
+    public String getTitle() {
+        return this.title;
     }
 
     /**
-     * Getter for <code>public.assistant.status</code>. 진행 상태
+     * Getter for <code>public.product_history.content</code>. 내용
      */
-    public String getStatus() {
-        return this.status;
+    public String getContent() {
+        return this.content;
     }
 
     /**
-     * Getter for <code>public.assistant.is_applied</code>. 진행 상태
-     */
-    public Boolean getIsApplied() {
-        return this.isApplied;
-    }
-
-    /**
-     * Getter for <code>public.assistant.created_at</code>. 수정일시
+     * Getter for <code>public.product_history.created_at</code>. 원본 생성일시
      */
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
     /**
-     * Getter for <code>public.assistant.created_by</code>. 생성자 ID
+     * Getter for <code>public.product_history.created_by</code>. 원본 생성자 ID
      */
     public UUID getCreatedBy() {
         return this.createdBy;
     }
 
     /**
-     * Getter for <code>public.assistant.updated_at</code>.
+     * Getter for <code>public.product_history.updated_at</code>. 원본 수정일시
      */
     public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
     /**
-     * Getter for <code>public.assistant.is_archived</code>.
+     * Getter for <code>public.product_history.updated_by</code>. 원본 수정자 ID
      */
-    public Boolean getIsArchived() {
-        return this.isArchived;
+    public UUID getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    /**
+     * Getter for <code>public.product_history.history_at</code>. 이력 기록 시각
+     */
+    public LocalDateTime getHistoryAt() {
+        return this.historyAt;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class Assistant implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final Assistant other = (Assistant) obj;
+        final ProductHistory other = (ProductHistory) obj;
         if (this.id == null) {
             if (other.id != null)
                 return false;
@@ -145,23 +145,17 @@ public class Assistant implements Serializable {
         }
         else if (!this.productId.equals(other.productId))
             return false;
-        if (this.type == null) {
-            if (other.type != null)
+        if (this.title == null) {
+            if (other.title != null)
                 return false;
         }
-        else if (!this.type.equals(other.type))
+        else if (!this.title.equals(other.title))
             return false;
-        if (this.status == null) {
-            if (other.status != null)
+        if (this.content == null) {
+            if (other.content != null)
                 return false;
         }
-        else if (!this.status.equals(other.status))
-            return false;
-        if (this.isApplied == null) {
-            if (other.isApplied != null)
-                return false;
-        }
-        else if (!this.isApplied.equals(other.isApplied))
+        else if (!this.content.equals(other.content))
             return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
@@ -181,11 +175,17 @@ public class Assistant implements Serializable {
         }
         else if (!this.updatedAt.equals(other.updatedAt))
             return false;
-        if (this.isArchived == null) {
-            if (other.isArchived != null)
+        if (this.updatedBy == null) {
+            if (other.updatedBy != null)
                 return false;
         }
-        else if (!this.isArchived.equals(other.isArchived))
+        else if (!this.updatedBy.equals(other.updatedBy))
+            return false;
+        if (this.historyAt == null) {
+            if (other.historyAt != null)
+                return false;
+        }
+        else if (!this.historyAt.equals(other.historyAt))
             return false;
         return true;
     }
@@ -196,29 +196,29 @@ public class Assistant implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.productId == null) ? 0 : this.productId.hashCode());
-        result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
-        result = prime * result + ((this.status == null) ? 0 : this.status.hashCode());
-        result = prime * result + ((this.isApplied == null) ? 0 : this.isApplied.hashCode());
+        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        result = prime * result + ((this.content == null) ? 0 : this.content.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.createdBy == null) ? 0 : this.createdBy.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
-        result = prime * result + ((this.isArchived == null) ? 0 : this.isArchived.hashCode());
+        result = prime * result + ((this.updatedBy == null) ? 0 : this.updatedBy.hashCode());
+        result = prime * result + ((this.historyAt == null) ? 0 : this.historyAt.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Assistant (");
+        StringBuilder sb = new StringBuilder("ProductHistory (");
 
         sb.append(id);
         sb.append(", ").append(productId);
-        sb.append(", ").append(type);
-        sb.append(", ").append(status);
-        sb.append(", ").append(isApplied);
+        sb.append(", ").append(title);
+        sb.append(", ").append(content);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(createdBy);
         sb.append(", ").append(updatedAt);
-        sb.append(", ").append(isArchived);
+        sb.append(", ").append(updatedBy);
+        sb.append(", ").append(historyAt);
 
         sb.append(")");
         return sb.toString();
