@@ -156,6 +156,7 @@ public class ProductCommandService {
         event.userProperties = new JSONObject().put("last_writing_date", DateTimeUtil.convertToString(LocalDate.now()));
         if (!hasUpdatedToday) {
             event.userProperties.put("$add", new JSONObject().put("total_writing_days", 1));
+            event.userProperties.put("$add", new JSONObject().put("writing_streak", 1));
         }
         amplitude.logEvent(event);
 
