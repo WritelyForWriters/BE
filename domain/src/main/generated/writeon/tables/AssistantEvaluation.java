@@ -77,6 +77,11 @@ public class AssistantEvaluation extends TableImpl<AssistantEvaluationRecord> {
      */
     public final TableField<AssistantEvaluationRecord, UUID> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.UUID.nullable(false), this, "생성자 ID");
 
+    /**
+     * The column <code>public.assistant_evaluation.feedback_type</code>.
+     */
+    public final TableField<AssistantEvaluationRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), SQLDataType.VARCHAR(20), this, "");
+
     private AssistantEvaluation(Name alias, Table<AssistantEvaluationRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

@@ -126,6 +126,21 @@ public class AssistantMessageRecord extends UpdatableRecordImpl<AssistantMessage
         return (UUID) get(6);
     }
 
+    /**
+     * Setter for <code>public.assistant_message.source</code>.
+     */
+    public AssistantMessageRecord setSource(String value) {
+        set(7, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.assistant_message.source</code>.
+     */
+    public String getSource() {
+        return (String) get(7);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -149,7 +164,7 @@ public class AssistantMessageRecord extends UpdatableRecordImpl<AssistantMessage
     /**
      * Create a detached, initialised AssistantMessageRecord
      */
-    public AssistantMessageRecord(UUID id, UUID assistantId, String role, String content, String prompt, LocalDateTime createdAt, UUID createdBy) {
+    public AssistantMessageRecord(UUID id, UUID assistantId, String role, String content, String prompt, LocalDateTime createdAt, UUID createdBy, String source) {
         super(AssistantMessage.ASSISTANT_MESSAGE);
 
         setId(id);
@@ -159,6 +174,7 @@ public class AssistantMessageRecord extends UpdatableRecordImpl<AssistantMessage
         setPrompt(prompt);
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
+        setSource(source);
         resetChangedOnNotNull();
     }
 
@@ -176,6 +192,7 @@ public class AssistantMessageRecord extends UpdatableRecordImpl<AssistantMessage
             setPrompt(value.getPrompt());
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
+            setSource(value.getSource());
             resetChangedOnNotNull();
         }
     }

@@ -64,7 +64,7 @@ public class ProductMemo extends TableImpl<ProductMemoRecord> {
     /**
      * The column <code>public.product_memo.title</code>. 제목
      */
-    public final TableField<ProductMemoRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.VARCHAR(100), this, "제목");
+    public final TableField<ProductMemoRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.CLOB, this, "제목");
 
     /**
      * The column <code>public.product_memo.content</code>. 내용

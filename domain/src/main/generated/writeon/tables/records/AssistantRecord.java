@@ -141,6 +141,21 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
         return (LocalDateTime) get(7);
     }
 
+    /**
+     * Setter for <code>public.assistant.is_archived</code>.
+     */
+    public AssistantRecord setIsArchived(Boolean value) {
+        set(8, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.assistant.is_archived</code>.
+     */
+    public Boolean getIsArchived() {
+        return (Boolean) get(8);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -164,7 +179,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
     /**
      * Create a detached, initialised AssistantRecord
      */
-    public AssistantRecord(UUID id, UUID productId, String type, String status, Boolean isApplied, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt) {
+    public AssistantRecord(UUID id, UUID productId, String type, String status, Boolean isApplied, LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, Boolean isArchived) {
         super(Assistant.ASSISTANT);
 
         setId(id);
@@ -175,6 +190,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
         setUpdatedAt(updatedAt);
+        setIsArchived(isArchived);
         resetChangedOnNotNull();
     }
 
@@ -193,6 +209,7 @@ public class AssistantRecord extends UpdatableRecordImpl<AssistantRecord> {
             setCreatedAt(value.getCreatedAt());
             setCreatedBy(value.getCreatedBy());
             setUpdatedAt(value.getUpdatedAt());
+            setIsArchived(value.getIsArchived());
             resetChangedOnNotNull();
         }
     }
