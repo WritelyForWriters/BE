@@ -142,6 +142,14 @@ public class AuthCommandService {
 
         newLoginAttempt.setResult(LoginAttemptResultType.SUCCEED);
         loginAttemptJpaRepository.save(newLoginAttempt);
+
+        // Amplitude 이벤트 전송
+        Event event = new Event("$identify", member.getId().toString());
+        event.userProperties = new JSONObject()
+                .put("$add", new JSONObject().put("total_sessions", 1))
+                .put("last_active_date", DateTimeUtil.convertToString(LocalDate.now()));
+        amplitude.logEvent(event);
+
         return generateAuthTokens(memberPassword.getMemberId());
     }
 

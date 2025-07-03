@@ -91,6 +91,11 @@ public class Assistant extends TableImpl<AssistantRecord> {
      */
     public final TableField<AssistantRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
+    /**
+     * The column <code>public.assistant.is_archived</code>.
+     */
+    public final TableField<AssistantRecord, Boolean> IS_ARCHIVED = createField(DSL.name("is_archived"), SQLDataType.BOOLEAN, this, "");
+
     private Assistant(Name alias, Table<AssistantRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

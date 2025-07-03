@@ -16,9 +16,6 @@ dependencies {
 	implementation 'org.json:json:20201115'
 	implementation 'com.amplitude:java-sdk:1.+'
 
-	/* Swagger */
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-
 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
     implementation project(':assistant-api-client')

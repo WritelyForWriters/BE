@@ -7,6 +7,7 @@ import writeon.api.common.util.MemberUtil;
 import writeon.api.product.response.ProductFavoritePromptResponse;
 import writeon.api.product.response.ProductResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,5 +45,16 @@ public class ProductDao {
             .where(PRODUCT.ID.eq(productId))
             .orderBy(PRODUCT_FAVORITE_PROMPT.CREATED_AT.desc())
             .fetchInto(ProductFavoritePromptResponse.class);
+    }
+
+    public boolean hasUpdatedToday(UUID memberId) {
+        LocalDate today = LocalDate.now();
+        return dsl.selectOne()
+                .from(PRODUCT)
+                .where(PRODUCT.UPDATED_BY.eq(memberId))
+                .and(PRODUCT.UPDATED_AT.ge(today.atStartOfDay()))
+                .and(PRODUCT.UPDATED_AT.lt(today.plusDays(1).atStartOfDay()))
+                .fetchOptional()
+                .isPresent();
     }
 }

@@ -98,6 +98,34 @@ comment on column product.updated_by is '수정자 ID';
 alter table product
     owner to postgres;
 
+-- product_history
+create table product_history
+(
+    id            uuid primary key default gen_random_uuid(),
+    product_id    uuid not null,
+    title         varchar(50),
+    content       text,
+    created_at    timestamp not null,
+    created_by    uuid      not null,
+    updated_at    timestamp not null,
+    updated_by    uuid      not null,
+    changed_at    timestamp not null default now()
+);
+
+comment on table product_history is '작품 변경 이력';
+comment on column product_history.id is '이력 ID';
+comment on column product_history.product_id is '작품 ID';
+comment on column product_history.title is '제목';
+comment on column product_history.content is '내용';
+comment on column product_history.created_at is '원본 생성일시';
+comment on column product_history.created_by is '원본 생성자 ID';
+comment on column product_history.updated_at is '원본 수정일시';
+comment on column product_history.updated_by is '원본 수정자 ID';
+comment on column product_history.history_at is '이력 기록 시각';
+
+alter table product_history
+    owner to postgres;
+
 --product_character
 create table product_character
 (
@@ -206,7 +234,7 @@ create table product_memo
         constraint product_memo_pk
         primary key,
     product_id    uuid                           not null,
-    title         varchar(100),
+    title         text,
     content       text                           not null,
     selected_text text                           not null,
     start_index   integer                        not null,
@@ -399,6 +427,7 @@ create table assistant_evaluation
             primary key,
     is_good      boolean   not null,
     feedback     varchar(255),
+    feedback_type varchar(20),
     created_at   timestamp not null,
     created_by   uuid      not null
 );

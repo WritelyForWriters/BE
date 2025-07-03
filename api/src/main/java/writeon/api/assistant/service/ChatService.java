@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import writeon.api.assistant.request.AssistantChatRequest;
 import writeon.api.assistant.request.AssistantResearchRequest;
+import writeon.api.assistant.response.AssistantResearchResponse;
 import writeon.api.assistant.response.AssistantResponse;
 import writeon.api.assistant.response.MessageCreateResponse;
 import writeon.api.common.exception.BaseException;
@@ -16,6 +17,7 @@ import writeon.assistantapiclient.AssistantApiClient;
 import writeon.assistantapiclient.request.ChatRequest;
 import writeon.assistantapiclient.request.ResearchRequest;
 import writeon.assistantapiclient.request.UserSetting;
+import writeon.assistantapiclient.response.ResearchResponse;
 import writeon.domain.assistant.Assistant;
 import writeon.domain.assistant.AssistantMessage;
 import writeon.domain.assistant.enums.AssistantException;
@@ -156,7 +158,7 @@ public class ChatService {
     }
 
     @Transactional
-    public AssistantResponse research(AssistantResearchRequest request) {
+    public AssistantResearchResponse research(AssistantResearchRequest request) {
         productQueryService.verifyExist(request.getProductId());
 
         UUID assistantId = assistantService.create(request.getProductId(), AssistantType.CHAT);
@@ -180,18 +182,19 @@ public class ChatService {
         ResearchRequest researchRequest = new ResearchRequest(userSetting, request.getContent(), request.getPrompt(), request.getSessionId());
 
         // 웹 검색 요청
-        String answer = assistantApiClient.research(researchRequest).block();
+        ResearchResponse result = assistantApiClient.research(researchRequest).block();
 
         AssistantMessage assistantMessage = AssistantMessage.builder()
             .assistantId(assistantId)
             .role(MessageSenderRole.ASSISTANT)
-            .content(answer)
+            .content(result.getAnswer())
+            .source(result.getSources() != null ? String.join(",", result.getSources()) : null)
             .createdBy(MemberUtil.getMemberId())
             .build();
         assistantService.createMessage(assistantMessage);
 
         assistantService.modifyStatus(assistantId, AssistantStatus.IN_PROGRESS);
 
-        return new AssistantResponse(assistantId, answer);
+        return new AssistantResearchResponse(assistantId, result.getAnswer(), result.getSources());
     }
 }
