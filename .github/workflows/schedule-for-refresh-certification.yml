@@ -5,6 +5,11 @@ on:
     - cron: "0 15 1 * *"
   workflow_dispatch:
 
+env:
+  IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+  INSTANCE_ID: ${{ github.ref == 'refs/heads/main' && secrets.EC2_INSTANCE_ID_PROD || secrets.EC2_INSTANCE_ID }}
+  SERVICE_DOMAIN: ${{ github.ref == 'refs/heads/main' && 'api.writeon.ai.kr' || 'dev-api.writeon.ai.kr' }}
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
@@ -19,48 +24,25 @@ jobs:
       - name: Login to Amazon ECR
         run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY_URI }}
 
-      - name: Refresh let's encrypt certification (develop)
+      - name: Refresh let's encrypt certification
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --instance-ids "${{ env.INSTANCE_ID }}" \
             --parameters commands='[
-              "docker run --rm --name writeon-certbot -p 80:80 -v \"/etc/letsencrypt:/etc/letsencrypt\"  -v \"/var/lib/letsencrypt:/var/lib/letsencrypt\" certbot/certbot certonly --standalone --force-renewal -d dev-api.writeon.ai.kr",
-              "cd /etc/letsencrypt/live/dev-api.writeon.ai.kr",
+              "docker run --rm --name writeon-certbot -p 80:80 -v \"/etc/letsencrypt:/etc/letsencrypt\"  -v \"/var/lib/letsencrypt:/var/lib/letsencrypt\" certbot/certbot certonly --standalone --force-renewal -d ${{ env.SERVICE_DOMAIN }}",
+              "cd /etc/letsencrypt/live/${{ env.SERVICE_DOMAIN }}",
               "openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out keystore.p12 -CAfile chain.pem -caname root -password pass:${{ secrets.TLS_KEYSTORE_PASSWORD }}"
             ]' \
             --comment "Refresh let's encrypt certification"
 
-      - name: Restart API Server (develop)
+      - name: Restart API Server
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --instance-ids "${{ env.INSTANCE_ID }}" \
             --parameters commands='[
               "[ $(docker ps --filter 'publish=443' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=443' -q)",
               "docker run --rm -d -p 443:443 --name writely-api -v /writely/logs:/writely/logs -v /etc/letsencrypt/live/dev-api.writeon.ai.kr:/writely/cert ${{ secrets.ECR_REGISTRY_URI }}:dev"
-            ]' \
-            --comment "Restart API Server for apply new certification"
-
-      - name: Refresh let's encrypt certification (production)
-        run: |
-          aws ssm send-command \
-            --document-name "AWS-RunShellScript" \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID_PROD }}" \
-            --parameters commands='[
-              "docker run --rm --name writeon-certbot -p 80:80 -v \"/etc/letsencrypt:/etc/letsencrypt\"  -v \"/var/lib/letsencrypt:/var/lib/letsencrypt\" certbot/certbot certonly --standalone --force-renewal -d api.writeon.ai.kr",
-              "cd /etc/letsencrypt/live/api.writeon.ai.kr",
-              "openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out keystore.p12 -CAfile chain.pem -caname root -password pass:${{ secrets.TLS_KEYSTORE_PASSWORD }}"
-            ]' \
-            --comment "Refresh let's encrypt certification"
-
-      - name: Restart API Server (production)
-        run: |
-          aws ssm send-command \
-            --document-name "AWS-RunShellScript" \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID_PROD }}" \
-            --parameters commands='[
-              "[ $(docker ps --filter 'publish=443' -q | wc -l) -gt 0 ] && docker stop $(docker ps --filter 'publish=443' -q)",
-              "docker run --rm -d -p 443:443 --name writely-api -v /writely/logs:/writely/logs -v /etc/letsencrypt/live/api.writeon.ai.kr:/writely/cert ${{ secrets.ECR_REGISTRY_URI }}:prod"
             ]' \
             --comment "Restart API Server for apply new certification"
