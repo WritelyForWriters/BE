@@ -7,6 +7,7 @@ create table member
     email          varchar(255) constraint email_uk unique not null,
     nickname       varchar(20)  constraint nickname_uk unique not null,
     profile_image  varchar(255),
+    last_token_issued_at timestamp with time zone not null,
     created_at     timestamp with time zone    not null,
     updated_at     timestamp with time zone    not null
 );
@@ -15,6 +16,7 @@ comment on column member.id is '회원 ID';
 comment on column member.email is '회원 이메일';
 comment on column member.nickname is '회원 닉네임';
 comment on column member.profile_image is '회원 프로필 이미지 경로';
+comment on column member.last_token_issued_at '마지막 토큰 발급 시각';
 
 create table member_password
 (
