@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 import writeon.domain.common.BaseTimeEntity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -31,5 +32,8 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "profile_image")
     private String profileImage;
+
+    @Column(name = "last_token_issued_at", nullable = false)
+    protected LocalDateTime lastTokenIssuedAt;
 
 }

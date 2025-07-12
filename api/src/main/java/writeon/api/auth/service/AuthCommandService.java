@@ -76,7 +76,6 @@ public class AuthCommandService {
         // 레디스 검사
         RefreshToken oldRefreshToken = refreshTokenRedisRepository.findById(tokenString)
                 .orElseThrow(() -> new BaseException(AuthException.REFRESH_TOKEN_NOT_VALID));
-        LogUtil.info("invalidate refresh token by reissue: " + tokenString);
         this.invalidateToken(oldRefreshToken);
 
         JwtPayload payload = jwtHelper.getPayload(tokenString);
@@ -159,11 +158,7 @@ public class AuthCommandService {
     @Transactional
     public void logout() {
         MemberSession memberSession = MemberHelper.getMemberSession();
-
-        refreshTokenRedisRepository.findByMemberId(memberSession.getMemberId()).ifPresent((refreshToken) -> {
-            LogUtil.info("invalidate refresh token by logout: " + refreshToken.getTokenString());
-            invalidateToken(refreshToken);
-        });
+        refreshTokenRedisRepository.findByMemberId(memberSession.getMemberId()).ifPresent(this::invalidateToken);
     }
 
     /**
@@ -342,13 +337,19 @@ public class AuthCommandService {
      * 인증 토큰 발급 (액세스 + 리프래시)
      */
     private AuthTokenDto generateAuthTokens(UUID memberId) {
+        // generate authentication tokens
         JwtPayload jwtPayload = JwtPayload.builder()
                 .memberId(memberId)
                 .build();
         String accessToken = jwtHelper.generateAccessToken(jwtPayload);
         String refreshToken = jwtHelper.generateRefreshToken(jwtPayload);
         refreshTokenRedisRepository.save(new RefreshToken(refreshToken, memberId));
-        LogUtil.info("issue refresh token: " + refreshToken);
+
+        // update last_token_issued_at
+        Member member = memberJpaRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(AuthException.AUTH_FAILED_BY_UNKNOWN_ERROR));
+        member.setLastTokenIssuedAt(LocalDateTime.now());
+        memberJpaRepository.save(member);
 
         return new AuthTokenDto(accessToken, refreshToken);
     }

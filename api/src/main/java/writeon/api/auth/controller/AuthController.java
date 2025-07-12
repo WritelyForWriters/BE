@@ -29,7 +29,6 @@ public class AuthController {
     @Operation(summary = "토큰 재발급")
     @PostMapping("/token/reissue")
     public ResponseEntity<BaseResponse<TokenReissueResponse>> reissueToken(@CookieValue(value = "refreshToken", defaultValue="") String tokenString) {
-        LogUtil.info("token" + tokenString);
         AuthTokenDto tokens = authCommandService.reissueToken(tokenString);
         TokenReissueResponse response = new TokenReissueResponse(tokens.getAccessToken());
 
