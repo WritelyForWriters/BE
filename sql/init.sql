@@ -7,7 +7,7 @@ create table member
     email          varchar(255) constraint email_uk unique not null,
     nickname       varchar(20)  constraint nickname_uk unique not null,
     profile_image  varchar(255),
-    last_token_issued_at timestamp with time zone not null,
+    last_token_issued_at timestamp with time zone,
     created_at     timestamp with time zone    not null,
     updated_at     timestamp with time zone    not null
 );
