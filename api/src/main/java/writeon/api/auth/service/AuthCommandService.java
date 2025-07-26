@@ -17,7 +17,6 @@ import writeon.api.auth.request.*;
 import writeon.api.auth.response.LoginFailResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.DateTimeUtil;
-import writeon.api.common.util.LogUtil;
 import writeon.api.terms.request.TermsAgreeRequest;
 import writeon.api.terms.service.TermsQueryService;
 import writeon.domain.auth.*;
@@ -337,7 +336,7 @@ public class AuthCommandService {
      * 인증 토큰 발급 (액세스 + 리프래시)
      */
     private AuthTokenDto generateAuthTokens(UUID memberId) {
-        // generate authentication tokens
+        // issue & save tokens
         JwtPayload jwtPayload = JwtPayload.builder()
                 .memberId(memberId)
                 .build();
@@ -345,13 +344,14 @@ public class AuthCommandService {
         String refreshToken = jwtHelper.generateRefreshToken(jwtPayload);
         refreshTokenRedisRepository.save(new RefreshToken(refreshToken, memberId));
 
-        // update last_token_issued_at
+        // update token issued at
         Member member = memberJpaRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(AuthException.AUTH_FAILED_BY_UNKNOWN_ERROR));
+        final LocalDateTime previousTokenIssuedAt = member.getLastTokenIssuedAt();
         member.setLastTokenIssuedAt(LocalDateTime.now());
         memberJpaRepository.save(member);
 
-        return new AuthTokenDto(accessToken, refreshToken);
+        return new AuthTokenDto(accessToken, refreshToken, previousTokenIssuedAt);
     }
 
     /**
@@ -368,4 +368,5 @@ public class AuthCommandService {
             changePasswordTokenRedisRepository.delete(changePasswordToken);
         }
     }
+
 }
