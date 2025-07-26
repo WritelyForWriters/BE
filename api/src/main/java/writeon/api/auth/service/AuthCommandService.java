@@ -17,6 +17,7 @@ import writeon.api.auth.request.*;
 import writeon.api.auth.response.LoginFailResponse;
 import writeon.api.common.exception.BaseException;
 import writeon.api.common.util.DateTimeUtil;
+import writeon.api.common.util.MemberUtil;
 import writeon.api.terms.request.TermsAgreeRequest;
 import writeon.api.terms.service.TermsQueryService;
 import writeon.domain.auth.*;
@@ -267,6 +268,19 @@ public class AuthCommandService {
 
         amplitude.logEvent(userPropEvent);
         amplitude.logEvent(signUpEvent);
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    public void withdraw() {
+        final UUID memberId = MemberUtil.getMemberId();
+
+        refreshTokenRedisRepository.findByMemberId(memberId)
+                .ifPresent(this::invalidateToken);
+
+        // TODO: 비즈니스에 따라 데이터 추가 삭제
+        memberJpaRepository.deleteById(memberId);
     }
 
     /**
