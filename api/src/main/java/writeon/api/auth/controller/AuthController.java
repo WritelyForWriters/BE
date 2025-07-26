@@ -82,6 +82,13 @@ public class AuthController {
         authCommandService.completeJoin(request);
     }
 
+    @Operation(summary = "회원탈퇴")
+    @PostMapping("/withdraw")
+    public void withdraw() {
+
+        authCommandService.withdraw();
+    }
+
     @Operation(summary = "비밀번호 변경")
     @PostMapping("/change-password")
     public void changePassword(@Valid @RequestBody ChangePasswordRequest request) {
