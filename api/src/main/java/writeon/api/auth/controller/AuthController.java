@@ -14,7 +14,6 @@ import writeon.api.auth.response.TokenReissueResponse;
 import writeon.api.auth.service.AuthCommandService;
 import writeon.api.auth.service.AuthQueryService;
 import writeon.api.common.response.BaseResponse;
-import writeon.api.common.util.LogUtil;
 import writeon.domain.auth.dto.AuthTokenDto;
 
 @RestController
@@ -30,7 +29,7 @@ public class AuthController {
     @PostMapping("/token/reissue")
     public ResponseEntity<BaseResponse<TokenReissueResponse>> reissueToken(@CookieValue(value = "refreshToken", defaultValue="") String tokenString) {
         AuthTokenDto tokens = authCommandService.reissueToken(tokenString);
-        TokenReissueResponse response = new TokenReissueResponse(tokens.getAccessToken());
+        TokenReissueResponse response = new TokenReissueResponse(tokens);
 
         String cookieString = authCookieHelper.createNewCookie(tokens.getRefreshToken());
         HttpHeaders headers = new HttpHeaders();
@@ -45,7 +44,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<BaseResponse<TokenReissueResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthTokenDto tokens = authCommandService.login(request);
-        TokenReissueResponse response = new TokenReissueResponse(tokens.getAccessToken());
+        TokenReissueResponse response = new TokenReissueResponse(tokens);
 
         String cookieString = authCookieHelper.createNewCookie(tokens.getRefreshToken());
         HttpHeaders headers = new HttpHeaders();
