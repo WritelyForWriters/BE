@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/doc/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/health-check/**").permitAll()
                         .requestMatchers("/auth/logout").authenticated()
+                        .requestMatchers("/auth/withdraw").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/terms/**").permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/assistant/**/stream")).permitAll()
